@@ -50,7 +50,7 @@ export function StatCard({ label, value, sub, positive, icon }: StatCardProps) {
         <span style={{ color: '#333' }}>{icon}</span>
       </div>
       <div>
-        <div style={{ fontSize: 22, fontWeight: 700, color: valueColor, letterSpacing: '-0.02em', lineHeight: 1 }}>
+        <div style={{ fontSize: 24, fontWeight: 700, color: valueColor, letterSpacing: '-0.02em', lineHeight: 1 }}>
           {value}
         </div>
         {sub && (

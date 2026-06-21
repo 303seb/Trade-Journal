@@ -96,13 +96,10 @@ function calcTradePnl(symbol: string, side: 'Long' | 'Short', entry: string, exi
   return (points * pv * c).toFixed(2)
 }
 
-function calcTradeRR(entry: string, tp: string, sl: string): string {
-  const e = parseFloat(entry), t = parseFloat(tp), s = parseFloat(sl)
-  if (isNaN(e) || isNaN(t) || isNaN(s) || e === 0 || t === 0 || s === 0) return ''
-  const reward = Math.abs(t - e)
-  const risk = Math.abs(s - e)
-  if (risk === 0) return ''
-  return (reward / risk).toFixed(2)
+function calcTradeRR(tp: string, sl: string): string {
+  const t = parseFloat(tp), s = parseFloat(sl)
+  if (isNaN(t) || isNaN(s) || t === 0 || s === 0) return ''
+  return (t / s).toFixed(2)
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -153,13 +150,13 @@ const DOL_OPTIONS = [
 
 const inputBase: React.CSSProperties = {
   background: '#0e0e0e', border: '1px solid #1e1e1e', borderRadius: 10,
-  padding: '9px 12px', fontSize: 13, color: '#e0e0e0', outline: 'none',
+  padding: '9px 12px', fontSize: 14, color: '#e0e0e0', outline: 'none',
   width: '100%', boxSizing: 'border-box', transition: 'border-color 0.15s',
   fontFamily: 'inherit',
 }
 
 const labelStyle: React.CSSProperties = {
-  display: 'block', fontSize: 12, color: '#555', marginBottom: 8,
+  display: 'block', fontSize: 13, color: '#555', marginBottom: 8,
   fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
 }
 
@@ -180,7 +177,7 @@ function CollapsibleSection({
           style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, background: 'none', border: 'none', cursor: 'pointer', padding: '12px 0', textAlign: 'left' }}
         >
           <ChevronDown size={14} strokeWidth={2} style={{ color: '#444', flexShrink: 0, transform: open ? 'rotate(0deg)' : 'rotate(-90deg)', transition: 'transform 0.25s cubic-bezier(0.4,0,0.2,1)' }} />
-          <span style={{ fontSize: 14, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: open ? '#888' : '#444', transition: 'color 0.2s' }}>
+          <span style={{ fontSize: 15, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: open ? '#888' : '#444', transition: 'color 0.2s' }}>
             {title}
           </span>
           {badge && <span style={{ fontSize: 12, color: '#444', fontWeight: 400 }}>{badge}</span>}
@@ -300,7 +297,7 @@ function TradeCard({ trade, onUpdate, onRemove }: {
   const hasPnl = trade.pnl !== ''
 
   const sectionLabel = (text: string) => (
-    <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>{text}</div>
+    <div style={{ fontSize: 12, color: '#444', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>{text}</div>
   )
 
   return (
@@ -407,8 +404,8 @@ function TradeCard({ trade, onUpdate, onRemove }: {
         {([
           { key: 'entryPrice' as const, label: 'Entry Price' },
           { key: 'exitPrice'  as const, label: 'Exit Price'  },
-          { key: 'takeProfit' as const, label: 'Take Profit' },
-          { key: 'stopLoss'   as const, label: 'Stop Loss'   },
+          { key: 'takeProfit' as const, label: 'TP (pts)' },
+          { key: 'stopLoss'   as const, label: 'SL (pts)' },
         ]).map(f => (
           <div key={f.key}>
             <label style={labelStyle}>{f.label}</label>
@@ -423,13 +420,10 @@ function TradeCard({ trade, onUpdate, onRemove }: {
 
       {/* Auto-calculated P&L + R:R */}
       {(() => {
-        const rrVal = calcTradeRR(trade.entryPrice, trade.takeProfit, trade.stopLoss)
+        const rrVal = calcTradeRR(trade.takeProfit, trade.stopLoss)
         const rrColor = (() => {
           if (!rrVal) return '#2a2a2a'
-          const e = parseFloat(trade.entryPrice), tp = parseFloat(trade.takeProfit), sl = parseFloat(trade.stopLoss)
-          if (isNaN(e) || isNaN(tp) || isNaN(sl) || e === 0 || tp === 0 || sl === 0) return '#e0e0e0'
-          const positive = trade.side === 'Long' ? (tp > e && e > sl) : (tp < e && e < sl)
-          return positive ? '#4ade80' : '#f87171'
+          return parseFloat(rrVal) >= 1 ? '#4ade80' : '#f87171'
         })()
         return (
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 10 }}>
@@ -850,7 +844,7 @@ export function Journal({ entries, tradingRules, onSave, onDelete, onAddTradingR
 
   const textareaBase: React.CSSProperties = {
     width: '100%', background: '#0d0d0d', border: '1px solid #1e1e1e', borderRadius: 12,
-    padding: '14px 16px', fontSize: 14, color: '#e0e0e0', resize: 'none',
+    padding: '14px 16px', fontSize: 15, color: '#e0e0e0', resize: 'none',
     outline: 'none', lineHeight: 1.7, boxSizing: 'border-box', transition: 'border-color 0.15s',
     fontFamily: 'inherit',
   }

@@ -90,7 +90,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
           style={{
             display: 'flex', alignItems: 'center', gap: 8, padding: '9px 18px',
             background: '#f0f0f0', color: '#111', borderRadius: 10, border: 'none',
-            fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s',
+            fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s',
           }}
           onMouseEnter={e => (e.currentTarget.style.background = '#ffffff')}
           onMouseLeave={e => (e.currentTarget.style.background = '#f0f0f0')}
@@ -151,7 +151,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
         background: '#141414', border: '1px solid #1f1f1f', borderRadius: 14,
         padding: '20px 28px', textAlign: 'center',
       }}>
-        <p style={{ fontSize: 14, color: '#aaaaaa', fontStyle: 'italic', lineHeight: 1.7, margin: 0 }}>
+        <p style={{ fontSize: 15, color: '#aaaaaa', fontStyle: 'italic', lineHeight: 1.7, margin: 0 }}>
           &ldquo;{quote.text}&rdquo;
         </p>
         <p style={{ fontSize: 12, color: '#444', margin: '10px 0 0' }}>— {quote.author}</p>
@@ -178,6 +178,73 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
         onPrevMonth={prevMonth}
         onNextMonth={nextMonth}
       />
+
+      {/* Recent Trades */}
+      {(() => {
+        const recentTrades = journalEntries
+          .flatMap(e => e.trades.map(t => ({ trade: t, date: e.date })))
+          .sort((a, b) => b.date.localeCompare(a.date))
+        if (recentTrades.length === 0) return null
+
+        const RESULT_BG: Record<string, { bg: string; border: string; color: string }> = {
+          Win:  { bg: 'rgba(74,222,128,0.08)',  border: 'rgba(74,222,128,0.2)',  color: '#4ade80' },
+          Loss: { bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)', color: '#f87171' },
+          BE:   { bg: 'rgba(255,255,255,0.03)', border: '#252525',               color: '#aaaaaa' },
+          Faded:{ bg: 'rgba(251,146,60,0.08)',  border: 'rgba(251,146,60,0.2)',  color: '#fb923c' },
+        }
+
+        return (
+          <div style={{ background: '#141414', border: '1px solid #1f1f1f', borderRadius: 16, padding: '20px 20px 16px' }}>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: '#444', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              Recent Trades
+            </h3>
+
+            {/* Column headers */}
+            <div style={{ display: 'grid', gridTemplateColumns: '110px 70px 70px 1fr 80px', gap: 12, padding: '0 14px 8px', marginBottom: 4, borderBottom: '1px solid #1a1a1a' }}>
+              {['Date', 'Contract', 'Result', 'P&L', 'R:R'].map(h => (
+                <span key={h} style={{ fontSize: 11, fontWeight: 700, color: '#333', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</span>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              {recentTrades.map(({ trade: t, date }, idx) => {
+                const pnl = parseFloat(t.pnl) || 0
+                const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : '#888'
+                const rrVal = (() => {
+                  const tp = parseFloat(t.takeProfit), sl = parseFloat(t.stopLoss)
+                  if (isNaN(tp) || isNaN(sl) || tp === 0 || sl === 0) return null
+                  return (tp / sl).toFixed(2)
+                })()
+                const rrColor = rrVal ? (parseFloat(rrVal) >= 1 ? '#4ade80' : '#f87171') : '#555'
+                const style = RESULT_BG[t.result] ?? RESULT_BG.BE
+                const dateShort = new Date(date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+
+                return (
+                  <div
+                    key={`${date}-${t.id}-${idx}`}
+                    style={{
+                      display: 'grid', gridTemplateColumns: '110px 70px 70px 1fr 80px',
+                      gap: 12, padding: '9px 14px', borderRadius: 8,
+                      background: style.bg, border: `1px solid ${style.border}`,
+                      alignItems: 'center',
+                    }}
+                  >
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#999' }}>{dateShort}</span>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: '#ccc' }}>{t.symbol || '—'}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: style.color }}>{t.result}</span>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: pnlColor }}>
+                      {t.pnl ? (pnl >= 0 ? '+' : '') + formatCurrency(pnl) : '—'}
+                    </span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: rrColor }}>
+                      {rrVal ? `${rrVal}R` : '—'}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Day detail popup */}
       {popupDate && (() => {
@@ -274,16 +341,11 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                       {entry.trades.map(t => {
                         const tradePnl = parseFloat(t.pnl) || 0
                         const rrVal = (() => {
-                          const e = parseFloat(t.entryPrice), tp = parseFloat(t.takeProfit), sl = parseFloat(t.stopLoss)
-                          if (isNaN(e) || isNaN(tp) || isNaN(sl) || e === 0 || tp === 0 || sl === 0) return null
-                          const risk = Math.abs(sl - e)
-                          return risk === 0 ? null : (Math.abs(tp - e) / risk).toFixed(2)
+                          const tp = parseFloat(t.takeProfit), sl = parseFloat(t.stopLoss)
+                          if (isNaN(tp) || isNaN(sl) || tp === 0 || sl === 0) return null
+                          return (tp / sl).toFixed(2)
                         })()
-                        const rrPositive = rrVal ? (
-                          t.side === 'Long'
-                            ? parseFloat(t.takeProfit) > parseFloat(t.entryPrice) && parseFloat(t.entryPrice) > parseFloat(t.stopLoss)
-                            : parseFloat(t.takeProfit) < parseFloat(t.entryPrice) && parseFloat(t.entryPrice) < parseFloat(t.stopLoss)
-                        ) : null
+                        const rrPositive = rrVal ? parseFloat(rrVal) >= 1 : null
                         const showDrawdown = t.drawdown && ['Win', 'BE', 'Faded'].includes(t.result)
                         const priceFields = [
                           { label: 'Entry', val: t.entryPrice },
