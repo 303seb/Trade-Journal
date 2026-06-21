@@ -25,6 +25,7 @@ function App() {
     confluenceTags,
     tradingRules,
     upsertJournalEntry,
+    deleteJournalEntry,
     setMonthlyGoal,
     addConfluenceTag,
     deleteConfluenceTag,
@@ -64,6 +65,7 @@ function App() {
               confluenceTags={confluenceTags}
               tradingRules={tradingRules}
               onSave={upsertJournalEntry}
+              onDelete={deleteJournalEntry}
               onAddConfluenceTag={addConfluenceTag}
               onDeleteConfluenceTag={deleteConfluenceTag}
               onAddTradingRule={addTradingRule}

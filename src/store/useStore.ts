@@ -48,6 +48,14 @@ export function useStore() {
     load(KEYS.rules, [])
   )
 
+  const deleteJournalEntry = useCallback((date: string) => {
+    setJournalEntries(prev => {
+      const next = prev.filter(e => e.date !== date)
+      save(KEYS.journal, next)
+      return next
+    })
+  }, [])
+
   const upsertJournalEntry = useCallback((entry: JournalEntry) => {
     setJournalEntries(prev => {
       const exists = prev.some(e => e.date === entry.date)
@@ -116,6 +124,7 @@ export function useStore() {
     confluenceTags,
     tradingRules,
     upsertJournalEntry,
+    deleteJournalEntry,
     setMonthlyGoal,
     addConfluenceTag,
     deleteConfluenceTag,

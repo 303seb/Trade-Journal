@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import {
   ChevronLeft, ChevronRight, ChevronDown, Save, Plus, Trash2, BookOpen,
-  ImageIcon, X, AlertTriangle, ArrowLeft, NotebookPen,
+  ImageIcon, X, AlertTriangle, ArrowLeft, NotebookPen, Trash,
 } from 'lucide-react'
 import type { JournalEntry, TradeLog, TradeResult, Emotion, AccountType, SessionType, TradingRule } from '../types'
 import { formatCurrency } from '../utils/stats'
@@ -582,18 +582,30 @@ function RulesSection({ rules, followed, onChange, onAddRule, onRemoveRule }: {
 
 // ── Journal List (landing) ────────────────────────────────────────────────────
 
-function JournalList({ entries, onOpen, onNew }: {
+function JournalList({ entries, onOpen, onNew, onDelete }: {
   entries: JournalEntry[]
   onOpen: (date: string) => void
   onNew: () => void
+  onDelete: (date: string) => void
 }) {
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
   const sorted = [...entries].sort((a, b) => b.date.localeCompare(a.date))
 
   const getDayPnl = (entry: JournalEntry) =>
     entry.trades.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0)
 
+  const handleDelete = (date: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (confirmDelete === date) {
+      onDelete(date)
+      setConfirmDelete(null)
+    } else {
+      setConfirmDelete(date)
+    }
+  }
+
   return (
-    <div style={{ flex: 1, overflowY: 'auto', padding: '32px 40px' }}>
+    <div style={{ flex: 1, overflowY: 'auto', padding: '32px 40px' }} onClick={() => setConfirmDelete(null)}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 32 }}>
         <div>
@@ -633,13 +645,14 @@ function JournalList({ entries, onOpen, onNew }: {
             const dateFmt = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
             return (
-              <button key={entry.date} onClick={() => onOpen(entry.date)} style={{
-                textAlign: 'left', background: '#111', border: '1px solid #1a1a1a', borderRadius: 14,
+              <div key={entry.date} style={{ position: 'relative' }}>
+              <button onClick={() => onOpen(entry.date)} style={{
+                width: '100%', textAlign: 'left', background: '#111', border: `1px solid ${confirmDelete === entry.date ? '#3a1a1a' : '#1a1a1a'}`, borderRadius: 14,
                 padding: '18px 20px', cursor: 'pointer', transition: 'all 0.15s',
                 display: 'flex', flexDirection: 'column', gap: 12, fontFamily: 'inherit',
               }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = '#2a2a2a'; e.currentTarget.style.background = '#141414' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#1a1a1a'; e.currentTarget.style.background = '#111' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = confirmDelete === entry.date ? '#3a1a1a' : '#2a2a2a'; e.currentTarget.style.background = '#141414' }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = confirmDelete === entry.date ? '#3a1a1a' : '#1a1a1a'; e.currentTarget.style.background = '#111' }}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                   <div>
@@ -671,6 +684,25 @@ function JournalList({ entries, onOpen, onNew }: {
                   </div>
                 )}
               </button>
+              {/* Delete button */}
+              <button
+                onClick={e => handleDelete(entry.date, e)}
+                style={{
+                  position: 'absolute', top: 10, right: 10,
+                  background: confirmDelete === entry.date ? 'rgba(239,68,68,0.15)' : 'rgba(0,0,0,0.6)',
+                  border: `1px solid ${confirmDelete === entry.date ? 'rgba(239,68,68,0.4)' : 'transparent'}`,
+                  borderRadius: 8, padding: confirmDelete === entry.date ? '4px 10px' : '5px 6px',
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
+                  color: confirmDelete === entry.date ? '#f87171' : '#444',
+                  fontSize: 11, fontWeight: 600, transition: 'all 0.15s', fontFamily: 'inherit',
+                }}
+                onMouseEnter={e => { if (confirmDelete !== entry.date) { e.currentTarget.style.background = 'rgba(239,68,68,0.12)'; e.currentTarget.style.color = '#f87171' } }}
+                onMouseLeave={e => { if (confirmDelete !== entry.date) { e.currentTarget.style.background = 'rgba(0,0,0,0.6)'; e.currentTarget.style.color = '#444' } }}
+              >
+                <Trash size={11} />
+                {confirmDelete === entry.date && 'Delete?'}
+              </button>
+              </div>
             )
           })}
         </div>
@@ -686,6 +718,7 @@ interface JournalProps {
   confluenceTags: string[]
   tradingRules: TradingRule[]
   onSave: (entry: JournalEntry) => void
+  onDelete: (date: string) => void
   onAddConfluenceTag: (tag: string) => void
   onDeleteConfluenceTag: (tag: string) => void
   onAddTradingRule: (text: string) => void
@@ -694,13 +727,14 @@ interface JournalProps {
   initialDate?: string
 }
 
-export function Journal({ entries, confluenceTags, tradingRules, onSave, onAddConfluenceTag, onAddTradingRule, onRemoveTradingRule, initialDate }: JournalProps) {
+export function Journal({ entries, confluenceTags, tradingRules, onSave, onDelete, onAddConfluenceTag, onAddTradingRule, onRemoveTradingRule, initialDate }: JournalProps) {
   const TODAY = todayStr()
   const [view, setView] = useState<'list' | 'entry'>(initialDate ? 'entry' : 'list')
   const [date, setDate] = useState(initialDate || TODAY)
   const [form, setForm] = useState<JournalEntry>(() => safeEntry(entries.find(e => e.date === (initialDate || TODAY)), initialDate || TODAY))
   const [chartPreview, setChartPreview] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
+  const [confirmDeleteEntry, setConfirmDeleteEntry] = useState(false)
 
   useEffect(() => {
     if (initialDate) {
@@ -715,6 +749,7 @@ export function Journal({ entries, confluenceTags, tradingRules, onSave, onAddCo
     setForm(entry)
     setChartPreview(entry.premktImgKey?.startsWith('data:') ? entry.premktImgKey : null)
     setSaved(false)
+    setConfirmDeleteEntry(false)
   }, [date]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const patch = <K extends keyof JournalEntry>(k: K, v: JournalEntry[K]) =>
@@ -726,8 +761,15 @@ export function Journal({ entries, confluenceTags, tradingRules, onSave, onAddCo
     setTimeout(() => setSaved(false), 2200)
   }
 
-  const openEntry = (d: string) => { setDate(d); setView('entry') }
-  const newEntry = () => { setDate(TODAY); setView('entry') }
+  const openEntry = (d: string) => { setDate(d); setView('entry'); setConfirmDeleteEntry(false) }
+  const newEntry = () => { setDate(TODAY); setView('entry'); setConfirmDeleteEntry(false) }
+
+  const handleDeleteEntry = () => {
+    if (!confirmDeleteEntry) { setConfirmDeleteEntry(true); return }
+    onDelete(date)
+    setView('list')
+    setConfirmDeleteEntry(false)
+  }
 
   const prev = () => setDate(d => shiftDate(d, -1))
   const next = () => { const n = shiftDate(date, 1); if (n <= TODAY) setDate(n) }
@@ -768,7 +810,7 @@ export function Journal({ entries, confluenceTags, tradingRules, onSave, onAddCo
   if (view === 'list') {
     return (
       <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
-        <JournalList entries={entries} onOpen={openEntry} onNew={newEntry} />
+        <JournalList entries={entries} onOpen={openEntry} onNew={newEntry} onDelete={onDelete} />
       </div>
     )
   }
@@ -846,7 +888,27 @@ export function Journal({ entries, confluenceTags, tradingRules, onSave, onAddCo
               onMouseLeave={e => { e.currentTarget.style.color = '#444'; e.currentTarget.style.borderColor = '#1e1e1e' }}
             ><ChevronRight size={14} strokeWidth={1.8} /></button>
           </div>
-          {saveBtn}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {entries.some(e => e.date === date) && (
+              <button
+                onClick={handleDeleteEntry}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px',
+                  borderRadius: 10, border: `1px solid ${confirmDeleteEntry ? 'rgba(239,68,68,0.4)' : '#1e1e1e'}`,
+                  background: confirmDeleteEntry ? 'rgba(239,68,68,0.12)' : 'transparent',
+                  color: confirmDeleteEntry ? '#f87171' : '#444',
+                  cursor: 'pointer', fontSize: 12, fontWeight: 600,
+                  transition: 'all 0.15s', fontFamily: 'inherit',
+                }}
+                onMouseEnter={e => { if (!confirmDeleteEntry) { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)' } }}
+                onMouseLeave={e => { if (!confirmDeleteEntry) { e.currentTarget.style.color = '#444'; e.currentTarget.style.borderColor = '#1e1e1e' } }}
+              >
+                <Trash size={12} />
+                {confirmDeleteEntry ? 'Confirm delete?' : 'Delete entry'}
+              </button>
+            )}
+            {saveBtn}
+          </div>
         </div>
 
         {/* Scrollable body */}
