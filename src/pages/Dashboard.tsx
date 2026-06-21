@@ -191,95 +191,237 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
           (entry.rulesFollowed.filter(id => tradingRules.some(r => r.id === id)).length / tradingRules.length) * 100
         )
         const barColor = rulesPct <= 33 ? '#f87171' : rulesPct <= 66 ? '#fbbf24' : '#4ade80'
+        const secLabel = { fontSize: 11, color: '#444', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.07em', marginBottom: 10 }
         return (
           <div
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.82)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 24px' }}
             onClick={() => setPopupDate(null)}
           >
             <div
-              style={{ background: '#111', border: '1px solid #222', borderRadius: 20, width: '100%', maxWidth: 560, maxHeight: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+              style={{ background: '#111', border: '1px solid #222', borderRadius: 20, width: '100%', maxWidth: 560, maxHeight: '96vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
               onClick={e => e.stopPropagation()}
             >
               {/* Popup header */}
-              <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #1a1a1a', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#f0f0f0', marginBottom: 4 }}>{dateLabel}</div>
+              <div style={{ padding: '18px 24px 14px', borderBottom: '1px solid #1a1a1a', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', marginBottom: 4 }}>{dateLabel}</div>
                   {entry.trades.length > 0 && (
-                    <div style={{ fontSize: 20, fontWeight: 700, color: pnlColor }}>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: pnlColor }}>
                       {dayPnl >= 0 ? '+' : ''}{formatCurrency(dayPnl)}
-                      <span style={{ fontSize: 12, color: '#555', fontWeight: 400, marginLeft: 8 }}>
+                      <span style={{ fontSize: 13, color: '#555', fontWeight: 400, marginLeft: 8 }}>
                         {entry.trades.length} trade{entry.trades.length !== 1 ? 's' : ''}
                       </span>
                     </div>
                   )}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  {em && <span style={{ fontSize: 26, lineHeight: 1 }}>{em.emoji}</span>}
-                  <button onClick={() => setPopupDate(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#444', display: 'flex', padding: 4, transition: 'color 0.15s' }}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, marginLeft: 12 }}>
+                  {em && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ fontSize: 22, lineHeight: 1 }}>{em.emoji}</span>
+                      <span style={{ fontSize: 12, color: '#666' }}>{em.label}</span>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => { setPopupDate(null); onNavigateToJournal(popupDate) }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', background: '#1e1e1e', border: '1px solid #333', borderRadius: 8, cursor: 'pointer', color: '#ccc', fontSize: 12, fontWeight: 600, transition: 'all 0.15s' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = '#2a2a2a'; e.currentTarget.style.color = '#f0f0f0' }}
+                    onMouseLeave={e => { e.currentTarget.style.background = '#1e1e1e'; e.currentTarget.style.color = '#ccc' }}
+                  >
+                    <NotebookPen size={13} />
+                    Edit Day
+                  </button>
+                  <button
+                    onClick={() => setPopupDate(null)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#444', display: 'flex', padding: 4, transition: 'color 0.15s' }}
                     onMouseEnter={e => (e.currentTarget.style.color = '#e0e0e0')}
                     onMouseLeave={e => (e.currentTarget.style.color = '#444')}
                   ><X size={18} /></button>
                 </div>
               </div>
-              {/* Popup body */}
-              <div style={{ overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+
+              {/* Popup body — scrollable */}
+              <div style={{ overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 22 }}>
+
+                {/* Red folder news */}
                 {entry.redFolderNews && (
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 16px', background: 'rgba(251,191,36,0.07)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 10 }}>
-                    <AlertTriangle size={13} color="#fbbf24" style={{ flexShrink: 0, marginTop: 2 }} />
+                    <AlertTriangle size={14} color="#fbbf24" style={{ flexShrink: 0, marginTop: 2 }} />
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: '#fbbf24', marginBottom: entry.redFolderNewsText ? 5 : 0 }}>Red Folder News</div>
-                      {entry.redFolderNewsText && <p style={{ fontSize: 12, color: '#999', margin: 0, lineHeight: 1.6 }}>{entry.redFolderNewsText}</p>}
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#fbbf24', marginBottom: entry.redFolderNewsText ? 6 : 0 }}>Red Folder News</div>
+                      {entry.redFolderNewsText && <p style={{ fontSize: 13, color: '#999', margin: 0, lineHeight: 1.6 }}>{entry.redFolderNewsText}</p>}
                     </div>
                   </div>
                 )}
-                {entry.premktAnalysis && (
+
+                {/* Pre-market analysis */}
+                {(entry.premktAnalysis || entry.premktImgKey) && (
                   <div>
-                    <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>Pre-Market Analysis</div>
-                    <p style={{ fontSize: 13, color: '#999', margin: 0, lineHeight: 1.7 }}>{entry.premktAnalysis}</p>
+                    <div style={secLabel}>Pre-Market Analysis</div>
+                    {entry.premktImgKey && (
+                      <img src={entry.premktImgKey} alt="Pre-market chart" style={{ width: '100%', borderRadius: 10, marginBottom: entry.premktAnalysis ? 10 : 0, border: '1px solid #1f1f1f', objectFit: 'contain', maxHeight: 260 }} />
+                    )}
+                    {entry.premktAnalysis && (
+                      <p style={{ fontSize: 13, color: '#999', margin: 0, lineHeight: 1.7 }}>{entry.premktAnalysis}</p>
+                    )}
                   </div>
                 )}
+
+                {/* Trades */}
                 {entry.trades.length > 0 && (
                   <div>
-                    <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 10 }}>Trades</div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <div style={secLabel}>Trades</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                       {entry.trades.map(t => {
                         const tradePnl = parseFloat(t.pnl) || 0
+                        const rrVal = (() => {
+                          const e = parseFloat(t.entryPrice), tp = parseFloat(t.takeProfit), sl = parseFloat(t.stopLoss)
+                          if (isNaN(e) || isNaN(tp) || isNaN(sl) || e === 0 || tp === 0 || sl === 0) return null
+                          const risk = Math.abs(sl - e)
+                          return risk === 0 ? null : (Math.abs(tp - e) / risk).toFixed(2)
+                        })()
+                        const rrPositive = rrVal ? (
+                          t.side === 'Long'
+                            ? parseFloat(t.takeProfit) > parseFloat(t.entryPrice) && parseFloat(t.entryPrice) > parseFloat(t.stopLoss)
+                            : parseFloat(t.takeProfit) < parseFloat(t.entryPrice) && parseFloat(t.entryPrice) < parseFloat(t.stopLoss)
+                        ) : null
+                        const showDrawdown = t.drawdown && ['Win', 'BE', 'Faded'].includes(t.result)
+                        const priceFields = [
+                          { label: 'Entry', val: t.entryPrice },
+                          { label: 'Exit', val: t.exitPrice },
+                          { label: 'Take Profit', val: t.takeProfit },
+                          { label: 'Stop Loss', val: t.stopLoss },
+                        ].filter(f => f.val)
                         return (
-                          <div key={t.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: '#0d0d0d', borderRadius: 10, border: '1px solid #1a1a1a' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                              <span style={{ fontSize: 12, fontWeight: 700, color: RESULT_COLORS[t.result] || '#888' }}>{t.result}</span>
-                              {t.symbol && <span style={{ fontSize: 12, color: '#777' }}>{t.symbol}</span>}
-                              <span style={{ fontSize: 11, color: t.side === 'Long' ? '#4ade80' : '#f87171' }}>{t.side}</span>
-                              {t.contracts && <span style={{ fontSize: 11, color: '#444' }}>{t.contracts}x</span>}
+                          <div key={t.id} style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 12, overflow: 'hidden' }}>
+                            {/* Trade header */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 14px', borderBottom: '1px solid #141414', flexWrap: 'wrap' }}>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: RESULT_COLORS[t.result] || '#888', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
+                              {t.symbol && <span style={{ fontSize: 13, fontWeight: 700, color: '#ccc' }}>{t.symbol}</span>}
+                              <span style={{ fontSize: 13, color: t.side === 'Long' ? '#4ade80' : '#f87171', fontWeight: 600 }}>{t.side}</span>
+                              {t.contracts && <span style={{ fontSize: 12, color: '#555' }}>{t.contracts} contracts</span>}
+                              <div style={{ flex: 1 }} />
+                              {t.accounts.map(a => (
+                                <span key={a} style={{ fontSize: 10, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
+                              ))}
                             </div>
-                            {t.pnl && (
-                              <span style={{ fontSize: 13, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : '#888' }}>
-                                {tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}
-                              </span>
-                            )}
+                            <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                              {/* Price grid */}
+                              {priceFields.length > 0 && (
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                                  {priceFields.map(f => (
+                                    <div key={f.label} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 8, padding: '8px 10px' }}>
+                                      <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{f.label}</div>
+                                      <div style={{ fontSize: 15, fontWeight: 700, color: '#ccc' }}>{f.val}</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              {/* P&L + R:R */}
+                              {(t.pnl || rrVal) && (
+                                <div style={{ display: 'grid', gridTemplateColumns: t.pnl && rrVal ? '2fr 1fr' : '1fr', gap: 6 }}>
+                                  {t.pnl && (
+                                    <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                      <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>P&L</div>
+                                      <div style={{ fontSize: 16, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : '#888' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
+                                    </div>
+                                  )}
+                                  {rrVal && (
+                                    <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                      <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>R:R</div>
+                                      <div style={{ fontSize: 16, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : '#ccc' }}>{rrVal}R</div>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              {/* Drawdown */}
+                              {showDrawdown && (
+                                <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <span style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Drawdown</span>
+                                  <span style={{ fontSize: 14, color: '#aaa', fontWeight: 600 }}>{t.drawdown} pts</span>
+                                </div>
+                              )}
+                              {/* Sessions */}
+                              {t.sessions.length > 0 && (
+                                <div>
+                                  <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Session</div>
+                                  <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                                    {t.sessions.map(s => <span key={s} style={{ fontSize: 12, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '3px 9px', borderRadius: 6 }}>{s}</span>)}
+                                  </div>
+                                </div>
+                              )}
+                              {/* DOL */}
+                              {t.dol.length > 0 && (
+                                <div>
+                                  <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Draw on Liquidity</div>
+                                  <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                                    {t.dol.map(d => <span key={d} style={{ fontSize: 12, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '3px 9px', borderRadius: 6 }}>{d}</span>)}
+                                  </div>
+                                </div>
+                              )}
+                              {/* Confluences */}
+                              {t.confluences.length > 0 && (
+                                <div>
+                                  <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Confluences</div>
+                                  <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                                    {t.confluences.map(c => <span key={c} style={{ fontSize: 12, color: '#aaa', background: '#1a1a1a', border: '1px solid #2a2a2a', padding: '3px 9px', borderRadius: 6 }}>{c}</span>)}
+                                  </div>
+                                </div>
+                              )}
+                              {/* Screenshots */}
+                              {t.htfImgKey && (
+                                <div>
+                                  <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>HTF Chart</div>
+                                  <img src={t.htfImgKey} alt="HTF chart" style={{ width: '100%', borderRadius: 8, border: '1px solid #1f1f1f', objectFit: 'contain', maxHeight: 220 }} />
+                                </div>
+                              )}
+                              {t.execImgKey && (
+                                <div>
+                                  <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Execution Chart</div>
+                                  <img src={t.execImgKey} alt="Execution chart" style={{ width: '100%', borderRadius: 8, border: '1px solid #1f1f1f', objectFit: 'contain', maxHeight: 220 }} />
+                                </div>
+                              )}
+                            </div>
                           </div>
                         )
                       })}
                     </div>
                   </div>
                 )}
+
+                {/* Trading rules */}
                 {tradingRules.length > 0 && (
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                      <span style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Rules Followed</span>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: barColor }}>{rulesPct}%</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                      <span style={secLabel}>Trading Rules</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: barColor }}>{rulesPct}%</span>
                     </div>
-                    <div style={{ height: 5, background: '#1a1a1a', borderRadius: 999, overflow: 'hidden' }}>
+                    <div style={{ height: 4, background: '#1a1a1a', borderRadius: 999, overflow: 'hidden', marginBottom: 12 }}>
                       <div style={{ width: `${rulesPct}%`, height: '100%', borderRadius: 999, background: barColor }} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {tradingRules.map(rule => {
+                        const followed = entry.rulesFollowed.includes(rule.id)
+                        return (
+                          <div key={rule.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#0d0d0d', borderRadius: 8, border: `1px solid ${followed ? 'rgba(74,222,128,0.15)' : '#141414'}` }}>
+                            <div style={{ width: 18, height: 18, borderRadius: 5, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: followed ? 'rgba(74,222,128,0.12)' : '#141414', border: `1px solid ${followed ? 'rgba(74,222,128,0.4)' : '#252525'}` }}>
+                              {followed && <span style={{ fontSize: 11, color: '#4ade80', fontWeight: 700, lineHeight: 1 }}>✓</span>}
+                            </div>
+                            <span style={{ fontSize: 13, color: followed ? '#ccc' : '#555' }}>{rule.text}</span>
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                 )}
+
+                {/* Post-market notes */}
                 {entry.postMarketNotes && (
                   <div>
-                    <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>Post Market Notes</div>
+                    <div style={secLabel}>Post Market Notes</div>
                     <p style={{ fontSize: 13, color: '#999', margin: 0, lineHeight: 1.7 }}>{entry.postMarketNotes}</p>
                   </div>
                 )}
+
               </div>
             </div>
           </div>

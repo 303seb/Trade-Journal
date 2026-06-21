@@ -44,7 +44,7 @@ export function StatCard({ label, value, sub, positive, icon }: StatCardProps) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 10, fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
           {label}
         </span>
         <span style={{ color: '#333' }}>{icon}</span>

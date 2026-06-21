@@ -159,8 +159,8 @@ const inputBase: React.CSSProperties = {
 }
 
 const labelStyle: React.CSSProperties = {
-  display: 'block', fontSize: 10, color: '#444', marginBottom: 6,
-  fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em',
+  display: 'block', fontSize: 12, color: '#555', marginBottom: 8,
+  fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
 }
 
 // ── Collapsible Section ───────────────────────────────────────────────────────
@@ -180,10 +180,10 @@ function CollapsibleSection({
           style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, background: 'none', border: 'none', cursor: 'pointer', padding: '12px 0', textAlign: 'left' }}
         >
           <ChevronDown size={14} strokeWidth={2} style={{ color: '#444', flexShrink: 0, transform: open ? 'rotate(0deg)' : 'rotate(-90deg)', transition: 'transform 0.25s cubic-bezier(0.4,0,0.2,1)' }} />
-          <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: open ? '#777' : '#444', transition: 'color 0.2s' }}>
+          <span style={{ fontSize: 14, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: open ? '#888' : '#444', transition: 'color 0.2s' }}>
             {title}
           </span>
-          {badge && <span style={{ fontSize: 11, color: '#333', fontWeight: 400 }}>{badge}</span>}
+          {badge && <span style={{ fontSize: 12, color: '#444', fontWeight: 400 }}>{badge}</span>}
         </button>
         <div style={{ opacity: open ? 1 : 0, transform: open ? 'translateX(0)' : 'translateX(6px)', transition: 'opacity 0.2s ease, transform 0.2s ease', pointerEvents: open ? 'auto' : 'none' }}>
           {action}

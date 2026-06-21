@@ -62,7 +62,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, onDayClick,
 
       {/* Header row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-        <h3 style={{ fontSize: 13, fontWeight: 600, color: '#f0f0f0', margin: 0 }}>Trade Calendar</h3>
+        <h3 style={{ fontSize: 11, fontWeight: 600, color: '#444', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Trade Calendar</h3>
 
         {/* Month navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -90,9 +90,9 @@ export function MonthCalendar({ year, month, trades, journalEntries, onDayClick,
         {/* Month P&L + trade count with labels */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-            <span style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Monthly Profit</span>
+            <span style={{ fontSize: 11, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Monthly Profit</span>
             <span style={{
-              fontSize: 15, fontWeight: 700,
+              fontSize: 16, fontWeight: 700,
               color: monthTradeCount === 0 ? '#333' : monthPnl >= 0 ? '#4ade80' : '#f87171',
             }}>
               {monthTradeCount === 0 ? '—' : (monthPnl >= 0 ? '+' : '') + formatCurrency(monthPnl)}
@@ -100,8 +100,8 @@ export function MonthCalendar({ year, month, trades, journalEntries, onDayClick,
           </div>
           <div style={{ width: 1, height: 28, background: '#222' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-            <span style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Total Trades</span>
-            <span style={{ fontSize: 15, fontWeight: 700, color: '#888' }}>
+            <span style={{ fontSize: 11, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Total Trades</span>
+            <span style={{ fontSize: 16, fontWeight: 700, color: '#888' }}>
               {monthTradeCount}
             </span>
           </div>
@@ -157,7 +157,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, onDayClick,
               key={dateStr}
               onClick={() => onDayClick(dateStr)}
               style={{
-                borderRadius: 10, padding: '7px 5px 6px', minHeight: 86,
+                borderRadius: 10, padding: '8px 5px 7px', minHeight: 100,
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
                 justifyContent: 'flex-start', gap: 2,
                 background: cellBg,
@@ -171,24 +171,24 @@ export function MonthCalendar({ year, month, trades, journalEntries, onDayClick,
               onMouseEnter={e => { e.currentTarget.style.borderColor = '#3a3a3a'; e.currentTarget.style.background = hasData ? cellBg : '#151515' }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = isToday ? '#4a4a4a' : cellBorder; e.currentTarget.style.background = cellBg }}
             >
-              <span style={{ fontSize: 11, fontWeight: 600, color: dayNumColor, lineHeight: 1 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: dayNumColor, lineHeight: 1 }}>
                 {day}
               </span>
               {hasData && (
                 <>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: isPositive ? '#4ade80' : isNegative ? '#f87171' : '#888', lineHeight: 1, marginTop: 1 }}>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: isPositive ? '#4ade80' : isNegative ? '#f87171' : '#888', lineHeight: 1, marginTop: 2 }}>
                     {pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}
                   </span>
                   {dayR !== null && (
-                    <span style={{ fontSize: 9, fontWeight: 600, color: dayR > 0 ? '#4ade80' : dayR < 0 ? '#f87171' : '#888', lineHeight: 1 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: dayR > 0 ? '#4ade80' : dayR < 0 ? '#f87171' : '#888', lineHeight: 1 }}>
                       {dayR >= 0 ? '+' : ''}{dayR.toFixed(1)}R
                     </span>
                   )}
-                  <span style={{ fontSize: 9, color: '#555', lineHeight: 1 }}>
+                  <span style={{ fontSize: 11, color: '#666', fontWeight: 600, lineHeight: 1 }}>
                     {count} trade{count !== 1 ? 's' : ''}
                   </span>
                   {wlbeParts.length > 0 && (
-                    <span style={{ fontSize: 8, color: '#3a3a3a', lineHeight: 1, marginTop: 1 }}>
+                    <span style={{ fontSize: 10, color: '#555', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
                       {wlbeParts.join(' - ')}
                     </span>
                   )}
@@ -202,7 +202,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, onDayClick,
       {/* Color key */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 22, marginTop: 16, paddingTop: 14, borderTop: '1px solid #1a1a1a' }}>
         {[
-          { bg: 'rgba(52,211,153,0.2)', border: 'rgba(52,211,153,0.3)', label: 'Profitable' },
+          { bg: 'rgba(52,211,153,0.2)', border: 'rgba(52,211,153,0.3)', label: 'Win' },
           { bg: 'rgba(248,113,113,0.2)', border: 'rgba(248,113,113,0.3)', label: 'Loss' },
           { bg: 'rgba(255,255,255,0.07)', border: '#2a2a2a', label: 'Breakeven' },
         ].map(({ bg, border, label }) => (
