@@ -96,9 +96,23 @@ function calcTradePnl(symbol: string, side: 'Long' | 'Short', entry: string, exi
   return (points * pv * c).toFixed(2)
 }
 
+function calcTradeRR(entry: string, tp: string, sl: string): string {
+  const e = parseFloat(entry), t = parseFloat(tp), s = parseFloat(sl)
+  if (isNaN(e) || isNaN(t) || isNaN(s) || e === 0 || t === 0 || s === 0) return ''
+  const reward = Math.abs(t - e)
+  const risk = Math.abs(s - e)
+  if (risk === 0) return ''
+  return (reward / risk).toFixed(2)
+}
+
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const SYMBOLS = ['NQ', 'ES', 'GC', 'MNQ', 'MES', 'MGC']
+
+const CONFLUENCE_BASES = [
+  'Rejection Block', 'Order Block', 'FVG', 'iFVG', 'CISD', 'BPR', 'STDV', 'OTE',
+]
+const TIMEFRAMES = ['1m', '3m', '5m', '15m', '30m', '1hr', '4hr', 'Daily']
 
 const RESULTS: { value: TradeResult; label: string; color: string; activeBg: string }[] = [
   { value: 'Win',   label: 'Win',   color: '#4ade80', activeBg: 'rgba(74,222,128,0.12)'  },
@@ -109,10 +123,10 @@ const RESULTS: { value: TradeResult; label: string; color: string; activeBg: str
 
 const EMOTIONS: { value: Emotion; emoji: string; label: string }[] = [
   { value: 'very_happy',  emoji: '😄', label: 'Very Happy'  },
-  { value: 'happy',       emoji: '🙂', label: 'Happy'       },
+  { value: 'happy',       emoji: '🙂', label: 'Satisfied'   },
   { value: 'neutral',     emoji: '😐', label: 'Neutral'     },
   { value: 'frustrated',  emoji: '😕', label: 'Frustrated'  },
-  { value: 'angry',       emoji: '😤', label: 'Angry'       },
+  { value: 'angry',       emoji: '😤', label: 'Disappointed' },
   { value: 'very_angry',  emoji: '😡', label: 'Very Angry'  },
 ]
 
@@ -246,11 +260,11 @@ function TagChip({ label, active, onClick }: { label: string; active: boolean; o
 
 // ── Trade Card ────────────────────────────────────────────────────────────────
 
-function TradeCard({ trade, allTags, onUpdate, onRemove, onAddTag }: {
-  trade: TradeLog; allTags: string[]
-  onUpdate: (t: TradeLog) => void; onRemove: () => void; onAddTag: (tag: string) => void
+function TradeCard({ trade, onUpdate, onRemove }: {
+  trade: TradeLog
+  onUpdate: (t: TradeLog) => void; onRemove: () => void
 }) {
-  const [newTag, setNewTag] = useState('')
+  const [activePicker, setActivePicker] = useState<string | null>(null)
   const [htfPreview, setHtfPreview] = useState<string | null>(trade.htfImgKey?.startsWith('data:') ? trade.htfImgKey : null)
   const [execPreview, setExecPreview] = useState<string | null>(trade.execImgKey?.startsWith('data:') ? trade.execImgKey : null)
 
@@ -278,12 +292,6 @@ function TradeCard({ trade, allTags, onUpdate, onRemove, onAddTag }: {
     set('confluences', trade.confluences.includes(tag)
       ? trade.confluences.filter(t => t !== tag)
       : [...trade.confluences, tag])
-  }
-  const addTag = () => {
-    const t = newTag.trim(); if (!t) return
-    onAddTag(t)
-    if (!trade.confluences.includes(t)) set('confluences', [...trade.confluences, t])
-    setNewTag('')
   }
 
   const showDrawdown = trade.result === 'Win' || trade.result === 'BE' || trade.result === 'Faded'
@@ -413,13 +421,26 @@ function TradeCard({ trade, allTags, onUpdate, onRemove, onAddTag }: {
         ))}
       </div>
 
-      {/* Auto-calculated P&L */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#111', borderRadius: 10, border: '1px solid #1a1a1a' }}>
-        <span style={{ fontSize: 10, color: '#444', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Calculated P&L</span>
-        <span style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em', color: hasPnl ? pnlColor : '#2a2a2a' }}>
-          {hasPnl ? (pnlVal >= 0 ? '+' : '') + formatCurrency(pnlVal) : '—'}
-        </span>
-      </div>
+      {/* Auto-calculated P&L + R:R */}
+      {(() => {
+        const rrVal = calcTradeRR(trade.entryPrice, trade.takeProfit, trade.stopLoss)
+        return (
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#111', borderRadius: 10, border: '1px solid #1a1a1a' }}>
+              <span style={{ fontSize: 10, color: '#444', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Calculated P&L</span>
+              <span style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em', color: hasPnl ? pnlColor : '#2a2a2a' }}>
+                {hasPnl ? (pnlVal >= 0 ? '+' : '') + formatCurrency(pnlVal) : '—'}
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#111', borderRadius: 10, border: '1px solid #1a1a1a' }}>
+              <span style={{ fontSize: 10, color: '#444', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>R:R</span>
+              <span style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em', color: rrVal ? '#e0e0e0' : '#2a2a2a' }}>
+                {rrVal ? `${rrVal}R` : '—'}
+              </span>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Drawdown — Win / BE / Faded only */}
       {showDrawdown && (
@@ -437,22 +458,62 @@ function TradeCard({ trade, allTags, onUpdate, onRemove, onAddTag }: {
       {/* Confluences */}
       <div>
         {sectionLabel('Confluences')}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
-          {allTags.map(tag => (
-            <TagChip key={tag} label={tag} active={trade.confluences.includes(tag)} onClick={() => toggleConfluence(tag)} />
-          ))}
+        {trade.confluences.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
+            {trade.confluences.map(tag => (
+              <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 8px 4px 12px', borderRadius: 999, fontSize: 11, background: '#1e1e1e', border: '1px solid #333', color: '#d0d0d0' }}>
+                {tag}
+                <button onClick={() => toggleConfluence(tag)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#555', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#555')}
+                ><X size={10} /></button>
+              </span>
+            ))}
+          </div>
+        )}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: activePicker ? 10 : 0 }}>
+          {CONFLUENCE_BASES.map(base => {
+            const hasAny = trade.confluences.some(c => c.startsWith(`${base} (`))
+            const isOpen = activePicker === base
+            return (
+              <button key={base} onClick={() => setActivePicker(isOpen ? null : base)} style={{
+                padding: '4px 12px', borderRadius: 999, fontSize: 11, fontWeight: 500,
+                border: `1px solid ${hasAny || isOpen ? '#3a3a3a' : '#1a1a1a'}`,
+                background: hasAny || isOpen ? '#1e1e1e' : 'transparent',
+                color: hasAny || isOpen ? '#d0d0d0' : '#3a3a3a',
+                cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+              }}
+                onMouseEnter={e => { if (!hasAny && !isOpen) { e.currentTarget.style.color = '#777'; e.currentTarget.style.borderColor = '#2a2a2a' } }}
+                onMouseLeave={e => { if (!hasAny && !isOpen) { e.currentTarget.style.color = '#3a3a3a'; e.currentTarget.style.borderColor = '#1a1a1a' } }}
+              >{base}</button>
+            )
+          })}
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <input value={newTag} onChange={e => setNewTag(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTag()}
-            placeholder="Add confluence…" style={{ flex: 1, ...inputBase }}
-            onFocus={e => (e.target.style.borderColor = '#333')}
-            onBlur={e => (e.target.style.borderColor = '#1e1e1e')}
-          />
-          <button onClick={addTag} style={{ background: '#131313', border: '1px solid #1e1e1e', color: '#444', borderRadius: 10, padding: '9px 12px', cursor: 'pointer', display: 'flex', transition: 'all 0.15s', fontFamily: 'inherit' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#1a1a1a'; e.currentTarget.style.color = '#ccc' }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#131313'; e.currentTarget.style.color = '#444' }}
-          ><Plus size={14} /></button>
-        </div>
+        {activePicker && (
+          <div style={{ padding: '10px 14px', background: '#111', borderRadius: 10, border: '1px solid #1a1a1a' }}>
+            <div style={{ fontSize: 10, color: '#555', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>
+              {activePicker} — Timeframe
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {TIMEFRAMES.map(tf => {
+                const combo = `${activePicker} (${tf})`
+                const selected = trade.confluences.includes(combo)
+                return (
+                  <button key={tf} onClick={() => toggleConfluence(combo)} style={{
+                    padding: '4px 12px', borderRadius: 999, fontSize: 11, fontWeight: 500,
+                    border: `1px solid ${selected ? 'rgba(74,222,128,0.4)' : '#1a1a1a'}`,
+                    background: selected ? 'rgba(74,222,128,0.1)' : 'transparent',
+                    color: selected ? '#4ade80' : '#3a3a3a',
+                    cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                  }}
+                    onMouseEnter={e => { if (!selected) { e.currentTarget.style.color = '#777'; e.currentTarget.style.borderColor = '#2a2a2a' } }}
+                    onMouseLeave={e => { if (!selected) { e.currentTarget.style.color = '#3a3a3a'; e.currentTarget.style.borderColor = '#1a1a1a' } }}
+                  >{tf}</button>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Session */}
@@ -727,7 +788,7 @@ interface JournalProps {
   initialDate?: string
 }
 
-export function Journal({ entries, confluenceTags, tradingRules, onSave, onDelete, onAddConfluenceTag, onAddTradingRule, onRemoveTradingRule, initialDate }: JournalProps) {
+export function Journal({ entries, tradingRules, onSave, onDelete, onAddTradingRule, onRemoveTradingRule, initialDate }: JournalProps) {
   const TODAY = todayStr()
   const [view, setView] = useState<'list' | 'entry'>(initialDate ? 'entry' : 'list')
   const [date, setDate] = useState(initialDate || TODAY)
@@ -1002,10 +1063,8 @@ export function Journal({ entries, confluenceTags, tradingRules, onSave, onDelet
                     <TradeCard
                       key={trade.id}
                       trade={trade}
-                      allTags={confluenceTags}
                       onUpdate={t => updateTrade(i, t)}
                       onRemove={() => removeTrade(i)}
-                      onAddTag={onAddConfluenceTag}
                     />
                   ))
                 )}

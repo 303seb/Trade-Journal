@@ -53,6 +53,7 @@ function App() {
             <Dashboard
               journalEntries={journalEntries}
               monthlyGoals={monthlyGoals}
+              tradingRules={tradingRules}
               onSetGoal={setMonthlyGoal}
               onNavigateToJournal={navigateToJournal}
             />
