@@ -109,7 +109,9 @@ const SYMBOLS = ['NQ', 'ES', 'GC', 'MNQ', 'MES', 'MGC']
 const CONFLUENCE_BASES = [
   'Rejection Block', 'Order Block', 'FVG', 'iFVG', 'CISD', 'BPR', 'STDV', 'OTE',
 ]
-const TIMEFRAMES = ['1m', '3m', '5m', '15m', '30m', '1hr', '4hr', 'Daily']
+const TIMEFRAMES = ['1m', '2m', '3m', '4m', '5m', '15m', '30m', '1hr', '4hr', 'Daily']
+
+const STDV_LEVELS = ['+0.5', '+1', '+1.5', '+2', '+2.5', '-0.5', '-1', '-1.5', '-2', '-2.5']
 
 const RESULTS: { value: TradeResult; label: string; color: string; activeBg: string }[] = [
   { value: 'Win',   label: 'Win',   color: '#4ade80', activeBg: 'rgba(74,222,128,0.12)'  },
@@ -491,28 +493,55 @@ function TradeCard({ trade, onUpdate, onRemove }: {
           })}
         </div>
         {activePicker && (
-          <div style={{ padding: '10px 14px', background: '#111', borderRadius: 10, border: '1px solid #1a1a1a' }}>
-            <div style={{ fontSize: 10, color: '#555', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>
-              {activePicker} — Timeframe
+          <div style={{ padding: '10px 14px', background: '#111', borderRadius: 10, border: '1px solid #1a1a1a', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div>
+              <div style={{ fontSize: 10, color: '#555', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>
+                {activePicker} — Timeframe
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {TIMEFRAMES.map(tf => {
+                  const combo = `${activePicker} (${tf})`
+                  const selected = trade.confluences.includes(combo)
+                  return (
+                    <button key={tf} onClick={() => toggleConfluence(combo)} style={{
+                      padding: '4px 12px', borderRadius: 999, fontSize: 11, fontWeight: 500,
+                      border: `1px solid ${selected ? 'rgba(74,222,128,0.4)' : '#1a1a1a'}`,
+                      background: selected ? 'rgba(74,222,128,0.1)' : 'transparent',
+                      color: selected ? '#4ade80' : '#3a3a3a',
+                      cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                    }}
+                      onMouseEnter={e => { if (!selected) { e.currentTarget.style.color = '#777'; e.currentTarget.style.borderColor = '#2a2a2a' } }}
+                      onMouseLeave={e => { if (!selected) { e.currentTarget.style.color = '#3a3a3a'; e.currentTarget.style.borderColor = '#1a1a1a' } }}
+                    >{tf}</button>
+                  )
+                })}
+              </div>
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {TIMEFRAMES.map(tf => {
-                const combo = `${activePicker} (${tf})`
-                const selected = trade.confluences.includes(combo)
-                return (
-                  <button key={tf} onClick={() => toggleConfluence(combo)} style={{
-                    padding: '4px 12px', borderRadius: 999, fontSize: 11, fontWeight: 500,
-                    border: `1px solid ${selected ? 'rgba(74,222,128,0.4)' : '#1a1a1a'}`,
-                    background: selected ? 'rgba(74,222,128,0.1)' : 'transparent',
-                    color: selected ? '#4ade80' : '#3a3a3a',
-                    cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-                  }}
-                    onMouseEnter={e => { if (!selected) { e.currentTarget.style.color = '#777'; e.currentTarget.style.borderColor = '#2a2a2a' } }}
-                    onMouseLeave={e => { if (!selected) { e.currentTarget.style.color = '#3a3a3a'; e.currentTarget.style.borderColor = '#1a1a1a' } }}
-                  >{tf}</button>
-                )
-              })}
-            </div>
+            {activePicker === 'STDV' && (
+              <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: 10 }}>
+                <div style={{ fontSize: 10, color: '#555', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>
+                  STDV Level
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {STDV_LEVELS.map(level => {
+                    const tag = `STDV ${level}σ`
+                    const selected = trade.confluences.includes(tag)
+                    return (
+                      <button key={level} onClick={() => toggleConfluence(tag)} style={{
+                        padding: '4px 12px', borderRadius: 999, fontSize: 11, fontWeight: 500,
+                        border: `1px solid ${selected ? 'rgba(74,222,128,0.4)' : '#1a1a1a'}`,
+                        background: selected ? 'rgba(74,222,128,0.1)' : 'transparent',
+                        color: selected ? '#4ade80' : '#3a3a3a',
+                        cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                      }}
+                        onMouseEnter={e => { if (!selected) { e.currentTarget.style.color = '#777'; e.currentTarget.style.borderColor = '#2a2a2a' } }}
+                        onMouseLeave={e => { if (!selected) { e.currentTarget.style.color = '#3a3a3a'; e.currentTarget.style.borderColor = '#1a1a1a' } }}
+                      >{level}σ</button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -981,15 +1010,7 @@ export function Journal({ entries, tradingRules, onSave, onDelete, onAddTradingR
             <CollapsibleSection title="Premarket Analysis">
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-                {/* Chart upload */}
-                <ScreenshotUpload
-                  label="Premarket Chart"
-                  preview={chartPreview}
-                  onFile={url => { setChartPreview(url); patch('premktImgKey', url) }}
-                  onClear={() => { setChartPreview(null); patch('premktImgKey', undefined) }}
-                />
-
-                {/* Red folder news */}
+                {/* Red folder news — top */}
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: form.redFolderNews ? 10 : 0 }}>
                     <button onClick={() => patch('redFolderNews', !form.redFolderNews)} style={{
@@ -1017,6 +1038,14 @@ export function Journal({ entries, tradingRules, onSave, onDelete, onAddTradingR
                     />
                   )}
                 </div>
+
+                {/* Chart upload */}
+                <ScreenshotUpload
+                  label="Premarket Chart"
+                  preview={chartPreview}
+                  onFile={url => { setChartPreview(url); patch('premktImgKey', url) }}
+                  onClear={() => { setChartPreview(null); patch('premktImgKey', undefined) }}
+                />
 
                 {/* Daily analysis */}
                 <div>

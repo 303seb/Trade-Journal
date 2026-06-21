@@ -15,7 +15,7 @@ import {
   formatCurrency,
   formatPct,
 } from '../utils/stats'
-import type { JournalEntry, TradingRule } from '../types'
+import type { JournalEntry, TradingRule, TradeLog } from '../types'
 
 const QUOTES = [
   { text: "The goal of a successful trader is to make the best trades. Money is secondary.", author: "Alexander Elder" },
@@ -53,6 +53,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
   const [popupDate, setPopupDate] = useState<string | null>(null)
+  const [recentTradePopup, setRecentTradePopup] = useState<{ trade: TradeLog; date: string } | null>(null)
 
   const monthStr = `${year}-${String(month + 1).padStart(2, '0')}`
   const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
@@ -222,12 +223,15 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                 return (
                   <div
                     key={`${date}-${t.id}-${idx}`}
+                    onClick={() => setRecentTradePopup({ trade: t, date })}
                     style={{
                       display: 'grid', gridTemplateColumns: '110px 70px 70px 1fr 80px',
                       gap: 12, padding: '9px 14px', borderRadius: 8,
                       background: style.bg, border: `1px solid ${style.border}`,
-                      alignItems: 'center',
+                      alignItems: 'center', cursor: 'pointer', transition: 'filter 0.12s',
                     }}
+                    onMouseEnter={e => (e.currentTarget.style.filter = 'brightness(1.5)')}
+                    onMouseLeave={e => (e.currentTarget.style.filter = 'none')}
                   >
                     <span style={{ fontSize: 13, fontWeight: 700, color: '#999' }}>{dateShort}</span>
                     <span style={{ fontSize: 14, fontWeight: 800, color: '#ccc' }}>{t.symbol || '—'}</span>
@@ -241,6 +245,131 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   </div>
                 )
               })}
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* Recent trade detail popup */}
+      {recentTradePopup && (() => {
+        const { trade: t, date } = recentTradePopup
+        const tradePnl = parseFloat(t.pnl) || 0
+        const rrVal = (() => {
+          const tp = parseFloat(t.takeProfit), sl = parseFloat(t.stopLoss)
+          if (isNaN(tp) || isNaN(sl) || tp === 0 || sl === 0) return null
+          return (tp / sl).toFixed(2)
+        })()
+        const rrPositive = rrVal ? parseFloat(rrVal) >= 1 : null
+        const dateLabel = new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+        const showDrawdown = t.drawdown && ['Win', 'BE', 'Faded'].includes(t.result)
+        const priceFields = [
+          { label: 'Entry', val: t.entryPrice },
+          { label: 'Exit', val: t.exitPrice },
+          { label: 'Take Profit', val: t.takeProfit },
+          { label: 'Stop Loss', val: t.stopLoss },
+        ].filter(f => f.val)
+        const secLabel: React.CSSProperties = { fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }
+        return (
+          <div
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.82)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 24px' }}
+            onClick={() => setRecentTradePopup(null)}
+          >
+            <div
+              style={{ background: '#111', border: '1px solid #222', borderRadius: 20, width: '100%', maxWidth: 520, maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div style={{ padding: '16px 22px 14px', borderBottom: '1px solid #1a1a1a', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
+                <div>
+                  <div style={{ fontSize: 12, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{dateLabel}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: RESULT_COLORS[t.result] || '#888', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
+                    {t.symbol && <span style={{ fontSize: 15, fontWeight: 700, color: '#ddd' }}>{t.symbol}</span>}
+                    <span style={{ fontSize: 13, color: t.side === 'Long' ? '#4ade80' : '#f87171', fontWeight: 600 }}>{t.side}</span>
+                    {t.contracts && <span style={{ fontSize: 12, color: '#555' }}>{t.contracts} contracts</span>}
+                    {t.accounts.map(a => (
+                      <span key={a} style={{ fontSize: 10, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
+                    ))}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setRecentTradePopup(null)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#444', display: 'flex', padding: 4, transition: 'color 0.15s', flexShrink: 0, marginLeft: 12 }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#e0e0e0')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#444')}
+                ><X size={18} /></button>
+              </div>
+              {/* Body */}
+              <div style={{ overflowY: 'auto', padding: '18px 22px 22px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {priceFields.length > 0 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                    {priceFields.map(f => (
+                      <div key={f.label} style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 8, padding: '8px 10px' }}>
+                        <div style={{ ...secLabel, marginBottom: 3 }}>{f.label}</div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: '#ccc' }}>{f.val}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {(t.pnl || rrVal) && (
+                  <div style={{ display: 'grid', gridTemplateColumns: t.pnl && rrVal ? '2fr 1fr' : '1fr', gap: 6 }}>
+                    {t.pnl && (
+                      <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={secLabel}>P&L</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : '#888' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
+                      </div>
+                    )}
+                    {rrVal && (
+                      <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={secLabel}>R:R</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : '#ccc' }}>{rrVal}R</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {showDrawdown && (
+                  <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={secLabel}>Drawdown</span>
+                    <span style={{ fontSize: 14, color: '#aaa', fontWeight: 600 }}>{t.drawdown} pts</span>
+                  </div>
+                )}
+                {t.sessions.length > 0 && (
+                  <div>
+                    <div style={secLabel}>Session</div>
+                    <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                      {t.sessions.map(s => <span key={s} style={{ fontSize: 12, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '3px 9px', borderRadius: 6 }}>{s}</span>)}
+                    </div>
+                  </div>
+                )}
+                {t.dol.length > 0 && (
+                  <div>
+                    <div style={secLabel}>Draw on Liquidity</div>
+                    <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                      {t.dol.map(d => <span key={d} style={{ fontSize: 12, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '3px 9px', borderRadius: 6 }}>{d}</span>)}
+                    </div>
+                  </div>
+                )}
+                {t.confluences.length > 0 && (
+                  <div>
+                    <div style={secLabel}>Confluences</div>
+                    <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                      {t.confluences.map(c => <span key={c} style={{ fontSize: 12, color: '#aaa', background: '#1a1a1a', border: '1px solid #2a2a2a', padding: '3px 9px', borderRadius: 6 }}>{c}</span>)}
+                    </div>
+                  </div>
+                )}
+                {t.htfImgKey && (
+                  <div>
+                    <div style={secLabel}>HTF Chart</div>
+                    <img src={t.htfImgKey} alt="HTF chart" style={{ width: '100%', borderRadius: 8, border: '1px solid #1f1f1f', objectFit: 'contain', maxHeight: 220 }} />
+                  </div>
+                )}
+                {t.execImgKey && (
+                  <div>
+                    <div style={secLabel}>Execution Chart</div>
+                    <img src={t.execImgKey} alt="Execution chart" style={{ width: '100%', borderRadius: 8, border: '1px solid #1f1f1f', objectFit: 'contain', maxHeight: 220 }} />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )

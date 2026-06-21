@@ -60,7 +60,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, onDayClick,
     alignItems: 'center', transition: 'all 0.15s',
   }
 
-  const colTemplate = 'repeat(7, 1fr) 96px'
+  const colTemplate = 'repeat(8, 1fr)'
 
   return (
     <div style={{ background: '#141414', border: '1px solid #1f1f1f', borderRadius: 16, padding: '20px 20px 18px' }}>
