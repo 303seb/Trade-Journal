@@ -106,12 +106,12 @@ const DOL_OPTIONS = [
 
 const inputBase: React.CSSProperties = {
   background: '#0e0e0e', border: '1px solid #1e1e1e', borderRadius: 8,
-  padding: '8px 11px', fontSize: 13, color: '#e0e0e0', outline: 'none',
+  padding: '9px 12px', fontSize: 14, color: '#e0e0e0', outline: 'none',
   width: '100%', boxSizing: 'border-box', transition: 'border-color 0.15s',
   fontFamily: 'inherit',
 }
 const fieldLabel = (text: string) => (
-  <div style={{ fontSize: 10, color: '#444', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{text}</div>
+  <div style={{ fontSize: 11, color: '#444', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 7 }}>{text}</div>
 )
 
 // ── Screenshot Upload ─────────────────────────────────────────────────────────
@@ -131,7 +131,7 @@ function ScreenshotUpload({ label, preview, onFile, onClear }: {
       {fieldLabel(label)}
       {preview ? (
         <div style={{ position: 'relative', borderRadius: 8, overflow: 'hidden', border: '1px solid #222' }}>
-          <img src={preview} alt={label} style={{ width: '100%', maxHeight: 160, objectFit: 'contain', background: '#000', display: 'block' }} />
+          <img src={preview} alt={label} style={{ width: '100%', maxHeight: 220, objectFit: 'contain', background: '#000', display: 'block' }} />
           <button onClick={onClear}
             style={{ position: 'absolute', top: 6, right: 6, background: 'rgba(0,0,0,0.75)', border: 'none', borderRadius: '50%', width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}
             onMouseEnter={e => (e.currentTarget.style.background = '#ef4444')}
@@ -235,8 +235,8 @@ function InlineTradeForm({ trade, date, isNew, saved, onUpdate, onDateChange, on
   )
 
   return (
-    <div style={{ borderTop: '1px solid #111', background: '#080808', padding: '22px 24px 26px' }}>
-      <div style={{ maxWidth: 860, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <div style={{ borderTop: '1px solid #111', background: '#080808', padding: '26px 36px 32px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
 
         {/* ── Top controls row ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
@@ -274,7 +274,7 @@ function InlineTradeForm({ trade, date, isNew, saved, onUpdate, onDateChange, on
         </div>
 
         {/* ── Row 1: Date / Time / Account / Symbol / Direction / Contracts / Setup ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '130px 100px 1fr 100px 120px 100px 1fr', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '140px 110px 1fr 110px 140px 110px 1fr', gap: 16 }}>
           <div>
             {fieldLabel('Date')}
             <input type="date" value={date} onChange={e => onDateChange(e.target.value)}
@@ -347,7 +347,7 @@ function InlineTradeForm({ trade, date, isNew, saved, onUpdate, onDateChange, on
         </div>
 
         {/* ── Row 2: Entry / Exit / TP / SL / P&L / RR / Drawdown ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr' + (showDrawdown ? ' 1fr' : ''), gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr' + (showDrawdown ? ' 1fr' : ''), gap: 16 }}>
           {([
             { key: 'entryPrice' as const, label: 'Entry' },
             { key: 'exitPrice'  as const, label: 'Exit'  },
@@ -364,7 +364,7 @@ function InlineTradeForm({ trade, date, isNew, saved, onUpdate, onDateChange, on
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {fieldLabel('Calc P&L')}
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d0d0d', borderRadius: 8, border: '1px solid #1a1a1a', padding: '0 10px' }}>
-              <span style={{ fontSize: 15, fontWeight: 700, color: hasPnl ? pnlColor : '#2a2a2a' }}>
+              <span style={{ fontSize: 17, fontWeight: 700, color: hasPnl ? pnlColor : '#2a2a2a' }}>
                 {hasPnl ? (pnlVal >= 0 ? '+' : '') + formatCurrency(pnlVal) : '—'}
               </span>
             </div>
@@ -373,7 +373,7 @@ function InlineTradeForm({ trade, date, isNew, saved, onUpdate, onDateChange, on
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {fieldLabel('R:R')}
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d0d0d', borderRadius: 8, border: '1px solid #1a1a1a', padding: '0 10px' }}>
-              <span style={{ fontSize: 15, fontWeight: 700, color: rrColor }}>
+              <span style={{ fontSize: 17, fontWeight: 700, color: rrColor }}>
                 {rrVal ? `${rrVal}R` : '—'}
               </span>
             </div>
@@ -389,7 +389,7 @@ function InlineTradeForm({ trade, date, isNew, saved, onUpdate, onDateChange, on
         </div>
 
         {/* ── Row 3: Session + Confluences + DOL ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: 28 }}>
 
           {/* Session */}
           <div>
@@ -487,7 +487,7 @@ function InlineTradeForm({ trade, date, isNew, saved, onUpdate, onDateChange, on
         </div>
 
         {/* ── Row 4: Screenshots ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
           <ScreenshotUpload label="HTF Chart" preview={htfPreview}
             onFile={url => { setHtfPreview(url); set('htfImgKey', url) }}
             onClear={() => { setHtfPreview(null); set('htfImgKey', undefined) }}
