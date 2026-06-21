@@ -528,7 +528,7 @@ function SummaryRow({ trade, date, expanded, onToggle, COL }: {
       onClick={onToggle}
       style={{
         display: 'grid', gridTemplateColumns: COL,
-        padding: '10px 16px', alignItems: 'center',
+        padding: '10px 36px', alignItems: 'center',
         cursor: 'pointer', transition: 'background 0.1s',
         borderLeft: `2px solid ${expanded ? '#2a2a2a' : 'transparent'}`,
         background: expanded ? '#0e0e0e' : 'transparent',
@@ -705,12 +705,12 @@ export function Journal({ entries, onSave, onDelete, initialDate }: JournalProps
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, overflow: 'hidden' }}>
 
       {/* Filter bar */}
-      <div style={{ flexShrink: 0, padding: '10px 16px', borderBottom: '1px solid #111', display: 'flex', alignItems: 'center', gap: 8, background: '#070707' }}>
+      <div style={{ flexShrink: 0, padding: '12px 36px', borderBottom: '1px solid #111', display: 'flex', alignItems: 'center', gap: 10, background: '#070707' }}>
         <span style={{ fontSize: 12, color: '#252525', marginRight: 4, whiteSpace: 'nowrap' }}>Log, scan and review every trade.</span>
-        <div style={{ position: 'relative' }}>
-          <Search size={12} style={{ position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)', color: '#2a2a2a', pointerEvents: 'none' }} />
+        <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
+          <Search size={12} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#2a2a2a', pointerEvents: 'none' }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search trades…"
-            style={{ ...inputBase, paddingLeft: 27, fontSize: 12, width: 170, padding: '6px 10px 6px 27px', borderRadius: 8, background: '#0a0a0a', border: '1px solid #161616' }}
+            style={{ ...inputBase, paddingLeft: 30, fontSize: 13, padding: '7px 12px 7px 30px', borderRadius: 8, background: '#0a0a0a', border: '1px solid #161616' }}
             onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#161616')} />
         </div>
         <button onClick={() => openNew()} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: '#f0f0f0', color: '#111', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
@@ -739,7 +739,7 @@ export function Journal({ entries, onSave, onDelete, initialDate }: JournalProps
       </div>
 
       {/* Column headers */}
-      <div style={{ flexShrink: 0, display: 'grid', gridTemplateColumns: COL, padding: '0 16px', background: '#060606', borderBottom: '1px solid #0e0e0e' }}>
+      <div style={{ flexShrink: 0, display: 'grid', gridTemplateColumns: COL, padding: '0 36px', background: '#060606', borderBottom: '1px solid #0e0e0e' }}>
         {['Date', 'Pair', 'Direction', 'Setup', 'Session', 'Net P&L', 'R', 'Result', 'Grade', ''].map(h => (
           <div key={h} style={hStyle}>{h}</div>
         ))}
@@ -751,7 +751,7 @@ export function Journal({ entries, onSave, onDelete, initialDate }: JournalProps
         {/* Pending new trade row — always at top when active */}
         {pendingNew && buffer && expandedKey === 'new' && (
           <div style={{ borderBottom: '1px solid #111' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: COL, padding: '10px 16px', alignItems: 'center', background: '#0e0e0e', borderLeft: '2px solid #2a2a2a' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: COL, padding: '10px 36px', alignItems: 'center', background: '#0e0e0e', borderLeft: '2px solid #2a2a2a' }}>
               <span style={{ fontSize: 11, color: '#555', fontWeight: 500, gridColumn: '1 / 4' }}>New trade</span>
               <span style={{ fontSize: 11, color: '#2a2a2a', gridColumn: '4 / -1', textAlign: 'right' }}>Fill in details below</span>
             </div>
