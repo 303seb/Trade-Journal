@@ -19,10 +19,14 @@ export interface TradeLog {
   contracts: string
   entryPrice: string
   exitPrice: string
-  takeProfit: string
-  stopLoss: string
-  pnl: string              // auto-calculated from symbol/entry/exit/contracts
+  targetPrice: string      // actual target price level
+  takeProfit: string       // TP in points
+  stopLoss: string         // SL in points
+  pnl: string              // gross P&L, auto-calculated from symbol/entry/exit/contracts
+  fees: string             // trading fees in dollars
   drawdown: string         // points of drawdown — shown for Win / BE / Faded
+  duration: string         // trade duration e.g. "45m", "2h"
+  tradeNumber: string      // trade # for the day
   confluences: string[]
   sessions: string[]       // session tags (flexible strings)
   dol: string[]            // draw on liquidity tags
@@ -31,6 +35,7 @@ export interface TradeLog {
   setup?: string           // setup description e.g. "5m FVG entry"
   grade?: string           // trade grade: A+, A, B, C, D, F
   time?: string            // trade time HH:MM
+  notes?: string           // post-trade reflections
 }
 
 export interface TradingRule {
