@@ -1,0 +1,578 @@
+import { useState, useMemo } from 'react'
+import { ChevronLeft, ChevronRight, TrendingUp, BarChart2, DollarSign, Award, Activity, Target, Calendar, Zap } from 'lucide-react'
+import {
+  LineChart, Line, BarChart, Bar,
+  XAxis, YAxis, Tooltip, ResponsiveContainer,
+  ReferenceLine, Cell,
+} from 'recharts'
+import type { JournalEntry, TradingAccount } from '../types'
+import { formatCurrency, formatPct } from '../utils/stats'
+
+// ── Shared chart styles ───────────────────────────────────────────────────────
+
+const CARD: React.CSSProperties = {
+  background: '#141414', border: '1px solid #1f1f1f', borderRadius: 16, padding: '20px 22px 16px',
+}
+const CHART_TITLE: React.CSSProperties = {
+  fontSize: 13, fontWeight: 700, color: '#666', margin: '0 0 16px',
+  textTransform: 'uppercase', letterSpacing: '0.07em',
+}
+const TOOLTIP_STYLE = {
+  contentStyle: { background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 8, fontSize: 13, color: '#ccc', padding: '7px 11px' },
+  itemStyle: { color: '#ccc', padding: 0 },
+  labelStyle: { color: '#666', fontSize: 11, marginBottom: 2 },
+  cursor: { fill: 'rgba(255,255,255,0.03)' },
+}
+const AXIS_TICK = { fontSize: 11, fill: '#555' }
+
+const EMPTY_CHART = (
+  <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2a2a2a', fontSize: 14, fontWeight: 600 }}>
+    No data yet
+  </div>
+)
+
+function yFmt(v: number) {
+  const abs = Math.abs(v)
+  if (abs >= 1000) return `${v < 0 ? '-' : ''}$${(abs / 1000).toFixed(1)}k`
+  return `${v < 0 ? '-' : ''}$${abs}`
+}
+
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+// ── Stat card ─────────────────────────────────────────────────────────────────
+
+function StatCard({ label, value, sub, positive, icon }: {
+  label: string; value: string; sub?: string; positive?: boolean | null; icon?: React.ReactNode
+}) {
+  const valueColor = positive === null || positive === undefined ? '#f0f0f0' : positive ? '#4ade80' : '#f87171'
+  return (
+    <div style={{ background: '#141414', border: '1px solid #1f1f1f', borderRadius: 14, padding: '16px 18px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: '#555', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{label}</div>
+        {icon && <div style={{ color: '#333', opacity: 0.7 }}>{icon}</div>}
+      </div>
+      <div style={{ fontSize: 22, fontWeight: 700, color: valueColor, letterSpacing: '-0.02em', marginBottom: sub ? 4 : 0 }}>{value}</div>
+      {sub && <div style={{ fontSize: 12, color: '#444' }}>{sub}</div>}
+    </div>
+  )
+}
+
+// ── Analytics page ────────────────────────────────────────────────────────────
+
+interface AnalyticsProps {
+  journalEntries: JournalEntry[]
+  tradingAccounts: TradingAccount[]
+}
+
+type Period = 'all' | 'year' | 'month'
+
+export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
+  const now = new Date()
+  const [period, setPeriod] = useState<Period>('all')
+  const [year, setYear] = useState(now.getFullYear())
+  const [month, setMonth] = useState(now.getMonth())
+
+  const prevPeriod = () => {
+    if (period === 'year') setYear(y => y - 1)
+    else if (period === 'month') {
+      if (month === 0) { setMonth(11); setYear(y => y - 1) }
+      else setMonth(m => m - 1)
+    }
+  }
+  const nextPeriod = () => {
+    if (period === 'year') setYear(y => y + 1)
+    else if (period === 'month') {
+      if (month === 11) { setMonth(0); setYear(y => y + 1) }
+      else setMonth(m => m + 1)
+    }
+  }
+
+  // ── All trades flat with date ──
+  const allTradesFlat = useMemo(() =>
+    journalEntries.flatMap(e => e.trades.map(t => ({ ...t, date: e.date }))),
+    [journalEntries]
+  )
+
+  // ── Filtered trades ──
+  const filteredTrades = useMemo(() => {
+    if (period === 'all') return allTradesFlat
+    if (period === 'year') return allTradesFlat.filter(t => t.date.startsWith(String(year)))
+    return allTradesFlat.filter(t => {
+      const d = new Date(t.date + 'T12:00:00')
+      return d.getFullYear() === year && d.getMonth() === month
+    })
+  }, [allTradesFlat, period, year, month])
+
+  // ── Stats ──
+  const totalPnl = filteredTrades.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0)
+  const wins = filteredTrades.filter(t => (parseFloat(t.pnl) || 0) > 0)
+  const losses = filteredTrades.filter(t => (parseFloat(t.pnl) || 0) < 0)
+  const winRate = filteredTrades.length === 0 ? 0 : (wins.length / filteredTrades.length) * 100
+  const avgWin = wins.length > 0 ? wins.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0) / wins.length : 0
+  const avgLoss = losses.length > 0 ? Math.abs(losses.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0) / losses.length) : 0
+  const grossProfit = wins.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0)
+  const grossLoss = Math.abs(losses.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0))
+  const profitFactor = grossLoss === 0 ? (grossProfit > 0 ? 999 : 0) : grossProfit / grossLoss
+
+  // Best / worst day
+  const dayMap = new Map<string, number>()
+  filteredTrades.forEach(t => { dayMap.set(t.date, (dayMap.get(t.date) ?? 0) + (parseFloat(t.pnl) || 0)) })
+  const dayValues = Array.from(dayMap.values())
+  const bestDay = dayValues.length > 0 ? Math.max(...dayValues) : 0
+  const worstDay = dayValues.length > 0 ? Math.min(...dayValues) : 0
+
+  // Largest single win / loss
+  const largestWin = wins.length > 0 ? Math.max(...wins.map(t => parseFloat(t.pnl) || 0)) : 0
+  const largestLoss = losses.length > 0 ? Math.abs(Math.min(...losses.map(t => parseFloat(t.pnl) || 0))) : 0
+
+  // ── Equity Curve ──
+  const sorted = [...filteredTrades].sort((a, b) => {
+    const dc = a.date.localeCompare(b.date)
+    return dc !== 0 ? dc : (a.time || '').localeCompare(b.time || '')
+  })
+  let cum = 0
+  const equityData = [
+    { label: '0', value: 0, idx: 0 },
+    ...sorted.map((t, i) => {
+      cum += parseFloat(t.pnl) || 0
+      return { label: t.date.slice(5), value: parseFloat(cum.toFixed(2)), idx: i + 1 }
+    }),
+  ]
+  const equityColor = equityData[equityData.length - 1]?.value >= 0 ? '#4ade80' : '#f87171'
+
+  // ── Monthly P&L (for year view or all time) ──
+  const monthlyMap = new Map<string, number>()
+  const monthlyTrades = period === 'all' ? allTradesFlat : allTradesFlat.filter(t => t.date.startsWith(String(year)))
+  monthlyTrades.forEach(t => {
+    const key = t.date.slice(0, 7)
+    monthlyMap.set(key, (monthlyMap.get(key) ?? 0) + (parseFloat(t.pnl) || 0))
+  })
+  const monthlyData = Array.from(monthlyMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => ({
+      label: `${MONTH_NAMES[parseInt(key.slice(5)) - 1]} ${key.slice(0, 4)}`,
+      short: MONTH_NAMES[parseInt(key.slice(5)) - 1],
+      value: parseFloat(value.toFixed(2)),
+    }))
+
+  // ── Daily P&L (for current month) ──
+  const displayYear = period === 'all' ? now.getFullYear() : year
+  const displayMonth = period === 'all' ? now.getMonth() : month
+  const dailyMap = new Map<string, number>()
+  allTradesFlat.filter(t => {
+    const d = new Date(t.date + 'T12:00:00')
+    return d.getFullYear() === displayYear && d.getMonth() === displayMonth
+  }).forEach(t => {
+    dailyMap.set(t.date, (dailyMap.get(t.date) ?? 0) + (parseFloat(t.pnl) || 0))
+  })
+  const dailyData = Array.from(dailyMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, value]) => ({ label: date.slice(8).replace(/^0/, ''), value: parseFloat(value.toFixed(2)) }))
+
+  // ── P&L by Symbol ──
+  const symbolMap = new Map<string, number>()
+  filteredTrades.forEach(t => {
+    if (!t.symbol) return
+    symbolMap.set(t.symbol, (symbolMap.get(t.symbol) ?? 0) + (parseFloat(t.pnl) || 0))
+  })
+  const symbolData = Array.from(symbolMap.entries())
+    .map(([label, value]) => ({ label, value: parseFloat(value.toFixed(2)) }))
+    .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
+
+  // ── P&L by Session ──
+  const sessionMap = new Map<string, number>()
+  filteredTrades.forEach(t => {
+    const sessions = (t.sessions || []).length > 0 ? t.sessions : ['Other']
+    sessions.forEach(s => { sessionMap.set(s, (sessionMap.get(s) ?? 0) + (parseFloat(t.pnl) || 0)) })
+  })
+  const sessionData = Array.from(sessionMap.entries())
+    .map(([label, value]) => ({ label, value: parseFloat(value.toFixed(2)) }))
+    .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
+
+  // ── Win Rate by Symbol ──
+  const symWinMap = new Map<string, { wins: number; total: number }>()
+  filteredTrades.forEach(t => {
+    if (!t.symbol) return
+    const cur = symWinMap.get(t.symbol) ?? { wins: 0, total: 0 }
+    symWinMap.set(t.symbol, { wins: cur.wins + ((parseFloat(t.pnl) || 0) > 0 ? 1 : 0), total: cur.total + 1 })
+  })
+  const symWinData = Array.from(symWinMap.entries())
+    .map(([label, { wins: w, total }]) => ({ label, value: total > 0 ? parseFloat(((w / total) * 100).toFixed(1)) : 0 }))
+    .sort((a, b) => b.value - a.value)
+
+  // ── Trade count by day of week ──
+  const dowMap = new Map<number, { count: number; pnl: number }>()
+  for (let i = 0; i < 7; i++) dowMap.set(i, { count: 0, pnl: 0 })
+  filteredTrades.forEach(t => {
+    const dow = new Date(t.date + 'T12:00:00').getDay()
+    const cur = dowMap.get(dow)!
+    dowMap.set(dow, { count: cur.count + 1, pnl: cur.pnl + (parseFloat(t.pnl) || 0) })
+  })
+  const dowData = [1, 2, 3, 4, 5].map(i => ({
+    label: DOW[i],
+    count: dowMap.get(i)?.count ?? 0,
+    pnl: parseFloat((dowMap.get(i)?.pnl ?? 0).toFixed(2)),
+  }))
+
+  // ── P&L by result ──
+  const resultMap = new Map<string, number>()
+  filteredTrades.forEach(t => { resultMap.set(t.result, (resultMap.get(t.result) ?? 0) + 1) })
+  const resultData = Array.from(resultMap.entries()).map(([label, value]) => ({ label, value }))
+
+  // ── R:R running average ──
+  const PVMAP: Record<string, number> = { NQ: 20, MNQ: 2, ES: 50, MES: 5, GC: 100, MGC: 10 }
+  let cumR = 0, rrCount = 0
+  const rrData: { label: string; value: number }[] = [{ label: '0', value: 0 }]
+  sorted.forEach(t => {
+    const pv = PVMAP[t.symbol] ?? 0
+    const sl = parseFloat(t.stopLoss), c = parseFloat(t.contracts)
+    if (!pv || isNaN(sl) || isNaN(c) || c <= 0 || sl === 0) return
+    const risk = sl * pv * c
+    if (risk === 0) return
+    cumR += (parseFloat(t.pnl) || 0) / risk
+    rrCount++
+    rrData.push({ label: String(rrCount), value: parseFloat(cumR.toFixed(2)) })
+  })
+  const rrColor = rrData[rrData.length - 1]?.value >= 0 ? '#4ade80' : '#f87171'
+
+  // ── Per-account stats ──
+  const accountStats = tradingAccounts.map(acc => {
+    const accTrades = allTradesFlat.filter(t => (t.accounts || []).includes(acc.name))
+    const accPnl = accTrades.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0)
+    const accWins = accTrades.filter(t => (parseFloat(t.pnl) || 0) > 0).length
+    const accWr = accTrades.length > 0 ? (accWins / accTrades.length) * 100 : 0
+    return { acc, pnl: accPnl, trades: accTrades.length, winRate: accWr }
+  })
+
+  // ── Period label ──
+  const periodLabel = period === 'all' ? 'All Time'
+    : period === 'year' ? String(year)
+    : `${MONTH_NAMES[month]} ${year}`
+
+  return (
+    <div style={{ height: '100%', overflowY: 'auto', background: '#0e0e0e' }}>
+      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '28px 32px 52px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f0f0f0', margin: '0 0 4px' }}>Analytics</h1>
+            <p style={{ fontSize: 14, color: '#555', margin: 0 }}>Deep dive into your trading performance.</p>
+          </div>
+
+          {/* Period controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {/* Period tabs */}
+            <div style={{ display: 'flex', gap: 3, background: '#111', border: '1px solid #1a1a1a', borderRadius: 9, padding: 3 }}>
+              {(['all', 'year', 'month'] as Period[]).map(p => (
+                <button key={p} onClick={() => setPeriod(p)} style={{
+                  padding: '6px 14px', borderRadius: 7, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', border: 'none',
+                  background: period === p ? '#f0f0f0' : 'transparent',
+                  color: period === p ? '#111' : '#555',
+                  transition: 'all 0.15s',
+                }}>{p === 'all' ? 'All Time' : p === 'year' ? 'Year' : 'Month'}</button>
+              ))}
+            </div>
+
+            {/* Nav arrows (only for year/month) */}
+            {period !== 'all' && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <button onClick={prevPeriod} style={{ width: 32, height: 32, borderRadius: 8, background: '#111', border: '1px solid #1a1a1a', color: '#666', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#f0f0f0'; e.currentTarget.style.borderColor = '#333' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = '#666'; e.currentTarget.style.borderColor = '#1a1a1a' }}
+                ><ChevronLeft size={14} /></button>
+                <span style={{ fontSize: 14, fontWeight: 600, color: '#bbb', minWidth: 100, textAlign: 'center' }}>{periodLabel}</span>
+                <button onClick={nextPeriod} style={{ width: 32, height: 32, borderRadius: 8, background: '#111', border: '1px solid #1a1a1a', color: '#666', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#f0f0f0'; e.currentTarget.style.borderColor = '#333' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = '#666'; e.currentTarget.style.borderColor = '#1a1a1a' }}
+                ><ChevronRight size={14} /></button>
+              </div>
+            )}
+            {period === 'all' && <span style={{ fontSize: 14, fontWeight: 600, color: '#444' }}>All Time</span>}
+          </div>
+        </div>
+
+        {/* ── Stats row 1 ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+          <StatCard label="Total P&L" value={filteredTrades.length === 0 ? '—' : (totalPnl >= 0 ? '+' : '') + formatCurrency(totalPnl)}
+            sub={`${filteredTrades.length} trade${filteredTrades.length !== 1 ? 's' : ''}`}
+            positive={filteredTrades.length === 0 ? null : totalPnl >= 0} icon={<DollarSign size={15} />} />
+          <StatCard label="Win Rate" value={filteredTrades.length === 0 ? '—' : formatPct(winRate)}
+            sub={`${wins.length}W / ${losses.length}L`}
+            positive={filteredTrades.length === 0 ? null : winRate >= 50} icon={<Award size={15} />} />
+          <StatCard label="Profit Factor" value={filteredTrades.length === 0 ? '—' : profitFactor >= 999 ? '∞' : profitFactor.toFixed(2)}
+            sub={profitFactor >= 1 ? 'Profitable' : filteredTrades.length === 0 ? '' : 'Unprofitable'}
+            positive={filteredTrades.length === 0 ? null : profitFactor >= 1} icon={<BarChart2 size={15} />} />
+          <StatCard label="Cumulative R" value={rrData.length < 2 ? '—' : `${rrData[rrData.length - 1].value}R`}
+            sub="reward / risk" positive={rrData.length < 2 ? null : rrData[rrData.length - 1].value >= 0}
+            icon={<TrendingUp size={15} />} />
+        </div>
+
+        {/* ── Stats row 2 ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+          <StatCard label="Best Day" value={bestDay === 0 && dayValues.length === 0 ? '—' : (bestDay >= 0 ? '+' : '') + formatCurrency(bestDay)}
+            positive={dayValues.length === 0 ? null : true} icon={<Zap size={15} />} />
+          <StatCard label="Worst Day" value={worstDay === 0 && dayValues.length === 0 ? '—' : (worstDay >= 0 ? '+' : '') + formatCurrency(worstDay)}
+            positive={dayValues.length === 0 ? null : worstDay >= 0} icon={<Activity size={15} />} />
+          <StatCard label="Avg Win" value={avgWin === 0 ? '—' : '+' + formatCurrency(avgWin)}
+            sub={wins.length > 0 ? `${wins.length} winning trades` : ''}
+            positive={avgWin === 0 ? null : true} icon={<Target size={15} />} />
+          <StatCard label="Avg Loss" value={avgLoss === 0 ? '—' : '-' + formatCurrency(avgLoss)}
+            sub={losses.length > 0 ? `${losses.length} losing trades` : ''}
+            positive={avgLoss === 0 ? null : false} icon={<Calendar size={15} />} />
+        </div>
+
+        {/* ── Additional stats row ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+          <StatCard label="Largest Win" value={largestWin === 0 ? '—' : '+' + formatCurrency(largestWin)} positive={largestWin === 0 ? null : true} icon={<TrendingUp size={15} />} />
+          <StatCard label="Largest Loss" value={largestLoss === 0 ? '—' : '-' + formatCurrency(largestLoss)} positive={largestLoss === 0 ? null : false} icon={<Activity size={15} />} />
+          <StatCard label="Gross Profit" value={grossProfit === 0 ? '—' : '+' + formatCurrency(grossProfit)} positive={grossProfit === 0 ? null : true} icon={<DollarSign size={15} />} />
+          <StatCard label="Gross Loss" value={grossLoss === 0 ? '—' : '-' + formatCurrency(grossLoss)} positive={grossLoss === 0 ? null : false} icon={<DollarSign size={15} />} />
+        </div>
+
+        {/* ── Equity Curve (full width) ── */}
+        <div style={CARD}>
+          <p style={CHART_TITLE}>Equity Curve</p>
+          {equityData.length < 2 ? EMPTY_CHART : (
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={equityData} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
+                <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={60} />
+                <ReferenceLine y={0} stroke="#252525" strokeDasharray="3 3" />
+                <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'Equity']} />
+                <Line type="monotone" dataKey="value" stroke={equityColor} strokeWidth={2.5} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        {/* ── Cumulative R:R (full width) ── */}
+        <div style={CARD}>
+          <p style={CHART_TITLE}>Cumulative R (per trade)</p>
+          {rrData.length < 2 ? EMPTY_CHART : (
+            <ResponsiveContainer width="100%" height={180}>
+              <LineChart data={rrData} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
+                <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={v => `${v}R`} width={50} />
+                <ReferenceLine y={0} stroke="#252525" strokeDasharray="3 3" />
+                <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [`${Number(v)}R`, 'Cum. R']} />
+                <Line type="monotone" dataKey="value" stroke={rrColor} strokeWidth={2.5} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        {/* ── Monthly P&L + Daily P&L ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div style={CARD}>
+            <p style={CHART_TITLE}>Monthly P&L</p>
+            {monthlyData.length === 0 ? EMPTY_CHART : (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={monthlyData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="short" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                  <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={56} />
+                  <ReferenceLine y={0} stroke="#252525" />
+                  <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
+                  <Bar dataKey="value" radius={[3, 3, 0, 0]}>
+                    {monthlyData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          <div style={CARD}>
+            <p style={CHART_TITLE}>Daily P&L — {MONTH_NAMES[displayMonth]} {displayYear}</p>
+            {dailyData.length === 0 ? EMPTY_CHART : (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={dailyData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                  <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={56} />
+                  <ReferenceLine y={0} stroke="#252525" />
+                  <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
+                  <Bar dataKey="value" radius={[3, 3, 0, 0]}>
+                    {dailyData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+
+        {/* ── P&L by Symbol + P&L by Session ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div style={CARD}>
+            <p style={CHART_TITLE}>P&L by Symbol</p>
+            {symbolData.length === 0 ? EMPTY_CHART : (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={symbolData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                  <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={60} />
+                  <ReferenceLine y={0} stroke="#252525" />
+                  <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
+                  <Bar dataKey="value" radius={[3, 3, 0, 0]}>
+                    {symbolData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          <div style={CARD}>
+            <p style={CHART_TITLE}>P&L by Session</p>
+            {sessionData.length === 0 ? EMPTY_CHART : (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={sessionData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                  <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={60} />
+                  <ReferenceLine y={0} stroke="#252525" />
+                  <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
+                  <Bar dataKey="value" radius={[3, 3, 0, 0]}>
+                    {sessionData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+
+        {/* ── Win Rate by Symbol + P&L by Day of Week ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div style={CARD}>
+            <p style={CHART_TITLE}>Win Rate by Symbol</p>
+            {symWinData.length === 0 ? EMPTY_CHART : (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={symWinData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                  <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} width={50} domain={[0, 100]} />
+                  <ReferenceLine y={50} stroke="#333" strokeDasharray="3 3" />
+                  <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [`${Number(v)}%`, 'Win Rate']} />
+                  <Bar dataKey="value" radius={[3, 3, 0, 0]}>
+                    {symWinData.map((d, i) => <Cell key={i} fill={d.value >= 50 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          <div style={CARD}>
+            <p style={CHART_TITLE}>P&L by Day of Week</p>
+            {dowData.every(d => d.pnl === 0) ? EMPTY_CHART : (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={dowData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                  <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={60} />
+                  <ReferenceLine y={0} stroke="#252525" />
+                  <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
+                  <Bar dataKey="pnl" name="pnl" radius={[3, 3, 0, 0]}>
+                    {dowData.map((d, i) => <Cell key={i} fill={d.pnl >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+
+        {/* ── Trade Count by Day of Week + Result Distribution ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div style={CARD}>
+            <p style={CHART_TITLE}>Trade Volume by Day of Week</p>
+            {dowData.every(d => d.count === 0) ? EMPTY_CHART : (
+              <ResponsiveContainer width="100%" height={180}>
+                <BarChart data={dowData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                  <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={36} allowDecimals={false} />
+                  <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [Number(v), 'Trades']} />
+                  <Bar dataKey="count" radius={[3, 3, 0, 0]} fill="#60a5fa" fillOpacity={0.7} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          <div style={CARD}>
+            <p style={CHART_TITLE}>Result Distribution</p>
+            {resultData.length === 0 ? EMPTY_CHART : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingTop: 8 }}>
+                {[
+                  { key: 'Win', color: '#4ade80' }, { key: 'Loss', color: '#f87171' },
+                  { key: 'BE', color: '#888' }, { key: 'Faded', color: '#fb923c' },
+                ].map(({ key, color }) => {
+                  const count = resultMap.get(key) ?? 0
+                  const total = filteredTrades.length
+                  const pct = total > 0 ? (count / total) * 100 : 0
+                  return (
+                    <div key={key}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <span style={{ fontSize: 13, color: '#777', fontWeight: 600 }}>{key}</span>
+                        <span style={{ fontSize: 13, color: '#888' }}>{count} <span style={{ color: '#444' }}>({pct.toFixed(1)}%)</span></span>
+                      </div>
+                      <div style={{ height: 6, background: '#1a1a1a', borderRadius: 999, overflow: 'hidden' }}>
+                        <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 999, opacity: 0.75 }} />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── Account Balances ── */}
+        {tradingAccounts.length > 0 && (
+          <div style={CARD}>
+            <p style={CHART_TITLE}>Account Performance</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
+              {accountStats.map(({ acc, pnl, trades, winRate: wr }) => {
+                const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : '#777'
+                const typeColors: Record<string, string> = { Live: '#4ade80', Eval: '#fbbf24', Funded: '#60a5fa' }
+                const tc = typeColors[acc.type] || '#888'
+                return (
+                  <div key={acc.id} style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 12, padding: '14px 16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: tc }} />
+                      <span style={{ fontSize: 11, color: tc, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{acc.type}</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: '#e0e0e0', marginLeft: 2 }}>{acc.name}</span>
+                    </div>
+                    {acc.type === 'Live' && (
+                      <div style={{ fontSize: 12, color: '#555', marginBottom: 8 }}>{acc.broker || 'No broker set'}</div>
+                    )}
+                    {(acc.type === 'Eval' || acc.type === 'Funded') && (
+                      <div style={{ fontSize: 12, color: '#555', marginBottom: 8 }}>{acc.propFirm || '—'} · {formatCurrency(acc.size)}</div>
+                    )}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                      <div>
+                        <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>P&L</div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: pnlColor }}>{pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Trades</div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: '#888' }}>{trades}</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Win %</div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: wr >= 50 ? '#4ade80' : '#f87171' }}>{trades > 0 ? formatPct(wr) : '—'}</div>
+                      </div>
+                    </div>
+                    {acc.type === 'Eval' && acc.profitTarget > 0 && (
+                      <div style={{ marginTop: 10 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                          <span style={{ fontSize: 11, color: '#444' }}>Target progress</span>
+                          <span style={{ fontSize: 11, color: pnl >= 0 ? '#4ade80' : '#f87171', fontWeight: 600 }}>{Math.round((pnl / acc.profitTarget) * 100)}%</span>
+                        </div>
+                        <div style={{ height: 4, background: '#1a1a1a', borderRadius: 999, overflow: 'hidden' }}>
+                          <div style={{ width: `${Math.max(0, Math.min(100, (pnl / acc.profitTarget) * 100))}%`, height: '100%', background: '#fbbf24', borderRadius: 999 }} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+  )
+}

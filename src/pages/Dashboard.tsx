@@ -153,10 +153,10 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
         background: '#141414', border: '1px solid #1f1f1f', borderRadius: 14,
         padding: '20px 28px', textAlign: 'center',
       }}>
-        <p style={{ fontSize: 15, color: '#aaaaaa', fontStyle: 'italic', lineHeight: 1.7, margin: 0 }}>
+        <p style={{ fontSize: 16, color: '#aaaaaa', fontStyle: 'italic', lineHeight: 1.7, margin: 0 }}>
           &ldquo;{quote.text}&rdquo;
         </p>
-        <p style={{ fontSize: 12, color: '#444', margin: '10px 0 0' }}>— {quote.author}</p>
+        <p style={{ fontSize: 13, color: '#555', margin: '10px 0 0' }}>— {quote.author}</p>
       </div>
 
       {/* Monthly Milestone */}
@@ -204,7 +204,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
 
         return (
           <div style={{ background: '#141414', border: '1px solid #1f1f1f', borderRadius: 16, padding: '20px 20px 16px' }}>
-            <h3 style={{ fontSize: 13, fontWeight: 700, color: '#444', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#555', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
               Recent Trades
             </h3>
 

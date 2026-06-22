@@ -2,6 +2,39 @@ export type TradeResult = 'Win' | 'Loss' | 'BE' | 'Faded'
 export type AccountType = 'Live' | 'Funded' | 'Eval'
 export type SessionType = 'NY' | 'Asia' | 'London'
 
+// ── Trading Accounts ──────────────────────────────────────────────────────────
+
+export interface LiveAccount {
+  id: string
+  type: 'Live'
+  name: string
+  broker: string
+  balance: number
+  createdAt: string
+}
+
+export interface EvalAccount {
+  id: string
+  type: 'Eval'
+  name: string
+  propFirm: string
+  size: number
+  maxDrawdown: number
+  profitTarget: number
+  createdAt: string
+}
+
+export interface FundedAccount {
+  id: string
+  type: 'Funded'
+  name: string
+  propFirm: string
+  size: number
+  createdAt: string
+}
+
+export type TradingAccount = LiveAccount | EvalAccount | FundedAccount
+
 export type Emotion =
   | 'very_happy'
   | 'happy'
@@ -13,7 +46,7 @@ export type Emotion =
 export interface TradeLog {
   id: string
   result: TradeResult
-  accounts: AccountType[]
+  accounts: string[]
   symbol: string
   side: 'Long' | 'Short'
   contracts: string

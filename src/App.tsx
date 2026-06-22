@@ -3,12 +3,14 @@ import { Sidebar } from './components/Sidebar'
 import type { Page } from './components/Sidebar'
 import { Dashboard } from './pages/Dashboard'
 import { Journal } from './pages/Journal'
+import { Analytics } from './pages/Analytics'
+import { Accounts } from './pages/Accounts'
 import { useStore } from './store/useStore'
 import './index.css'
 
 function Placeholder({ label }: { label: string }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#444', fontSize: 14 }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#444', fontSize: 16 }}>
       {label} — coming soon
     </div>
   )
@@ -32,6 +34,10 @@ function App() {
     addTradingRule,
     removeTradingRule,
     updateTradingRule,
+    tradingAccounts,
+    addTradingAccount,
+    updateTradingAccount,
+    deleteTradingAccount,
   } = useStore()
 
   const navigateToJournal = (date?: string) => {
@@ -65,6 +71,7 @@ function App() {
               entries={journalEntries}
               confluenceTags={confluenceTags}
               tradingRules={tradingRules}
+              tradingAccounts={tradingAccounts}
               onSave={upsertJournalEntry}
               onDelete={deleteJournalEntry}
               onAddConfluenceTag={addConfluenceTag}
@@ -76,10 +83,27 @@ function App() {
             />
           </div>
         )}
-        {page === 'analytics' && <Placeholder label="Analytics" />}
-        {page === 'news'      && <Placeholder label="News"      />}
-        {page === 'accounts'  && <Placeholder label="Accounts"  />}
-        {page === 'settings'  && <Placeholder label="Settings"  />}
+        {page === 'analytics' && (
+          <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+            <Analytics
+              journalEntries={journalEntries}
+              tradingAccounts={tradingAccounts}
+            />
+          </div>
+        )}
+        {page === 'news'     && <Placeholder label="News" />}
+        {page === 'accounts' && (
+          <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+            <Accounts
+              accounts={tradingAccounts}
+              entries={journalEntries}
+              onAdd={addTradingAccount}
+              onUpdate={updateTradingAccount}
+              onDelete={deleteTradingAccount}
+            />
+          </div>
+        )}
+        {page === 'settings' && <Placeholder label="Settings" />}
       </main>
     </div>
   )

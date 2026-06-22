@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import {
   Plus, Trash2, ImageIcon, X, Search, Save, ChevronDown, BookOpen,
 } from 'lucide-react'
-import type { JournalEntry, TradeLog, TradeResult, AccountType, TradingRule } from '../types'
+import type { JournalEntry, TradeLog, TradeResult, TradingRule, TradingAccount } from '../types'
 import { formatCurrency } from '../utils/stats'
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
@@ -145,9 +145,6 @@ const RESULT_COLORS: Record<string, string> = { Win: '#4ade80', Loss: '#f87171',
 const GRADES = ['A+', 'A', 'B', 'C', 'D', 'F']
 const GRADE_COLORS: Record<string, string> = { 'A+': '#4ade80', A: '#86efac', B: '#fbbf24', C: '#fb923c', D: '#f87171', F: '#ef4444' }
 
-const ACCOUNT_OPTIONS: { value: AccountType; label: string }[] = [
-  { value: 'Live', label: 'Live' }, { value: 'Funded', label: 'Funded' }, { value: 'Eval', label: 'Eval' },
-]
 const SESSION_OPTIONS = [
   { value: 'Asia', label: 'Asia' }, { value: 'London', label: 'London' },
   { value: 'London Open', label: 'London Open' }, { value: 'London Close', label: 'London Close' },
@@ -170,12 +167,12 @@ const EXIT_REASONS = ['Full TP', 'Swept Internal High/Low', 'SMT']
 
 const inputBase: React.CSSProperties = {
   background: '#0e0e0e', border: '1px solid #1e1e1e', borderRadius: 8,
-  padding: '9px 12px', fontSize: 15, color: '#f0f0f0', outline: 'none',
+  padding: '10px 13px', fontSize: 16, color: '#f0f0f0', outline: 'none',
   width: '100%', boxSizing: 'border-box', transition: 'border-color 0.15s',
   fontFamily: 'inherit',
 }
 const fieldLabel = (text: string) => (
-  <div style={{ fontSize: 12, color: '#999', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 7 }}>{text}</div>
+  <div style={{ fontSize: 13, color: '#999', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 7 }}>{text}</div>
 )
 
 // ── Screenshot Upload ─────────────────────────────────────────────────────────
@@ -516,10 +513,11 @@ function SectionHeader({ title, open, onToggle }: { title: string; open: boolean
 
 // ── New Trade Modal ───────────────────────────────────────────────────────────
 
-function NewTradeModal({ initialDate, onSave, onClose }: {
+function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
   initialDate: string
   onSave: (trade: TradeLog, date: string) => void
   onClose: () => void
+  tradingAccounts: TradingAccount[]
 }) {
   const [trade, setTrade] = useState<TradeLog>(() => emptyTrade())
   const [date, setDate] = useState(initialDate)
@@ -625,23 +623,30 @@ function NewTradeModal({ initialDate, onSave, onClose }: {
                 </div>
                 <div>
                   {fieldLabel('Account')}
-                  <div style={{ display: 'flex', gap: 5, height: 36 }}>
-                    {ACCOUNT_OPTIONS.map(a => {
-                      const active = (trade.accounts || []).includes(a.value)
-                      return (
-                        <button key={a.value} onClick={() => toggleArr('accounts', a.value)} style={{
-                          flex: 1, borderRadius: 8, fontSize: 11, fontWeight: 500,
-                          border: `1px solid ${active ? '#3a3a3a' : '#1a1a1a'}`,
-                          background: active ? '#1e1e1e' : 'transparent',
-                          color: active ? '#e0e0e0' : '#3a3a3a',
-                          cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-                        }}
-                          onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#666' }}
-                          onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#3a3a3a' }}
-                        >{a.label}</button>
-                      )
-                    })}
-                  </div>
+                  {(() => {
+                    const labels = tradingAccounts.length > 0
+                      ? tradingAccounts.map(a => a.name)
+                      : ['Live', 'Funded', 'Eval']
+                    return (
+                      <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                        {labels.map(label => {
+                          const active = (trade.accounts || []).includes(label)
+                          return (
+                            <button key={label} onClick={() => toggleArr('accounts', label)} style={{
+                              padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 500,
+                              border: `1px solid ${active ? '#4a4a4a' : '#1a1a1a'}`,
+                              background: active ? '#1e1e1e' : 'transparent',
+                              color: active ? '#e0e0e0' : '#555',
+                              cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                            }}
+                              onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#aaa' }}
+                              onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#555' }}
+                            >{label}</button>
+                          )
+                        })}
+                      </div>
+                    )
+                  })()}
                 </div>
               </div>
 
@@ -1117,9 +1122,10 @@ interface FormProps {
   onSave: () => void
   onDelete: () => void
   onClose: () => void
+  tradingAccounts: TradingAccount[]
 }
 
-function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, onDelete, onClose }: FormProps) {
+function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, onDelete, onClose, tradingAccounts }: FormProps) {
   const [htfPreview, setHtfPreview] = useState<string | null>(trade.htfImgKey?.startsWith('data:') ? trade.htfImgKey : null)
   const [execPreview, setExecPreview] = useState<string | null>(trade.execImgKey?.startsWith('data:') ? trade.execImgKey : null)
   const [confirmDelete, setConfirmDelete] = useState(false)
@@ -1131,7 +1137,7 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
     onUpdate(next)
   }
 
-  const toggleAccount = (a: AccountType) => {
+  const toggleAccount = (a: string) => {
     const l = trade.accounts || []
     set('accounts', l.includes(a) ? l.filter(x => x !== a) : [...l, a])
   }
@@ -1202,23 +1208,30 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           </div>
           <div>
             {fieldLabel('Account')}
-            <div style={{ display: 'flex', gap: 5, height: 36 }}>
-              {ACCOUNT_OPTIONS.map(a => {
-                const active = (trade.accounts || []).includes(a.value)
-                return (
-                  <button key={a.value} onClick={() => toggleAccount(a.value)} style={{
-                    flex: 1, borderRadius: 8, fontSize: 11, fontWeight: 500,
-                    border: `1px solid ${active ? '#3a3a3a' : '#1a1a1a'}`,
-                    background: active ? '#1e1e1e' : 'transparent',
-                    color: active ? '#e0e0e0' : '#3a3a3a',
-                    cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-                  }}
-                    onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#666' }}
-                    onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#3a3a3a' }}
-                  >{a.label}</button>
-                )
-              })}
-            </div>
+            {(() => {
+              const labels = tradingAccounts.length > 0
+                ? tradingAccounts.map(a => a.name)
+                : ['Live', 'Funded', 'Eval']
+              return (
+                <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                  {labels.map(label => {
+                    const active = (trade.accounts || []).includes(label)
+                    return (
+                      <button key={label} onClick={() => toggleAccount(label)} style={{
+                        padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 500,
+                        border: `1px solid ${active ? '#4a4a4a' : '#1a1a1a'}`,
+                        background: active ? '#1e1e1e' : 'transparent',
+                        color: active ? '#e0e0e0' : '#555',
+                        cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                      }}
+                        onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#aaa' }}
+                        onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#555' }}
+                      >{label}</button>
+                    )
+                  })}
+                </div>
+              )
+            })()}
           </div>
           <div>
             {fieldLabel('Symbol')}
@@ -1416,6 +1429,7 @@ interface JournalProps {
   entries: JournalEntry[]
   confluenceTags: string[]
   tradingRules: TradingRule[]
+  tradingAccounts: TradingAccount[]
   onSave: (entry: JournalEntry) => void
   onDelete: (date: string) => void
   onAddConfluenceTag: (tag: string) => void
@@ -1426,7 +1440,7 @@ interface JournalProps {
   initialDate?: string
 }
 
-export function Journal({ entries, onSave, onDelete, initialDate }: JournalProps) {
+export function Journal({ entries, onSave, onDelete, initialDate, tradingAccounts }: JournalProps) {
   const [search, setSearch] = useState('')
   const [filterResult, setFilterResult] = useState('All')
   const [filterSession, setFilterSession] = useState('All')
@@ -1547,6 +1561,7 @@ export function Journal({ entries, onSave, onDelete, initialDate }: JournalProps
           initialDate={modalInitialDate}
           onSave={handleModalSave}
           onClose={() => setShowNewModal(false)}
+          tradingAccounts={tradingAccounts}
         />
       )}
 
@@ -1627,6 +1642,7 @@ export function Journal({ entries, onSave, onDelete, initialDate }: JournalProps
                         onSave={handleSave}
                         onDelete={handleDelete}
                         onClose={closeExpanded}
+                        tradingAccounts={tradingAccounts}
                       />
                     )}
                   </div>

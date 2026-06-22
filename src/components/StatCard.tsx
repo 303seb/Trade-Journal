@@ -44,17 +44,17 @@ export function StatCard({ label, value, sub, positive, icon }: StatCardProps) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 12, fontWeight: 700, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
           {label}
         </span>
         <span style={{ color: '#333' }}>{icon}</span>
       </div>
       <div>
-        <div style={{ fontSize: 24, fontWeight: 700, color: valueColor, letterSpacing: '-0.02em', lineHeight: 1 }}>
+        <div style={{ fontSize: 26, fontWeight: 700, color: valueColor, letterSpacing: '-0.02em', lineHeight: 1 }}>
           {value}
         </div>
         {sub && (
-          <div style={{ fontSize: 11, color: '#444', marginTop: 5 }}>{sub}</div>
+          <div style={{ fontSize: 13, color: '#555', marginTop: 6 }}>{sub}</div>
         )}
       </div>
     </div>

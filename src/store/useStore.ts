@@ -1,11 +1,12 @@
 import { useState, useCallback } from 'react'
-import type { JournalEntry, MonthlyGoal, TradingRule } from '../types'
+import type { JournalEntry, MonthlyGoal, TradingRule, TradingAccount } from '../types'
 
 const KEYS = {
   journal: 'tj_journal',
   goals: 'tj_goals',
   confluences: 'tj_confluences',
   rules: 'tj_rules',
+  accounts: 'tj_accounts',
 }
 
 const DEFAULT_CONFLUENCES = [
@@ -46,6 +47,9 @@ export function useStore() {
   })
   const [tradingRules, setTradingRules] = useState<TradingRule[]>(() =>
     load(KEYS.rules, [])
+  )
+  const [tradingAccounts, setTradingAccounts] = useState<TradingAccount[]>(() =>
+    load(KEYS.accounts, [])
   )
 
   const deleteJournalEntry = useCallback((date: string) => {
@@ -118,6 +122,30 @@ export function useStore() {
     })
   }, [])
 
+  const addTradingAccount = useCallback((account: TradingAccount) => {
+    setTradingAccounts(prev => {
+      const next = [...prev, account]
+      save(KEYS.accounts, next)
+      return next
+    })
+  }, [])
+
+  const updateTradingAccount = useCallback((account: TradingAccount) => {
+    setTradingAccounts(prev => {
+      const next = prev.map(a => a.id === account.id ? account : a)
+      save(KEYS.accounts, next)
+      return next
+    })
+  }, [])
+
+  const deleteTradingAccount = useCallback((id: string) => {
+    setTradingAccounts(prev => {
+      const next = prev.filter(a => a.id !== id)
+      save(KEYS.accounts, next)
+      return next
+    })
+  }, [])
+
   return {
     journalEntries,
     monthlyGoals,
@@ -131,5 +159,9 @@ export function useStore() {
     addTradingRule,
     removeTradingRule,
     updateTradingRule,
+    tradingAccounts,
+    addTradingAccount,
+    updateTradingAccount,
+    deleteTradingAccount,
   }
 }
