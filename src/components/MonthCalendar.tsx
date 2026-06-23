@@ -57,38 +57,38 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
 
   const navBtnStyle: React.CSSProperties = {
     padding: '5px 8px', borderRadius: 8,
-    background: '#1a1a1a', border: '1px solid #252525',
-    color: '#555', cursor: 'pointer', display: 'flex',
+    background: 'var(--bg-hover)', border: '1px solid var(--border-mid)',
+    color: 'var(--text-muted)', cursor: 'pointer', display: 'flex',
     alignItems: 'center', transition: 'all 0.15s',
   }
 
   const colTemplate = 'repeat(8, 1fr)'
 
   return (
-    <div style={{ background: '#141414', border: '1px solid #1f1f1f', borderRadius: 16, padding: '20px 20px 18px' }}>
+    <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: '20px 20px 18px' }}>
 
       {/* Header row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-        <h3 style={{ fontSize: 13, fontWeight: 700, color: '#444', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Trade Calendar</h3>
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-dim)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Trade Calendar</h3>
 
         {/* Month navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             onClick={onPrevMonth}
             style={navBtnStyle}
-            onMouseEnter={e => { e.currentTarget.style.color = '#ddd'; e.currentTarget.style.borderColor = '#444' }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#252525' }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
           >
             <ChevronLeft size={13} strokeWidth={2} />
           </button>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#999', minWidth: 120, textAlign: 'center' }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-sub)', minWidth: 120, textAlign: 'center' }}>
             {monthLabel}
           </span>
           <button
             onClick={onNextMonth}
             style={navBtnStyle}
-            onMouseEnter={e => { e.currentTarget.style.color = '#ddd'; e.currentTarget.style.borderColor = '#444' }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#252525' }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
           >
             <ChevronRight size={13} strokeWidth={2} />
           </button>
@@ -97,7 +97,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
         {/* Month P&L + trade count */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-            <span style={{ fontSize: 12, color: '#444', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Monthly Profit</span>
+            <span style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Monthly Profit</span>
             <span style={{
               fontSize: 18, fontWeight: 700,
               color: monthTradeCount === 0 ? '#333' : monthPnl >= 0 ? '#4ade80' : '#f87171',
@@ -105,10 +105,10 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
               {monthTradeCount === 0 ? '—' : (monthPnl >= 0 ? '+' : '') + formatCurrency(monthPnl)}
             </span>
           </div>
-          <div style={{ width: 1, height: 28, background: '#222' }} />
+          <div style={{ width: 1, height: 28, background: 'var(--border-mid)' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-            <span style={{ fontSize: 12, color: '#444', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Total Trades</span>
-            <span style={{ fontSize: 18, fontWeight: 700, color: '#888' }}>
+            <span style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Total Trades</span>
+            <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-sub)' }}>
               {monthTradeCount}
             </span>
           </div>
@@ -118,11 +118,11 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
       {/* Weekday headers + Week column header */}
       <div style={{ display: 'grid', gridTemplateColumns: colTemplate, gap: 4, marginBottom: 6 }}>
         {WEEKDAYS.map(d => (
-          <div key={d} style={{ fontSize: 12, fontWeight: 700, color: '#444', padding: '4px 0 4px 7px' }}>
+          <div key={d} style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-dim)', padding: '4px 0 4px 7px' }}>
             {d}
           </div>
         ))}
-        <div style={{ fontSize: 12, fontWeight: 700, color: '#333', padding: '4px 0', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-dim)', padding: '4px 0', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
           Week
         </div>
       </div>
@@ -148,8 +148,8 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
             ? weekPnl > 0 ? 'rgba(52,211,153,0.05)' : weekPnl < 0 ? 'rgba(248,113,113,0.05)' : 'rgba(255,255,255,0.02)'
             : 'transparent'
           const weekBorder = weekHasData
-            ? weekPnl > 0 ? 'rgba(52,211,153,0.15)' : weekPnl < 0 ? 'rgba(248,113,113,0.15)' : '#1e1e1e'
-            : '#141414'
+            ? weekPnl > 0 ? 'rgba(52,211,153,0.15)' : weekPnl < 0 ? 'rgba(248,113,113,0.15)' : 'var(--border-mid)'
+            : 'var(--border)'
 
           return (
             <div key={wi} style={{ display: 'grid', gridTemplateColumns: colTemplate, gap: 4 }}>
@@ -179,13 +179,13 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                   bes > 0 ? `${bes}BE` : null,
                 ].filter(Boolean)
 
-                let cellBg = '#0e0e0e'
-                let cellBorder = '#1a1a1a'
-                let dayNumColor = '#444'
+                let cellBg = 'var(--bg)'
+                let cellBorder = 'var(--border)'
+                let dayNumColor = 'var(--text-dim)'
 
                 if (hasData && isPositive)  { cellBg = 'rgba(52,211,153,0.08)';  cellBorder = 'rgba(52,211,153,0.2)';  dayNumColor = '#cccccc' }
                 if (hasData && isNegative)  { cellBg = 'rgba(248,113,113,0.08)'; cellBorder = 'rgba(248,113,113,0.2)'; dayNumColor = '#cccccc' }
-                if (hasData && !isPositive && !isNegative) { cellBg = 'rgba(255,255,255,0.04)'; cellBorder = '#2a2a2a'; dayNumColor = '#cccccc' }
+                if (hasData && !isPositive && !isNegative) { cellBg = 'var(--bg-hover)'; cellBorder = 'var(--border-mid)'; dayNumColor = 'var(--text-sub)' }
 
                 return (
                   <button
@@ -204,8 +204,8 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                       transition: 'all 0.15s ease',
                       textAlign: 'left',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#3a3a3a'; e.currentTarget.style.background = hasData ? cellBg : '#151515' }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = isToday ? '#4a4a4a' : cellBorder; e.currentTarget.style.background = cellBg }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.background = hasData ? cellBg : 'var(--bg-hover)' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = isToday ? 'var(--border-strong)' : cellBorder; e.currentTarget.style.background = cellBg }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                       <span style={{ fontSize: 14, fontWeight: 700, color: dayNumColor, lineHeight: 1 }}>
@@ -231,11 +231,11 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                             {dayR >= 0 ? '+' : ''}{dayR.toFixed(1)}R
                           </span>
                         )}
-                        <span style={{ fontSize: 12, color: '#666', fontWeight: 600, lineHeight: 1 }}>
+                        <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1 }}>
                           {count} trade{count !== 1 ? 's' : ''}
                         </span>
                         {wlbeParts.length > 0 && (
-                          <span style={{ fontSize: 11, color: '#555', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
+                          <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
                             {wlbeParts.join(' - ')}
                           </span>
                         )}
@@ -254,7 +254,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                 border: `1px solid ${weekBorder}`,
                 borderLeft: `2px solid ${weekHasData ? (weekPnl > 0 ? 'rgba(52,211,153,0.4)' : weekPnl < 0 ? 'rgba(248,113,113,0.4)' : '#2a2a2a') : '#1a1a1a'}`,
               }}>
-                <span style={{ fontSize: 10, fontWeight: 700, color: '#3a3a3a', textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: 1 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: 1 }}>
                   WK {wi + 1}
                 </span>
                 {weekHasData ? (
@@ -267,17 +267,17 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                         {weekR >= 0 ? '+' : ''}{weekR.toFixed(1)}R
                       </span>
                     )}
-                    <span style={{ fontSize: 11, color: '#666', fontWeight: 600, lineHeight: 1 }}>
+                    <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1 }}>
                       {weekCount} trade{weekCount !== 1 ? 's' : ''}
                     </span>
                     {weekWLBE.length > 0 && (
-                      <span style={{ fontSize: 11, color: '#555', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
+                      <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
                         {weekWLBE.join(' - ')}
                       </span>
                     )}
                   </>
                 ) : (
-                  <span style={{ fontSize: 12, color: '#252525', marginTop: 4 }}>—</span>
+                  <span style={{ fontSize: 12, color: 'var(--border-mid)', marginTop: 4 }}>—</span>
                 )}
               </div>
             </div>
@@ -286,15 +286,15 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
       </div>
 
       {/* Color key */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 22, marginTop: 16, paddingTop: 14, borderTop: '1px solid #1a1a1a' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 22, marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
         {[
           { bg: 'rgba(52,211,153,0.2)', border: 'rgba(52,211,153,0.3)', label: 'Win' },
           { bg: 'rgba(248,113,113,0.2)', border: 'rgba(248,113,113,0.3)', label: 'Loss' },
-          { bg: 'rgba(255,255,255,0.07)', border: '#2a2a2a', label: 'Breakeven' },
+          { bg: 'var(--bg-hover)', border: 'var(--border-mid)', label: 'Breakeven' },
         ].map(({ bg, border, label }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <div style={{ width: 12, height: 12, borderRadius: 3, background: bg, border: `1px solid ${border}` }} />
-            <span style={{ fontSize: 12, color: '#444', fontWeight: 600 }}>{label}</span>
+            <span style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 600 }}>{label}</span>
           </div>
         ))}
       </div>

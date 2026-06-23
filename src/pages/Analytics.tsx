@@ -11,22 +11,22 @@ import { formatCurrency, formatPct } from '../utils/stats'
 // ── Shared chart styles ───────────────────────────────────────────────────────
 
 const CARD: React.CSSProperties = {
-  background: '#141414', border: '1px solid #1f1f1f', borderRadius: 16, padding: '20px 22px 16px',
+  background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: '20px 22px 16px',
 }
 const CHART_TITLE: React.CSSProperties = {
-  fontSize: 13, fontWeight: 700, color: '#666', margin: '0 0 16px',
+  fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', margin: '0 0 16px',
   textTransform: 'uppercase', letterSpacing: '0.07em',
 }
 const TOOLTIP_STYLE = {
-  contentStyle: { background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 8, fontSize: 13, color: '#ccc', padding: '7px 11px' },
-  itemStyle: { color: '#ccc', padding: 0 },
-  labelStyle: { color: '#666', fontSize: 11, marginBottom: 2 },
+  contentStyle: { background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', borderRadius: 8, fontSize: 13, color: 'var(--text-sub)', padding: '7px 11px' },
+  itemStyle: { color: 'var(--text-sub)', padding: 0 },
+  labelStyle: { color: 'var(--text-muted)', fontSize: 11, marginBottom: 2 },
   cursor: { fill: 'rgba(255,255,255,0.03)' },
 }
-const AXIS_TICK = { fontSize: 11, fill: '#555' }
+const AXIS_TICK = { fontSize: 11, fill: 'var(--text-dim)' }
 
 const EMPTY_CHART = (
-  <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2a2a2a', fontSize: 14, fontWeight: 600 }}>
+  <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dim)', fontSize: 14, fontWeight: 600 }}>
     No data yet
   </div>
 )
@@ -45,15 +45,15 @@ const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'
 function StatCard({ label, value, sub, positive, icon }: {
   label: string; value: string; sub?: string; positive?: boolean | null; icon?: React.ReactNode
 }) {
-  const valueColor = positive === null || positive === undefined ? '#f0f0f0' : positive ? '#4ade80' : '#f87171'
+  const valueColor = positive === null || positive === undefined ? 'var(--text)' : positive ? '#4ade80' : '#f87171'
   return (
-    <div style={{ background: '#141414', border: '1px solid #1f1f1f', borderRadius: 14, padding: '16px 18px' }}>
+    <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '16px 18px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: '#555', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{label}</div>
-        {icon && <div style={{ color: '#333', opacity: 0.7 }}>{icon}</div>}
+        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{label}</div>
+        {icon && <div style={{ color: 'var(--text-dim)', opacity: 0.7 }}>{icon}</div>}
       </div>
       <div style={{ fontSize: 22, fontWeight: 700, color: valueColor, letterSpacing: '-0.02em', marginBottom: sub ? 4 : 0 }}>{value}</div>
-      {sub && <div style={{ fontSize: 12, color: '#444' }}>{sub}</div>}
+      {sub && <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{sub}</div>}
     </div>
   )
 }
@@ -274,25 +274,25 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
     : `${MONTH_NAMES[month]} ${year}`
 
   return (
-    <div style={{ height: '100%', overflowY: 'auto', background: '#0e0e0e' }}>
+    <div style={{ height: '100%', overflowY: 'auto', background: 'var(--bg)' }}>
       <div style={{ maxWidth: 1300, margin: '0 auto', padding: '28px 32px 52px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f0f0f0', margin: '0 0 4px' }}>Analytics</h1>
-            <p style={{ fontSize: 14, color: '#555', margin: 0 }}>Deep dive into your trading performance.</p>
+            <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', margin: '0 0 4px' }}>Analytics</h1>
+            <p style={{ fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>Deep dive into your trading performance.</p>
           </div>
 
           {/* Period controls */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             {/* Period tabs */}
-            <div style={{ display: 'flex', gap: 3, background: '#111', border: '1px solid #1a1a1a', borderRadius: 9, padding: 3 }}>
+            <div style={{ display: 'flex', gap: 3, background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 9, padding: 3 }}>
               {(['all', 'year', 'month'] as Period[]).map(p => (
                 <button key={p} onClick={() => setPeriod(p)} style={{
                   padding: '6px 14px', borderRadius: 7, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', border: 'none',
-                  background: period === p ? '#f0f0f0' : 'transparent',
-                  color: period === p ? '#111' : '#555',
+                  background: period === p ? 'var(--btn-bg)' : 'transparent',
+                  color: period === p ? 'var(--btn-text)' : 'var(--text-muted)',
                   transition: 'all 0.15s',
                 }}>{p === 'all' ? 'All Time' : p === 'year' ? 'Year' : 'Month'}</button>
               ))}
@@ -301,18 +301,18 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
             {/* Nav arrows (only for year/month) */}
             {period !== 'all' && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <button onClick={prevPeriod} style={{ width: 32, height: 32, borderRadius: 8, background: '#111', border: '1px solid #1a1a1a', color: '#666', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
-                  onMouseEnter={e => { e.currentTarget.style.color = '#f0f0f0'; e.currentTarget.style.borderColor = '#333' }}
-                  onMouseLeave={e => { e.currentTarget.style.color = '#666'; e.currentTarget.style.borderColor = '#1a1a1a' }}
+                <button onClick={prevPeriod} style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
+                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
                 ><ChevronLeft size={14} /></button>
-                <span style={{ fontSize: 14, fontWeight: 600, color: '#bbb', minWidth: 100, textAlign: 'center' }}>{periodLabel}</span>
-                <button onClick={nextPeriod} style={{ width: 32, height: 32, borderRadius: 8, background: '#111', border: '1px solid #1a1a1a', color: '#666', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
-                  onMouseEnter={e => { e.currentTarget.style.color = '#f0f0f0'; e.currentTarget.style.borderColor = '#333' }}
-                  onMouseLeave={e => { e.currentTarget.style.color = '#666'; e.currentTarget.style.borderColor = '#1a1a1a' }}
+                <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-sub)', minWidth: 100, textAlign: 'center' }}>{periodLabel}</span>
+                <button onClick={nextPeriod} style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
+                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
                 ><ChevronRight size={14} /></button>
               </div>
             )}
-            {period === 'all' && <span style={{ fontSize: 14, fontWeight: 600, color: '#444' }}>All Time</span>}
+            {period === 'all' && <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-dim)' }}>All Time</span>}
           </div>
         </div>
 
@@ -321,10 +321,10 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
           <div style={{
             display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
             padding: '14px 18px', borderRadius: 14,
-            background: '#111', border: '1px solid #1a1a1a',
+            background: 'var(--bg-surface)', border: '1px solid var(--border)',
             boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
           }}>
-            <span style={{ fontSize: 11, fontWeight: 800, color: '#555', textTransform: 'uppercase', letterSpacing: '0.09em', whiteSpace: 'nowrap' }}>Accounts</span>
+            <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.09em', whiteSpace: 'nowrap' }}>Accounts</span>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {accountNames.map(name => {
                 const active = effectiveSelected.includes(name)
@@ -336,26 +336,26 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                     onClick={() => toggleAccount(name)}
                     style={{
                       padding: '5px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600,
-                      border: `1px solid ${active ? typeColor + '55' : '#1e1e1e'}`,
+                      border: `1px solid ${active ? typeColor + '55' : 'var(--border-mid)'}`,
                       background: active ? typeColor + '14' : 'transparent',
-                      color: active ? typeColor : '#555',
+                      color: active ? typeColor : 'var(--text-muted)',
                       cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                     }}
-                    onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#aaa' }}
-                    onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#555' }}
+                    onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-sub)' }}
+                    onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
                   >{name}</button>
                 )
               })}
             </div>
             <div style={{ flex: 1 }} />
             <div style={{ display: 'flex', gap: 5 }}>
-              <button onClick={selectAll} style={{ padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: '1px solid #1e1e1e', background: 'transparent', color: '#555', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#aaa')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#555')}
+              <button onClick={selectAll} style={{ padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: '1px solid var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-sub)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
               >All</button>
-              <button onClick={selectNone} style={{ padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: '1px solid #1e1e1e', background: 'transparent', color: '#555', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#aaa')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#555')}
+              <button onClick={selectNone} style={{ padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: '1px solid var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-sub)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
               >None</button>
             </div>
           </div>
@@ -564,7 +564,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingTop: 8 }}>
                 {[
                   { key: 'Win', color: '#4ade80' }, { key: 'Loss', color: '#f87171' },
-                  { key: 'BE', color: '#888' }, { key: 'Faded', color: '#fb923c' },
+                  { key: 'BE', color: '#888' }, { key: "Didn't take", color: '#fb923c' },
                 ].map(({ key, color }) => {
                   const count = resultMap.get(key) ?? 0
                   const total = filteredTrades.length
@@ -572,10 +572,10 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                   return (
                     <div key={key}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <span style={{ fontSize: 13, color: '#777', fontWeight: 600 }}>{key}</span>
-                        <span style={{ fontSize: 13, color: '#888' }}>{count} <span style={{ color: '#444' }}>({pct.toFixed(1)}%)</span></span>
+                        <span style={{ fontSize: 13, color: 'var(--text-sub)', fontWeight: 600 }}>{key}</span>
+                        <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>{count} <span style={{ color: 'var(--text-dim)' }}>({pct.toFixed(1)}%)</span></span>
                       </div>
-                      <div style={{ height: 6, background: '#1a1a1a', borderRadius: 999, overflow: 'hidden' }}>
+                      <div style={{ height: 6, background: 'var(--border)', borderRadius: 999, overflow: 'hidden' }}>
                         <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 999, opacity: 0.75 }} />
                       </div>
                     </div>
@@ -594,41 +594,41 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
               {accountStats.map(({ acc, pnl, trades, winRate: wr }) => {
                 const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : '#777'
                 const typeColors: Record<string, string> = { Live: '#4ade80', Eval: '#fbbf24', Funded: '#60a5fa' }
-                const tc = typeColors[acc.type] || '#888'
+                const tc = typeColors[acc.type] || 'var(--text-sub)'
                 return (
-                  <div key={acc.id} style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 12, padding: '14px 16px' }}>
+                  <div key={acc.id} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                       <div style={{ width: 8, height: 8, borderRadius: '50%', background: tc }} />
                       <span style={{ fontSize: 11, color: tc, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{acc.type}</span>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: '#e0e0e0', marginLeft: 2 }}>{acc.name}</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', marginLeft: 2 }}>{acc.name}</span>
                     </div>
                     {acc.type === 'Live' && (
-                      <div style={{ fontSize: 12, color: '#555', marginBottom: 8 }}>{acc.broker || 'No broker set'}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>{acc.broker || 'No broker set'}</div>
                     )}
                     {(acc.type === 'Eval' || acc.type === 'Funded') && (
-                      <div style={{ fontSize: 12, color: '#555', marginBottom: 8 }}>{acc.propFirm || '—'} · {formatCurrency(acc.size)}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>{acc.propFirm || '—'} · {formatCurrency(acc.size)}</div>
                     )}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                       <div>
-                        <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>P&L</div>
+                        <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>P&L</div>
                         <div style={{ fontSize: 15, fontWeight: 700, color: pnlColor }}>{pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Trades</div>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: '#888' }}>{trades}</div>
+                        <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Trades</div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-sub)' }}>{trades}</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Win %</div>
+                        <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Win %</div>
                         <div style={{ fontSize: 15, fontWeight: 700, color: wr >= 50 ? '#4ade80' : '#f87171' }}>{trades > 0 ? formatPct(wr) : '—'}</div>
                       </div>
                     </div>
                     {acc.type === 'Eval' && acc.profitTarget > 0 && (
                       <div style={{ marginTop: 10 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                          <span style={{ fontSize: 11, color: '#444' }}>Target progress</span>
+                          <span style={{ fontSize: 11, color: 'var(--text-dim)' }}>Target progress</span>
                           <span style={{ fontSize: 11, color: pnl >= 0 ? '#4ade80' : '#f87171', fontWeight: 600 }}>{Math.round((pnl / acc.profitTarget) * 100)}%</span>
                         </div>
-                        <div style={{ height: 4, background: '#1a1a1a', borderRadius: 999, overflow: 'hidden' }}>
+                        <div style={{ height: 4, background: 'var(--border)', borderRadius: 999, overflow: 'hidden' }}>
                           <div style={{ width: `${Math.max(0, Math.min(100, (pnl / acc.profitTarget) * 100))}%`, height: '100%', background: '#fbbf24', borderRadius: 999 }} />
                         </div>
                       </div>

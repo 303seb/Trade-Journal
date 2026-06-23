@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import type { JournalEntry, MonthlyGoal, TradingRule, TradingAccount, DiaryEntries, AppSettings } from '../types'
+import type { JournalEntry, MonthlyGoal, TradingRule, TradingAccount, DiaryEntries, AppSettings, DiaryTemplate } from '../types'
 
 const KEYS = {
   journal: 'tj_journal',
@@ -9,6 +9,7 @@ const KEYS = {
   accounts: 'tj_accounts',
   diary: 'tj_diary',
   settings: 'tj_settings',
+  templates: 'tj_diary_templates',
 }
 
 const DEFAULT_CONFLUENCES = [
@@ -55,6 +56,9 @@ export function useStore() {
   )
   const [diaryEntries, setDiaryEntries] = useState<DiaryEntries>(() =>
     load(KEYS.diary, {})
+  )
+  const [diaryTemplates, setDiaryTemplates] = useState<DiaryTemplate[]>(() =>
+    load(KEYS.templates, [])
   )
   const [appSettings, setAppSettings] = useState<AppSettings>(() =>
     load(KEYS.settings, {
@@ -177,6 +181,22 @@ export function useStore() {
     save(KEYS.settings, settings)
   }, [])
 
+  const saveDiaryTemplate = useCallback((name: string, content: string) => {
+    setDiaryTemplates(prev => {
+      const next = [...prev, { id: genId(), name, content }]
+      save(KEYS.templates, next)
+      return next
+    })
+  }, [])
+
+  const deleteDiaryTemplate = useCallback((id: string) => {
+    setDiaryTemplates(prev => {
+      const next = prev.filter(t => t.id !== id)
+      save(KEYS.templates, next)
+      return next
+    })
+  }, [])
+
   return {
     journalEntries,
     monthlyGoals,
@@ -196,6 +216,9 @@ export function useStore() {
     deleteTradingAccount,
     diaryEntries,
     saveDiaryEntry,
+    diaryTemplates,
+    saveDiaryTemplate,
+    deleteDiaryTemplate,
     appSettings,
     updateAppSettings,
   }

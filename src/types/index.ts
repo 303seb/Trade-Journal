@@ -1,4 +1,4 @@
-export type TradeResult = 'Win' | 'Loss' | 'BE' | 'Faded'
+export type TradeResult = 'Win' | 'Loss' | 'BE' | "Didn't take"
 export type AccountType = 'Live' | 'Funded' | 'Eval'
 export type SessionType = 'NY' | 'Asia' | 'London'
 
@@ -21,6 +21,7 @@ export interface EvalAccount {
   size: number
   maxDrawdown: number
   profitTarget: number
+  startingBalance?: number  // balance when account was added to app (if different from size)
   createdAt: string
 }
 
@@ -120,6 +121,12 @@ export interface MonthlyGoal {
 }
 
 export type DiaryEntries = Record<string, string> // date (YYYY-MM-DD) → diary text
+
+export interface DiaryTemplate {
+  id: string
+  name: string
+  content: string
+}
 
 export interface AppSettings {
   timezone: string         // e.g. "America/New_York"

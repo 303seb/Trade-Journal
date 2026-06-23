@@ -38,7 +38,7 @@ const EMOTION_DISPLAY: Record<string, { emoji: string; label: string }> = {
 }
 
 const RESULT_COLORS: Record<string, string> = {
-  Win: '#4ade80', Loss: '#f87171', BE: '#aaaaaa', Faded: '#fb923c',
+  Win: '#4ade80', Loss: '#f87171', BE: '#aaaaaa', "Didn't take": '#fb923c',
 }
 
 interface DashboardProps {
@@ -93,11 +93,11 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
           onClick={() => onNavigateToJournal(todayStr)}
           style={{
             display: 'flex', alignItems: 'center', gap: 8, padding: '9px 18px',
-            background: '#f0f0f0', color: '#111', borderRadius: 10, border: 'none',
+            background: 'var(--btn-bg)', color: 'var(--btn-text)', borderRadius: 10, border: 'none',
             fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = '#ffffff')}
-          onMouseLeave={e => (e.currentTarget.style.background = '#f0f0f0')}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--btn-hover)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'var(--btn-bg)')}
         >
           <NotebookPen size={15} />
           Add Journal Entry
@@ -152,13 +152,13 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
 
       {/* Quote */}
       <div style={{
-        background: '#141414', border: '1px solid #1f1f1f', borderRadius: 14,
+        background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14,
         padding: '20px 28px', textAlign: 'center',
       }}>
-        <p style={{ fontSize: 16, color: '#aaaaaa', fontStyle: 'italic', lineHeight: 1.7, margin: 0 }}>
+        <p style={{ fontSize: 16, color: 'var(--text-sub)', fontStyle: 'italic', lineHeight: 1.7, margin: 0 }}>
           &ldquo;{quote.text}&rdquo;
         </p>
-        <p style={{ fontSize: 13, color: '#555', margin: '10px 0 0' }}>— {quote.author}</p>
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '10px 0 0' }}>— {quote.author}</p>
       </div>
 
       {/* Monthly Milestone */}
@@ -202,27 +202,27 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
         const RESULT_BG: Record<string, { bg: string; border: string; color: string }> = {
           Win:  { bg: 'rgba(74,222,128,0.08)',  border: 'rgba(74,222,128,0.2)',  color: '#4ade80' },
           Loss: { bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)', color: '#f87171' },
-          BE:   { bg: 'rgba(255,255,255,0.03)', border: '#252525',               color: '#aaaaaa' },
-          Faded:{ bg: 'rgba(251,146,60,0.08)',  border: 'rgba(251,146,60,0.2)',  color: '#fb923c' },
+          BE:   { bg: 'rgba(255,255,255,0.03)', border: 'var(--border-mid)',        color: '#aaaaaa' },
+          "Didn't take":{ bg: 'rgba(251,146,60,0.08)', border: 'rgba(251,146,60,0.2)', color: '#fb923c' },
         }
 
         return (
-          <div style={{ background: '#141414', border: '1px solid #1f1f1f', borderRadius: 16, padding: '20px 20px 16px' }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#555', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: '20px 20px 16px' }}>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-muted)', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
               Recent Trades
             </h3>
 
             {/* Column headers */}
-            <div style={{ display: 'grid', gridTemplateColumns: '110px 70px 70px 1fr 80px', gap: 12, padding: '0 14px 8px', marginBottom: 4, borderBottom: '1px solid #1a1a1a' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '110px 70px 70px 1fr 80px', gap: 12, padding: '0 14px 8px', marginBottom: 4, borderBottom: '1px solid var(--border)' }}>
               {['Date', 'Contract', 'Result', 'P&L', 'R:R'].map(h => (
-                <span key={h} style={{ fontSize: 11, fontWeight: 700, color: '#333', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</span>
+                <span key={h} style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</span>
               ))}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               {recentTrades.map(({ trade: t, date }, idx) => {
                 const pnl = parseFloat(t.pnl) || 0
-                const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : '#888'
+                const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : 'var(--text-sub)'
                 const rrVal = (() => {
                   const tp = parseFloat(t.takeProfit), sl = parseFloat(t.stopLoss)
                   if (isNaN(tp) || isNaN(sl) || tp === 0 || sl === 0) return null
@@ -245,8 +245,8 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                     onMouseEnter={e => (e.currentTarget.style.filter = 'brightness(1.5)')}
                     onMouseLeave={e => (e.currentTarget.style.filter = 'none')}
                   >
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#999' }}>{dateShort}</span>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: '#ccc' }}>{t.symbol || '—'}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>{dateShort}</span>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-label)' }}>{t.symbol || '—'}</span>
                     <span style={{ fontSize: 13, fontWeight: 700, color: style.color }}>{t.result}</span>
                     <span style={{ fontSize: 14, fontWeight: 800, color: pnlColor }}>
                       {t.pnl ? (pnl >= 0 ? '+' : '') + formatCurrency(pnl) : '—'}
@@ -273,42 +273,42 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
         })()
         const rrPositive = rrVal ? parseFloat(rrVal) >= 1 : null
         const dateLabel = new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-        const showDrawdown = t.drawdown && ['Win', 'BE', 'Faded'].includes(t.result)
+        const showDrawdown = t.drawdown && ['Win', 'BE', "Didn't take"].includes(t.result)
         const priceFields = [
           { label: 'Entry', val: t.entryPrice },
           { label: 'Exit', val: t.exitPrice },
           { label: 'Take Profit', val: t.takeProfit },
           { label: 'Stop Loss', val: t.stopLoss },
         ].filter(f => f.val)
-        const secLabel: React.CSSProperties = { fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }
+        const secLabel: React.CSSProperties = { fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }
         return (
           <div
             style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.82)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 24px' }}
             onClick={() => setRecentTradePopup(null)}
           >
             <div
-              style={{ background: '#111', border: '1px solid #222', borderRadius: 20, width: '100%', maxWidth: 520, maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+              style={{ background: 'var(--bg-panel)', border: '1px solid var(--border)', borderRadius: 20, width: '100%', maxWidth: 520, maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
-              <div style={{ padding: '16px 22px 14px', borderBottom: '1px solid #1a1a1a', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
+              <div style={{ padding: '16px 22px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
                 <div>
-                  <div style={{ fontSize: 12, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{dateLabel}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{dateLabel}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: RESULT_COLORS[t.result] || '#888', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
-                    {t.symbol && <span style={{ fontSize: 15, fontWeight: 700, color: '#ddd' }}>{t.symbol}</span>}
+                    <span style={{ fontSize: 13, fontWeight: 700, color: RESULT_COLORS[t.result] || 'var(--text-sub)', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
+                    {t.symbol && <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>{t.symbol}</span>}
                     <span style={{ fontSize: 13, color: t.side === 'Long' ? '#4ade80' : '#f87171', fontWeight: 600 }}>{t.side}</span>
-                    {t.contracts && <span style={{ fontSize: 12, color: '#555' }}>{t.contracts} contracts</span>}
+                    {t.contracts && <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t.contracts} contracts</span>}
                     {t.accounts.map(a => (
-                      <span key={a} style={{ fontSize: 10, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
+                      <span key={a} style={{ fontSize: 10, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
                     ))}
                   </div>
                 </div>
                 <button
                   onClick={() => setRecentTradePopup(null)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#444', display: 'flex', padding: 4, transition: 'color 0.15s', flexShrink: 0, marginLeft: 12 }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#e0e0e0')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#444')}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', display: 'flex', padding: 4, transition: 'color 0.15s', flexShrink: 0, marginLeft: 12 }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-dim)')}
                 ><X size={18} /></button>
               </div>
               {/* Body */}
@@ -316,9 +316,9 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                 {priceFields.length > 0 && (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
                     {priceFields.map(f => (
-                      <div key={f.label} style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 8, padding: '8px 10px' }}>
+                      <div key={f.label} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 10px' }}>
                         <div style={{ ...secLabel, marginBottom: 3 }}>{f.label}</div>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: '#ccc' }}>{f.val}</div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-label)' }}>{f.val}</div>
                       </div>
                     ))}
                   </div>
@@ -326,30 +326,30 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                 {(t.pnl || rrVal) && (
                   <div style={{ display: 'grid', gridTemplateColumns: t.pnl && rrVal ? '2fr 1fr' : '1fr', gap: 6 }}>
                     {t.pnl && (
-                      <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={secLabel}>P&L</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : '#888' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : 'var(--text-sub)' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
                       </div>
                     )}
                     {rrVal && (
-                      <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={secLabel}>R:R</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : '#ccc' }}>{rrVal}R</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : 'var(--text-label)' }}>{rrVal}R</div>
                       </div>
                     )}
                   </div>
                 )}
                 {showDrawdown && (
-                  <div style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={secLabel}>Drawdown</span>
-                    <span style={{ fontSize: 14, color: '#aaa', fontWeight: 600 }}>{t.drawdown} pts</span>
+                    <span style={{ fontSize: 14, color: 'var(--text-sub)', fontWeight: 600 }}>{t.drawdown} pts</span>
                   </div>
                 )}
                 {t.sessions.length > 0 && (
                   <div>
                     <div style={secLabel}>Session</div>
                     <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                      {t.sessions.map(s => <span key={s} style={{ fontSize: 12, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '3px 9px', borderRadius: 6 }}>{s}</span>)}
+                      {t.sessions.map(s => <span key={s} style={{ fontSize: 12, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{s}</span>)}
                     </div>
                   </div>
                 )}
@@ -357,7 +357,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   <div>
                     <div style={secLabel}>Draw on Liquidity</div>
                     <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                      {t.dol.map(d => <span key={d} style={{ fontSize: 12, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '3px 9px', borderRadius: 6 }}>{d}</span>)}
+                      {t.dol.map(d => <span key={d} style={{ fontSize: 12, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{d}</span>)}
                     </div>
                   </div>
                 )}
@@ -365,14 +365,14 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   <div>
                     <div style={secLabel}>Confluences</div>
                     <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                      {t.confluences.map(c => <span key={c} style={{ fontSize: 12, color: '#aaa', background: '#1a1a1a', border: '1px solid #2a2a2a', padding: '3px 9px', borderRadius: 6 }}>{c}</span>)}
+                      {t.confluences.map(c => <span key={c} style={{ fontSize: 12, color: 'var(--text-label)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{c}</span>)}
                     </div>
                   </div>
                 )}
                 {t.htfImgKey && (
                   <div>
                     <div style={secLabel}>HTF Chart</div>
-                    <img src={t.htfImgKey} alt="HTF chart" style={{ width: '100%', borderRadius: 8, border: '1px solid #1f1f1f', objectFit: 'contain', maxHeight: 220 }} />
+                    <img src={t.htfImgKey} alt="HTF chart" style={{ width: '100%', borderRadius: 8, border: '1px solid var(--border)', objectFit: 'contain', maxHeight: 220 }} />
                   </div>
                 )}
                 {t.execImgKey && (
@@ -392,31 +392,31 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
         const entry = journalEntries.find(e => e.date === popupDate)
         if (!entry) return null
         const dayPnl = entry.trades.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0)
-        const pnlColor = dayPnl > 0 ? '#4ade80' : dayPnl < 0 ? '#f87171' : '#888'
+        const pnlColor = dayPnl > 0 ? '#4ade80' : dayPnl < 0 ? '#f87171' : 'var(--text-sub)'
         const em = entry.emotion ? EMOTION_DISPLAY[entry.emotion] : null
         const dateLabel = new Date(entry.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
         const rulesPct = tradingRules.length === 0 ? 0 : Math.round(
           (entry.rulesFollowed.filter(id => tradingRules.some(r => r.id === id)).length / tradingRules.length) * 100
         )
         const barColor = rulesPct <= 33 ? '#f87171' : rulesPct <= 66 ? '#fbbf24' : '#4ade80'
-        const secLabel = { fontSize: 11, color: '#444', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.07em', marginBottom: 10 }
+        const secLabel = { fontSize: 11, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.07em', marginBottom: 10 }
         return (
           <div
             style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.82)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 24px' }}
             onClick={() => setPopupDate(null)}
           >
             <div
-              style={{ background: '#111', border: '1px solid #222', borderRadius: 20, width: '100%', maxWidth: 560, maxHeight: '96vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+              style={{ background: 'var(--bg-panel)', border: '1px solid var(--border)', borderRadius: 20, width: '100%', maxWidth: 560, maxHeight: '96vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
               onClick={e => e.stopPropagation()}
             >
               {/* Popup header */}
-              <div style={{ padding: '18px 24px 14px', borderBottom: '1px solid #1a1a1a', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
+              <div style={{ padding: '18px 24px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', marginBottom: 4 }}>{dateLabel}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>{dateLabel}</div>
                   {entry.trades.length > 0 && (
                     <div style={{ fontSize: 22, fontWeight: 700, color: pnlColor }}>
                       {dayPnl >= 0 ? '+' : ''}{formatCurrency(dayPnl)}
-                      <span style={{ fontSize: 13, color: '#555', fontWeight: 400, marginLeft: 8 }}>
+                      <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 400, marginLeft: 8 }}>
                         {entry.trades.length} trade{entry.trades.length !== 1 ? 's' : ''}
                       </span>
                     </div>
@@ -426,23 +426,23 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   {em && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       <span style={{ fontSize: 22, lineHeight: 1 }}>{em.emoji}</span>
-                      <span style={{ fontSize: 12, color: '#666' }}>{em.label}</span>
+                      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{em.label}</span>
                     </div>
                   )}
                   <button
                     onClick={() => { setPopupDate(null); onNavigateToJournal(popupDate) }}
-                    style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', background: '#1e1e1e', border: '1px solid #333', borderRadius: 8, cursor: 'pointer', color: '#ccc', fontSize: 12, fontWeight: 600, transition: 'all 0.15s' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = '#2a2a2a'; e.currentTarget.style.color = '#f0f0f0' }}
-                    onMouseLeave={e => { e.currentTarget.style.background = '#1e1e1e'; e.currentTarget.style.color = '#ccc' }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', borderRadius: 8, cursor: 'pointer', color: 'var(--text-label)', fontSize: 12, fontWeight: 600, transition: 'all 0.15s' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-active)'; e.currentTarget.style.color = 'var(--text)' }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text-label)' }}
                   >
                     <NotebookPen size={13} />
                     Edit Day
                   </button>
                   <button
                     onClick={() => setPopupDate(null)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#444', display: 'flex', padding: 4, transition: 'color 0.15s' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#e0e0e0')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#444')}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', display: 'flex', padding: 4, transition: 'color 0.15s' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
+                    onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-dim)')}
                   ><X size={18} /></button>
                 </div>
               </div>
@@ -466,10 +466,10 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   <div>
                     <div style={secLabel}>Pre-Market Analysis</div>
                     {entry.premktImgKey && (
-                      <img src={entry.premktImgKey} alt="Pre-market chart" style={{ width: '100%', borderRadius: 10, marginBottom: entry.premktAnalysis ? 10 : 0, border: '1px solid #1f1f1f', objectFit: 'contain', maxHeight: 260 }} />
+                      <img src={entry.premktImgKey} alt="Pre-market chart" style={{ width: '100%', borderRadius: 10, marginBottom: entry.premktAnalysis ? 10 : 0, border: '1px solid var(--border)', objectFit: 'contain', maxHeight: 260 }} />
                     )}
                     {entry.premktAnalysis && (
-                      <p style={{ fontSize: 13, color: '#999', margin: 0, lineHeight: 1.7 }}>{entry.premktAnalysis}</p>
+                      <p style={{ fontSize: 13, color: 'var(--text-sub)', margin: 0, lineHeight: 1.7 }}>{entry.premktAnalysis}</p>
                     )}
                   </div>
                 )}
@@ -487,7 +487,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                           return (tp / sl).toFixed(2)
                         })()
                         const rrPositive = rrVal ? parseFloat(rrVal) >= 1 : null
-                        const showDrawdown = t.drawdown && ['Win', 'BE', 'Faded'].includes(t.result)
+                        const showDrawdown = t.drawdown && ['Win', 'BE', "Didn't take"].includes(t.result)
                         const priceFields = [
                           { label: 'Entry', val: t.entryPrice },
                           { label: 'Exit', val: t.exitPrice },
@@ -495,16 +495,16 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                           { label: 'Stop Loss', val: t.stopLoss },
                         ].filter(f => f.val)
                         return (
-                          <div key={t.id} style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 12, overflow: 'hidden' }}>
+                          <div key={t.id} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
                             {/* Trade header */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 14px', borderBottom: '1px solid #141414', flexWrap: 'wrap' }}>
-                              <span style={{ fontSize: 13, fontWeight: 700, color: RESULT_COLORS[t.result] || '#888', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
-                              {t.symbol && <span style={{ fontSize: 13, fontWeight: 700, color: '#ccc' }}>{t.symbol}</span>}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 14px', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' }}>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: RESULT_COLORS[t.result] || 'var(--text-sub)', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
+                              {t.symbol && <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-label)' }}>{t.symbol}</span>}
                               <span style={{ fontSize: 13, color: t.side === 'Long' ? '#4ade80' : '#f87171', fontWeight: 600 }}>{t.side}</span>
-                              {t.contracts && <span style={{ fontSize: 12, color: '#555' }}>{t.contracts} contracts</span>}
+                              {t.contracts && <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t.contracts} contracts</span>}
                               <div style={{ flex: 1 }} />
                               {t.accounts.map(a => (
-                                <span key={a} style={{ fontSize: 10, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
+                                <span key={a} style={{ fontSize: 10, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
                               ))}
                             </div>
                             <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -512,9 +512,9 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                               {priceFields.length > 0 && (
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
                                   {priceFields.map(f => (
-                                    <div key={f.label} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 8, padding: '8px 10px' }}>
-                                      <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{f.label}</div>
-                                      <div style={{ fontSize: 15, fontWeight: 700, color: '#ccc' }}>{f.val}</div>
+                                    <div key={f.label} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 10px' }}>
+                                      <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{f.label}</div>
+                                      <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-label)' }}>{f.val}</div>
                                     </div>
                                   ))}
                                 </div>
@@ -523,14 +523,14 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                               {(t.pnl || rrVal) && (
                                 <div style={{ display: 'grid', gridTemplateColumns: t.pnl && rrVal ? '2fr 1fr' : '1fr', gap: 6 }}>
                                   {t.pnl && (
-                                    <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>P&L</div>
-                                      <div style={{ fontSize: 16, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : '#888' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
+                                    <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                      <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>P&L</div>
+                                      <div style={{ fontSize: 16, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : 'var(--text-sub)' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
                                     </div>
                                   )}
                                   {rrVal && (
-                                    <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>R:R</div>
+                                    <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                      <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>R:R</div>
                                       <div style={{ fontSize: 16, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : '#ccc' }}>{rrVal}R</div>
                                     </div>
                                   )}

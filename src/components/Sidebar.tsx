@@ -28,8 +28,8 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
-        background: '#090909',
-        borderRight: '1px solid #1a1a1a',
+        background: 'var(--bg-panel)',
+        borderRight: '1px solid var(--border)',
         boxShadow: '4px 0 24px rgba(0,0,0,0.5)',
         transition: 'width 0.22s cubic-bezier(0.4, 0, 0.2, 1)',
         overflow: 'hidden',
@@ -41,7 +41,7 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
       {collapsed ? (
         <div style={{
           height: 56, flexShrink: 0, display: 'flex', alignItems: 'center',
-          justifyContent: 'center', borderBottom: '1px solid #141414',
+          justifyContent: 'center', borderBottom: '1px solid var(--border)',
         }}>
           <button
             onClick={onToggle}
@@ -49,10 +49,10 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
             style={{
               width: 32, height: 32, borderRadius: 9, background: 'transparent', border: 'none',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#333', cursor: 'pointer', transition: 'color 0.15s, background 0.15s',
+              color: 'var(--text-dim)', cursor: 'pointer', transition: 'color 0.15s, background 0.15s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#aaa'; e.currentTarget.style.background = '#141414' }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#333'; e.currentTarget.style.background = 'transparent' }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.background = 'var(--bg-hover)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-dim)'; e.currentTarget.style.background = 'transparent' }}
           >
             <ChevronRight size={16} strokeWidth={1.8} />
           </button>
@@ -61,8 +61,8 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
         <div style={{
           flexShrink: 0, position: 'relative', display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center', gap: 10,
-          padding: '24px 16px 20px', borderBottom: '1px solid #141414',
-          background: 'linear-gradient(180deg, #111 0%, #090909 100%)',
+          padding: '24px 16px 20px', borderBottom: '1px solid var(--border)',
+          background: 'var(--bg-panel)',
         }}>
           {/* Collapse button — top right */}
           <button
@@ -72,10 +72,10 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
               position: 'absolute', top: 10, right: 10,
               width: 28, height: 28, borderRadius: 8, background: 'transparent', border: 'none',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#2a2a2a', cursor: 'pointer', transition: 'color 0.15s, background 0.15s',
+              color: 'var(--text-dim)', cursor: 'pointer', transition: 'color 0.15s, background 0.15s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#888'; e.currentTarget.style.background = '#141414' }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#2a2a2a'; e.currentTarget.style.background = 'transparent' }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.background = 'var(--bg-hover)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-dim)'; e.currentTarget.style.background = 'transparent' }}
           >
             <ChevronLeft size={15} strokeWidth={1.8} />
           </button>
@@ -83,17 +83,17 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
           {/* Logo */}
           <div style={{
             width: 46, height: 46, borderRadius: 14,
-            background: 'linear-gradient(135deg, #1e1e1e 0%, #141414 100%)',
-            border: '1px solid #2a2a2a',
+            background: 'var(--bg-hover)',
+            border: '1px solid var(--border-mid)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: '0 4px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)',
           }}>
-            <TrendingUp size={22} color="#888" />
+            <TrendingUp size={22} color="var(--text-sub)" />
           </div>
 
           {/* Title */}
           <span style={{
-            fontSize: 15, fontWeight: 700, color: '#d0d0d0',
+            fontSize: 15, fontWeight: 700, color: 'var(--text)',
             whiteSpace: 'nowrap', letterSpacing: '0.01em', textAlign: 'center',
           }}>
             The Market Element
@@ -120,8 +120,8 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
                 borderRadius: 10,
                 border: 'none',
                 cursor: 'pointer',
-                background: active ? '#1a1a1a' : 'transparent',
-                color: active ? '#ffffff' : '#666',
+                background: active ? 'var(--bg-active)' : 'transparent',
+                color: active ? 'var(--text)' : 'var(--text-muted)',
                 fontSize: 15,
                 fontWeight: active ? 700 : 400,
                 transition: 'all 0.15s ease',
@@ -131,14 +131,14 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
               }}
               onMouseEnter={e => {
                 if (!active) {
-                  e.currentTarget.style.background = '#111'
-                  e.currentTarget.style.color = '#ccc'
+                  e.currentTarget.style.background = 'var(--bg-hover)'
+                  e.currentTarget.style.color = 'var(--text-sub)'
                 }
               }}
               onMouseLeave={e => {
                 if (!active) {
                   e.currentTarget.style.background = 'transparent'
-                  e.currentTarget.style.color = '#666'
+                  e.currentTarget.style.color = 'var(--text-muted)'
                 }
               }}
             >
@@ -147,7 +147,7 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
                   position: 'absolute', left: 0, top: '50%',
                   transform: 'translateY(-50%)',
                   width: 3, height: 20, borderRadius: 2,
-                  background: 'linear-gradient(180deg, #f0f0f0 0%, #aaa 100%)',
+                  background: 'var(--btn-bg)',
                 }} />
               )}
               <Icon size={17} strokeWidth={active ? 2 : 1.8} />

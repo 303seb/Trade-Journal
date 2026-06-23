@@ -138,9 +138,9 @@ const RESULTS: { value: TradeResult; label: string; color: string; bg: string }[
   { value: 'Win',   label: 'Win',   color: '#4ade80', bg: 'rgba(74,222,128,0.12)'  },
   { value: 'Loss',  label: 'Loss',  color: '#f87171', bg: 'rgba(248,113,113,0.12)' },
   { value: 'BE',    label: 'BE',    color: '#aaaaaa', bg: 'rgba(170,170,170,0.1)'  },
-  { value: 'Faded', label: 'Faded', color: '#fb923c', bg: 'rgba(251,146,60,0.1)'   },
+  { value: "Didn't take", label: "Didn't take", color: '#fb923c', bg: 'rgba(251,146,60,0.1)'   },
 ]
-const RESULT_COLORS: Record<string, string> = { Win: '#4ade80', Loss: '#f87171', BE: '#aaaaaa', Faded: '#fb923c' }
+const RESULT_COLORS: Record<string, string> = { Win: '#4ade80', Loss: '#f87171', BE: '#aaaaaa', "Didn't take": '#fb923c' }
 
 const GRADES = ['A+', 'A', 'B', 'C', 'D', 'F']
 const GRADE_COLORS: Record<string, string> = { 'A+': '#4ade80', A: '#86efac', B: '#fbbf24', C: '#fb923c', D: '#f87171', F: '#ef4444' }
@@ -166,13 +166,13 @@ const EXIT_REASONS = ['Full TP', 'Swept Internal High/Low', 'SMT']
 // ── Shared styles ─────────────────────────────────────────────────────────────
 
 const inputBase: React.CSSProperties = {
-  background: '#0e0e0e', border: '1px solid #1e1e1e', borderRadius: 8,
-  padding: '10px 13px', fontSize: 16, color: '#f0f0f0', outline: 'none',
+  background: 'var(--bg-input)', border: '1px solid var(--border-mid)', borderRadius: 8,
+  padding: '10px 13px', fontSize: 16, color: 'var(--text)', outline: 'none',
   width: '100%', boxSizing: 'border-box', transition: 'border-color 0.15s',
   fontFamily: 'inherit',
 }
 const fieldLabel = (text: string) => (
-  <div style={{ fontSize: 13, color: '#999', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 7 }}>{text}</div>
+  <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 7 }}>{text}</div>
 )
 
 // ── Screenshot Upload ─────────────────────────────────────────────────────────
@@ -225,13 +225,13 @@ function PillBtn({ label, active, onClick, activeColor, activeBg }: {
   return (
     <button onClick={onClick} style={{
       flex: 1, padding: '8px 4px', borderRadius: 8, fontSize: 13, fontWeight: 600,
-      border: `1px solid ${active ? activeColor + '55' : '#1e1e1e'}`,
+      border: `1px solid ${active ? activeColor + '55' : 'var(--border-mid)'}`,
       background: active ? activeBg : 'transparent',
-      color: active ? activeColor : '#666',
+      color: active ? activeColor : 'var(--text-muted)',
       cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
     }}
-      onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#aaa' }}
-      onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#666' }}
+      onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-sub)' }}
+      onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
     >{label}</button>
   )
 }
@@ -240,13 +240,13 @@ function TagChip({ label, active, onClick }: { label: string; active: boolean; o
   return (
     <button onClick={onClick} style={{
       padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-      border: `1px solid ${active ? '#4a4a4a' : '#222'}`,
-      background: active ? '#252525' : 'transparent',
-      color: active ? '#f0f0f0' : '#666',
+      border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border-mid)'}`,
+      background: active ? 'var(--bg-active)' : 'transparent',
+      color: active ? 'var(--text)' : 'var(--text-muted)',
       cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
     }}
-      onMouseEnter={e => { if (!active) { e.currentTarget.style.color = '#bbb'; e.currentTarget.style.borderColor = '#333' } }}
-      onMouseLeave={e => { if (!active) { e.currentTarget.style.color = '#666'; e.currentTarget.style.borderColor = '#222' } }}
+      onMouseEnter={e => { if (!active) { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-strong)' } }}
+      onMouseLeave={e => { if (!active) { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
     >{label}</button>
   )
 }
@@ -776,14 +776,14 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
       style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.82)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
     >
-      <div style={{ background: '#090909', border: '1px solid #1a1a1a', borderRadius: 16, width: '100%', maxWidth: 920, maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 32px 80px rgba(0,0,0,0.9)' }}>
+      <div style={{ background: 'var(--bg-panel)', border: '1px solid var(--border)', borderRadius: 16, width: '100%', maxWidth: 920, maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 32px 80px rgba(0,0,0,0.9)' }}>
 
         {/* Header */}
-        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', padding: '18px 24px', borderBottom: '1px solid #141414' }}>
-          <span style={{ fontSize: 16, fontWeight: 700, color: '#f8f8f8', flex: 1 }}>New Trade</span>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#2a2a2a', display: 'flex', padding: 4, borderRadius: 6, transition: 'color 0.15s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#888')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#2a2a2a')}
+        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', padding: '18px 24px', borderBottom: '1px solid var(--border)' }}>
+          <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', flex: 1 }}>New Trade</span>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', display: 'flex', padding: 4, borderRadius: 6, transition: 'color 0.15s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-sub)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-dim)')}
           ><X size={16} /></button>
         </div>
 
@@ -800,17 +800,17 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                 <div>
                   {fieldLabel('Date')}
                   <input type="date" value={date} onChange={e => setDate(e.target.value)}
-                    style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
                 <div>
                   {fieldLabel('Time')}
                   <input type="time" value={trade.time || ''} onChange={e => set('time', e.target.value)}
-                    style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
                 <div>
                   {fieldLabel('Symbol')}
                   <select value={trade.symbol} onChange={e => set('symbol', e.target.value)}
-                    style={{ ...inputBase, cursor: 'pointer' }} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')}>
+                    style={{ ...inputBase, cursor: 'pointer' }} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
                     <option value="">—</option>
                     {SYMBOLS.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
@@ -870,17 +870,17 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                 <div>
                   {fieldLabel('Contracts')}
                   <input type="number" value={trade.contracts} onChange={e => set('contracts', e.target.value)}
-                    placeholder="1" min="0" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    placeholder="1" min="0" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
                 <div>
                   {fieldLabel('Fees ($)')}
                   <input type="number" value={trade.fees} onChange={e => set('fees', e.target.value)}
-                    placeholder="0.00" min="0" step="0.01" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    placeholder="0.00" min="0" step="0.01" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
                 <div>
                   {fieldLabel('Duration')}
                   <input value={trade.duration} onChange={e => set('duration', e.target.value)}
-                    placeholder="e.g. 45m, 2h" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    placeholder="e.g. 45m, 2h" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
               </div>
 
@@ -889,22 +889,22 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                 <div>
                   {fieldLabel('Entry Price')}
                   <input type="number" value={trade.entryPrice} onChange={e => set('entryPrice', e.target.value)}
-                    placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
                 <div>
                   {fieldLabel('Exit Price')}
                   <input type="number" value={trade.exitPrice} onChange={e => set('exitPrice', e.target.value)}
-                    placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
                 <div>
                   {fieldLabel('Target Price')}
                   <input type="number" value={trade.targetPrice} onChange={e => set('targetPrice', e.target.value)}
-                    placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
                 <div>
                   {fieldLabel('Trade # (today)')}
                   <input type="number" value={trade.tradeNumber} onChange={e => set('tradeNumber', e.target.value)}
-                    placeholder="1" min="1" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    placeholder="1" min="1" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
               </div>
 
@@ -913,17 +913,17 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                 <div>
                   {fieldLabel('Take Profit (pts)')}
                   <input type="number" value={trade.takeProfit} onChange={e => set('takeProfit', e.target.value)}
-                    placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
                 <div>
                   {fieldLabel('Stop Loss (pts)')}
                   <input type="number" value={trade.stopLoss} onChange={e => set('stopLoss', e.target.value)}
-                    placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
                 <div>
                   {fieldLabel('Drawdown (pts)')}
                   <input type="number" value={trade.drawdown} onChange={e => set('drawdown', e.target.value)}
-                    placeholder="0" min="0" step="0.25" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                    placeholder="0" min="0" step="0.25" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
                 </div>
               </div>
 
@@ -949,16 +949,16 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
               </div>
 
               {/* Auto-Calculated subsection */}
-              <div style={{ background: '#0b0b0b', border: '1px solid #1a1a1a', borderRadius: 12, padding: '16px 20px', marginTop: 4 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Auto-Calculated</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0, borderLeft: '1px solid #1a1a1a' }}>
+              <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px', marginTop: 4 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Auto-Calculated</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0, borderLeft: '1px solid var(--border)' }}>
                   {[
-                    { label: 'Gross P&L', value: hasPnl ? (grossPnl >= 0 ? '+' : '') + formatCurrency(grossPnl) : '—', color: hasPnl ? grossColor : '#333' },
-                    { label: 'Net P&L',   value: hasPnl ? (netPnl >= 0 ? '+' : '') + formatCurrency(netPnl) : '—',   color: hasPnl ? netColor : '#333' },
-                    { label: 'R Multiple', value: rMultiple !== null ? `${rMultiple >= 0 ? '+' : ''}${rMultiple}R` : '—', color: rMultiple !== null ? rColor : '#333' },
+                    { label: 'Gross P&L', value: hasPnl ? (grossPnl >= 0 ? '+' : '') + formatCurrency(grossPnl) : '—', color: hasPnl ? grossColor : 'var(--text-dim)' },
+                    { label: 'Net P&L',   value: hasPnl ? (netPnl >= 0 ? '+' : '') + formatCurrency(netPnl) : '—',   color: hasPnl ? netColor : 'var(--text-dim)' },
+                    { label: 'R Multiple', value: rMultiple !== null ? `${rMultiple >= 0 ? '+' : ''}${rMultiple}R` : '—', color: rMultiple !== null ? rColor : 'var(--text-dim)' },
                   ].map(item => (
-                    <div key={item.label} style={{ padding: '0 20px', borderRight: '1px solid #1a1a1a' }}>
-                      <div style={{ fontSize: 11, color: '#666', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>{item.label}</div>
+                    <div key={item.label} style={{ padding: '0 20px', borderRight: '1px solid var(--border)' }}>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>{item.label}</div>
                       <div style={{ fontSize: 26, fontWeight: 700, color: item.color, letterSpacing: '-0.02em' }}>{item.value}</div>
                     </div>
                   ))}
@@ -1146,14 +1146,14 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
               </div>
 
               {/* Auto-Grade subsection */}
-              <div style={{ background: '#0b0b0b', border: '1px solid #1a1a1a', borderRadius: 12, padding: '16px 20px' }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#666', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Setup Grade — Auto Calculated</div>
+              <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px' }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Setup Grade — Auto Calculated</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
                   <div style={{ fontSize: 48, fontWeight: 800, color: autoGradeColor, letterSpacing: '-0.03em', lineHeight: 1, minWidth: 60 }}>
                     {autoGradeResult?.grade ?? '—'}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                    <div style={{ fontSize: 14, color: '#888', fontWeight: 500 }}>
+                    <div style={{ fontSize: 14, color: 'var(--text-sub)', fontWeight: 500 }}>
                       {autoGradeResult
                         ? `${autoGradeResult.score} signal${autoGradeResult.score !== 1 ? 's' : ''} detected`
                         : 'Fill in trade context fields to generate a grade'}
@@ -1236,7 +1236,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
         </div>
 
         {/* Footer */}
-        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10, padding: '14px 24px', borderTop: '1px solid #141414', background: '#080808' }}>
+        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10, padding: '14px 24px', borderTop: '1px solid var(--border)', background: 'var(--bg-panel)' }}>
           <button onClick={onClose}
             style={{ padding: '8px 18px', borderRadius: 8, border: '1px solid #1e1e1e', background: 'transparent', color: '#555', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
             onMouseEnter={e => { e.currentTarget.style.color = '#ccc'; e.currentTarget.style.borderColor = '#333' }}
@@ -1295,13 +1295,13 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
 
   const pnlVal = parseFloat(trade.pnl)
   const hasPnl = trade.pnl !== ''
-  const pnlColor = pnlVal > 0 ? '#4ade80' : pnlVal < 0 ? '#f87171' : '#888'
+  const pnlColor = pnlVal > 0 ? '#4ade80' : pnlVal < 0 ? '#f87171' : 'var(--text-sub)'
   const rrVal = calcRR(trade.takeProfit, trade.stopLoss)
-  const rrColor = !rrVal ? '#2a2a2a' : parseFloat(rrVal) >= 1 ? '#4ade80' : '#f87171'
-  const showDrawdown = trade.result === 'Win' || trade.result === 'BE' || trade.result === 'Faded'
+  const rrColor = !rrVal ? 'var(--text-dim)' : parseFloat(rrVal) >= 1 ? '#4ade80' : '#f87171'
+  const showDrawdown = trade.result === 'Win' || trade.result === 'BE' || trade.result === "Didn't take"
 
   return (
-    <div style={{ borderTop: '1px solid #111', background: '#080808', padding: '26px 36px 32px' }}>
+    <div style={{ borderTop: '1px solid var(--border)', background: 'var(--bg-panel)', padding: '26px 36px 32px' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
 
         {/* ── Top controls row ── */}
@@ -1324,16 +1324,16 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           <div style={{ flex: 1 }} />
           <button
             onClick={() => { if (confirmDelete) onDelete(); else setConfirmDelete(true) }}
-            style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, padding: '6px 10px', borderRadius: 7, border: `1px solid ${confirmDelete ? 'rgba(239,68,68,0.4)' : '#1e1e1e'}`, background: confirmDelete ? 'rgba(239,68,68,0.1)' : 'transparent', color: confirmDelete ? '#f87171' : '#444', cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, padding: '6px 10px', borderRadius: 7, border: `1px solid ${confirmDelete ? 'rgba(239,68,68,0.4)' : 'var(--border-mid)'}`, background: confirmDelete ? 'rgba(239,68,68,0.1)' : 'transparent', color: confirmDelete ? '#f87171' : 'var(--text-dim)', cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
             onMouseEnter={e => { if (!confirmDelete) { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)' } }}
-            onMouseLeave={e => { if (!confirmDelete) { e.currentTarget.style.color = '#444'; e.currentTarget.style.borderColor = '#1e1e1e' } }}
+            onMouseLeave={e => { if (!confirmDelete) { e.currentTarget.style.color = 'var(--text-dim)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
           ><Trash2 size={11} />{confirmDelete ? 'Confirm?' : 'Delete'}</button>
-          <button onClick={onSave} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 16px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, background: saved ? 'rgba(74,222,128,0.12)' : '#f0f0f0', color: saved ? '#4ade80' : '#111', outline: saved ? '1px solid rgba(74,222,128,0.25)' : 'none', transition: 'all 0.2s', fontFamily: 'inherit' }}>
+          <button onClick={onSave} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 16px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, background: saved ? 'rgba(74,222,128,0.12)' : 'var(--btn-bg)', color: saved ? '#4ade80' : 'var(--btn-text)', outline: saved ? '1px solid rgba(74,222,128,0.25)' : 'none', transition: 'all 0.2s', fontFamily: 'inherit' }}>
             <Save size={12} />{saved ? 'Saved!' : 'Save'}
           </button>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#2a2a2a', display: 'flex', padding: 4, transition: 'color 0.15s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#666')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#2a2a2a')}
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', display: 'flex', padding: 4, transition: 'color 0.15s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-dim)')}
           ><X size={15} /></button>
         </div>
 
@@ -1342,12 +1342,12 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           <div>
             {fieldLabel('Date')}
             <input type="date" value={date} onChange={e => onDateChange(e.target.value)}
-              style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+              style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
           </div>
           <div>
             {fieldLabel('Time')}
             <input type="time" value={trade.time || ''} onChange={e => set('time', e.target.value)}
-              style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+              style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
           </div>
           <div>
             {fieldLabel('Account')}
@@ -1379,7 +1379,7 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           <div>
             {fieldLabel('Symbol')}
             <select value={trade.symbol} onChange={e => set('symbol', e.target.value)}
-              style={{ ...inputBase, cursor: 'pointer' }} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')}>
+              style={{ ...inputBase, cursor: 'pointer' }} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
               <option value="">—</option>
               {SYMBOLS.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
@@ -1408,12 +1408,12 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           <div>
             {fieldLabel('Contracts')}
             <input type="number" value={trade.contracts} onChange={e => set('contracts', e.target.value)}
-              placeholder="1" min="0" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+              placeholder="1" min="0" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
           </div>
           <div>
             {fieldLabel('Setup')}
             <input value={trade.setup || ''} onChange={e => set('setup', e.target.value)}
-              placeholder="5m FVG, OB retest…" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+              placeholder="5m FVG, OB retest…" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
           </div>
         </div>
 
@@ -1428,7 +1428,7 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
             <div key={f.key}>
               {fieldLabel(f.label)}
               <input type="number" value={trade[f.key]} onChange={e => set(f.key, e.target.value)}
-                placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
             </div>
           ))}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -1451,7 +1451,7 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
             <div>
               {fieldLabel('Drawdown (pts)')}
               <input type="number" value={trade.drawdown} onChange={e => set('drawdown', e.target.value)}
-                placeholder="0" min="0" step="0.25" style={inputBase} onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#1e1e1e')} />
+                placeholder="0" min="0" step="0.25" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
             </div>
           )}
         </div>
@@ -1507,10 +1507,10 @@ function SummaryRow({ trade, date, expanded, onToggle, COL }: {
   COL: string
 }) {
   const pnl = parseFloat(trade.pnl) || 0
-  const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : '#555'
+  const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : 'var(--text-muted)'
   const rrVal = calcRR(trade.takeProfit, trade.stopLoss)
   const rrNum = rrVal ? parseFloat(rrVal) : null
-  const rrColor = rrNum === null ? '#333' : rrNum >= 1 ? '#4ade80' : '#f87171'
+  const rrColor = rrNum === null ? 'var(--text-dim)' : rrNum >= 1 ? '#4ade80' : '#f87171'
   const rc = RESULT_COLORS[trade.result] || '#888'
   const gc = trade.grade ? (GRADE_COLORS[trade.grade] || '#888') : null
   const dateLabel = `${date.slice(5).replace('-', '/')}${trade.time ? ' · ' + trade.time : ''}`
@@ -1524,14 +1524,14 @@ function SummaryRow({ trade, date, expanded, onToggle, COL }: {
         display: 'grid', gridTemplateColumns: COL,
         padding: '10px 36px', alignItems: 'center',
         cursor: 'pointer', transition: 'background 0.1s',
-        borderLeft: `2px solid ${expanded ? '#2a2a2a' : 'transparent'}`,
-        background: expanded ? '#0e0e0e' : 'transparent',
+        borderLeft: `2px solid ${expanded ? 'var(--border-strong)' : 'transparent'}`,
+        background: expanded ? 'var(--bg-active)' : 'transparent',
       }}
-      onMouseEnter={e => { if (!expanded) e.currentTarget.style.background = '#0b0b0b' }}
+      onMouseEnter={e => { if (!expanded) e.currentTarget.style.background = 'var(--bg-hover)' }}
       onMouseLeave={e => { if (!expanded) e.currentTarget.style.background = 'transparent' }}
     >
-      <span style={{ fontSize: 12, color: expanded ? '#888' : '#666', fontWeight: 500 }}>{dateLabel}</span>
-      <span style={{ fontSize: 14, fontWeight: 700, color: expanded ? '#f0f0f0' : '#d0d0d0' }}>{trade.symbol || '—'}</span>
+      <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>{dateLabel}</span>
+      <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{trade.symbol || '—'}</span>
       <span style={{
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
         padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700, width: 'fit-content',
@@ -1539,8 +1539,8 @@ function SummaryRow({ trade, date, expanded, onToggle, COL }: {
         border: `1px solid ${trade.side === 'Long' ? 'rgba(34,211,238,0.25)' : 'rgba(248,113,113,0.2)'}`,
         color: trade.side === 'Long' ? '#22d3ee' : '#f87171',
       }}>{trade.side}</span>
-      <span style={{ fontSize: 13, color: '#666', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 10 }}>{setupLabel}</span>
-      <span style={{ fontSize: 12, color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sessionLabel}</span>
+      <span style={{ fontSize: 13, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 10 }}>{setupLabel}</span>
+      <span style={{ fontSize: 12, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sessionLabel}</span>
       <span style={{ fontSize: 14, fontWeight: 700, color: pnlColor }}>
         {trade.pnl ? (pnl >= 0 ? '+' : '') + formatCurrency(pnl) : '—'}
       </span>
@@ -1559,9 +1559,9 @@ function SummaryRow({ trade, date, expanded, onToggle, COL }: {
           background: `${gc}18`, border: `1px solid ${gc}44`, color: gc,
         }}>{trade.grade}</span>
       ) : (
-        <span style={{ fontSize: 12, color: '#333' }}>—</span>
+        <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>—</span>
       )}
-      <ChevronDown size={14} color="#555" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s', justifySelf: 'end' }} />
+      <ChevronDown size={14} color="var(--text-muted)" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s', justifySelf: 'end' }} />
     </div>
   )
 }
@@ -1684,14 +1684,14 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
   const COL = '150px 70px 84px 1fr 130px 110px 70px 76px 56px 24px'
 
   const hStyle: React.CSSProperties = {
-    fontSize: 11, fontWeight: 700, color: '#555',
+    fontSize: 11, fontWeight: 700, color: 'var(--text-muted)',
     textTransform: 'uppercase', letterSpacing: '0.09em', padding: '9px 0',
   }
   const selectStyle = (active: boolean): React.CSSProperties => ({
-    background: active ? '#141414' : '#0a0a0a',
-    border: `1px solid ${active ? '#2a2a2a' : '#161616'}`,
+    background: active ? 'var(--bg-hover)' : 'var(--bg-input)',
+    border: `1px solid ${active ? 'var(--border-mid)' : 'var(--border)'}`,
     borderRadius: 8, padding: '6px 26px 6px 10px',
-    fontSize: 12, color: active ? '#ddd' : '#444',
+    fontSize: 12, color: active ? 'var(--text)' : 'var(--text-muted)',
     cursor: 'pointer', outline: 'none', fontFamily: 'inherit',
     appearance: 'none', WebkitAppearance: 'none',
   })
@@ -1709,20 +1709,20 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
       )}
 
       {/* Filter bar */}
-      <div style={{ flexShrink: 0, padding: '12px 36px', borderBottom: '1px solid #111', display: 'flex', alignItems: 'center', gap: 10, background: '#070707' }}>
-        <span style={{ fontSize: 13, color: '#666', marginRight: 4, whiteSpace: 'nowrap' }}>Log, scan and review every trade.</span>
+      <div style={{ flexShrink: 0, padding: '12px 36px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10, background: 'var(--bg-panel)' }}>
+        <span style={{ fontSize: 13, color: 'var(--text-muted)', marginRight: 4, whiteSpace: 'nowrap' }}>Log, scan and review every trade.</span>
         <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
-          <Search size={12} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#2a2a2a', pointerEvents: 'none' }} />
+          <Search size={12} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)', pointerEvents: 'none' }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search trades…"
-            style={{ ...inputBase, paddingLeft: 30, fontSize: 13, padding: '7px 12px 7px 30px', borderRadius: 8, background: '#0a0a0a', border: '1px solid #161616' }}
-            onFocus={e => (e.target.style.borderColor = '#333')} onBlur={e => (e.target.style.borderColor = '#161616')} />
+            style={{ ...inputBase, paddingLeft: 30, fontSize: 13, padding: '7px 12px 7px 30px', borderRadius: 8, background: 'var(--bg-input)', border: '1px solid var(--border-mid)' }}
+            onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
         </div>
-        <button onClick={() => openNew()} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: '#f0f0f0', color: '#111', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
-          onMouseEnter={e => (e.currentTarget.style.background = '#fff')}
-          onMouseLeave={e => (e.currentTarget.style.background = '#f0f0f0')}
+        <button onClick={() => openNew()} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'var(--btn-bg)', color: 'var(--btn-text)', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--btn-hover)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'var(--btn-bg)')}
         ><Plus size={13} /> New Trade</button>
         {[
-          { label: 'Result',  value: filterResult,  opts: ['All', 'Win', 'Loss', 'BE', 'Faded'],                                   set: setFilterResult  },
+          { label: 'Result',  value: filterResult,  opts: ['All', 'Win', 'Loss', 'BE', "Didn't take"],                              set: setFilterResult  },
           { label: 'Session', value: filterSession, opts: ['All', 'Asia', 'London', 'NY', 'London Open', 'NY Open'],               set: setFilterSession },
           { label: 'P&L',    value: filterPnl,     opts: ['All', 'Profitable', 'Unprofitable'],                                    set: setFilterPnl     },
         ].map(f => (
@@ -1735,15 +1735,15 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
         ))}
         {filtersActive && (
           <button onClick={() => { setSearch(''); setFilterResult('All'); setFilterSession('All'); setFilterPnl('All') }}
-            style={{ padding: '6px 12px', background: 'transparent', border: '1px solid #1e1e1e', borderRadius: 8, color: '#444', fontSize: 12, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#ccc'; e.currentTarget.style.borderColor = '#333' }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#444'; e.currentTarget.style.borderColor = '#1e1e1e' }}
+            style={{ padding: '6px 12px', background: 'transparent', border: '1px solid var(--border-mid)', borderRadius: 8, color: 'var(--text-dim)', fontSize: 12, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-dim)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
           >Clear</button>
         )}
       </div>
 
       {/* Column headers */}
-      <div style={{ flexShrink: 0, display: 'grid', gridTemplateColumns: COL, padding: '0 36px', background: '#060606', borderBottom: '1px solid #0e0e0e' }}>
+      <div style={{ flexShrink: 0, display: 'grid', gridTemplateColumns: COL, padding: '0 36px', background: 'var(--bg-panel)', borderBottom: '1px solid var(--border)' }}>
         {['Date', 'Pair', 'Direction', 'Setup', 'Session', 'Net P&L', 'R', 'Result', 'Grade', ''].map(h => (
           <div key={h} style={hStyle}>{h}</div>
         ))}
@@ -1753,8 +1753,8 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {filtered.length === 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '70px 0', gap: 12 }}>
-            <BookOpen size={30} color="#333" />
-            <p style={{ color: '#555', fontSize: 14, margin: 0 }}>
+            <BookOpen size={30} color="var(--text-dim)" />
+            <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0 }}>
               {allTrades.length === 0 ? 'No trades yet — click New Trade to add one' : 'No trades match your filters'}
             </p>
           </div>
@@ -1762,10 +1762,10 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
           filtered.map((t, idx) => {
             const key = `${t.date}::${t.id}`
             const isExpanded = expandedKey === key
-            const rowBg = idx % 2 === 0 ? '#080808' : '#070707'
+            const rowBg = idx % 2 === 0 ? 'var(--bg-panel)' : 'var(--bg)'
 
             return (
-              <div key={key} style={{ borderBottom: `1px solid ${isExpanded ? '#161616' : '#0c0c0c'}`, background: isExpanded ? '#0e0e0e' : rowBg }}>
+              <div key={key} style={{ borderBottom: `1px solid var(--border)`, background: isExpanded ? 'var(--bg-active)' : rowBg }}>
                 <SummaryRow
                   trade={t}
                   date={t.date}

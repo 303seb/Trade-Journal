@@ -8,6 +8,25 @@
 
 /* ── Dark theme (default) ── */
 :root, [data-theme="dark"] {
+  --bg: #0e0e0e;
+  --bg-panel: #080808;
+  --bg-card: #141414;
+  --bg-surface: #111111;
+  --bg-hover: #1a1a1a;
+  --bg-active: #1f1f1f;
+  --bg-input: #0e0e0e;
+  --border: #1a1a1a;
+  --border-mid: #222222;
+  --border-strong: #333333;
+  --text: #f0f0f0;
+  --text-sub: #888888;
+  --text-muted: #555555;
+  --text-dim: #333333;
+  --text-label: #d0d0d0;
+  --btn-bg: #f0f0f0;
+  --btn-text: #111111;
+  --btn-hover: #ffffff;
+  /* legacy aliases */
   --bg-app: #0e0e0e;
   --bg-sidebar: #090909;
   --text-primary: #f0f0f0;
@@ -17,30 +36,49 @@
 
 /* ── Light theme ── */
 [data-theme="light"] {
-  --bg-app: #f0f0f2;
+  --bg: #f4f4f5;
+  --bg-panel: #fafafa;
+  --bg-card: #ffffff;
+  --bg-surface: #f8f8f8;
+  --bg-hover: #ececec;
+  --bg-active: #e4e4e7;
+  --bg-input: #ffffff;
+  --border: #e4e4e7;
+  --border-mid: #d4d4d8;
+  --border-strong: #a1a1aa;
+  --text: #111111;
+  --text-sub: #52525b;
+  --text-muted: #71717a;
+  --text-dim: #a1a1aa;
+  --text-label: #3f3f46;
+  --btn-bg: #111111;
+  --btn-text: #f0f0f0;
+  --btn-hover: #222222;
+  /* legacy aliases */
+  --bg-app: #f4f4f5;
   --bg-sidebar: #fafafa;
   --text-primary: #111;
   --text-secondary: #555;
-  --border-base: #e0e0e0;
+  --border-base: #e4e4e7;
 }
 
 [data-theme="light"] body {
-  background-color: var(--bg-app);
-  color: var(--text-primary);
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 [data-theme="light"] aside {
-  background: var(--bg-sidebar) !important;
-  border-right-color: var(--border-base) !important;
+  background: var(--bg-panel) !important;
+  border-right-color: var(--border) !important;
 }
 
 [data-theme="light"] .bg-\[#0e0e0e\] {
-  background-color: var(--bg-app) !important;
+  background-color: var(--bg) !important;
 }
 
 body {
-  background-color: #0e0e0e;
-  color: #f0f0f0;
+  background-color: var(--bg);
+  color: var(--text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

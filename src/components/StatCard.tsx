@@ -9,14 +9,14 @@ interface StatCardProps {
 export function StatCard({ label, value, sub, positive, icon }: StatCardProps) {
   const valueColor =
     positive === null || positive === undefined
-      ? '#f0f0f0'
+      ? 'var(--text)'
       : positive
       ? '#4ade80'
       : '#f87171'
 
   const accentColor =
     positive === null || positive === undefined
-      ? '#2a2a2a'
+      ? 'var(--border-mid)'
       : positive
       ? 'rgba(74,222,128,0.5)'
       : 'rgba(248,113,113,0.5)'
@@ -24,8 +24,8 @@ export function StatCard({ label, value, sub, positive, icon }: StatCardProps) {
   return (
     <div
       style={{
-        background: 'linear-gradient(160deg, #161616 0%, #111 100%)',
-        border: '1px solid #222',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border)',
         borderLeft: `3px solid ${accentColor}`,
         borderRadius: 14,
         padding: '18px 18px 16px',
@@ -33,29 +33,29 @@ export function StatCard({ label, value, sub, positive, icon }: StatCardProps) {
         flexDirection: 'column',
         gap: 12,
         transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.3)',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
       }}
       onMouseEnter={e => {
         e.currentTarget.style.transform = 'translateY(-2px)'
-        e.currentTarget.style.boxShadow = '0 8px 28px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.3)'
+        e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)'
       }}
       onMouseLeave={e => {
         e.currentTarget.style.transform = 'translateY(0)'
-        e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.3)'
+        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)'
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 11, fontWeight: 800, color: '#555', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+        <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {label}
         </span>
-        <span style={{ color: '#2a2a2a' }}>{icon}</span>
+        <span style={{ color: 'var(--border-strong)' }}>{icon}</span>
       </div>
       <div>
         <div style={{ fontSize: 28, fontWeight: 800, color: valueColor, letterSpacing: '-0.02em', lineHeight: 1 }}>
           {value}
         </div>
         {sub && (
-          <div style={{ fontSize: 12, color: '#555', marginTop: 7 }}>{sub}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 7 }}>{sub}</div>
         )}
       </div>
     </div>

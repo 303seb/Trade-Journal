@@ -43,6 +43,9 @@ function App() {
     deleteTradingAccount,
     diaryEntries,
     saveDiaryEntry,
+    diaryTemplates,
+    saveDiaryTemplate,
+    deleteDiaryTemplate,
     appSettings,
     updateAppSettings,
   } = useStore()
@@ -65,7 +68,7 @@ function App() {
   const diaryDates = Object.keys(diaryEntries).filter(k => diaryEntries[k]?.trim())
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0e0e0e]">
+    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--bg)' }}>
       <Sidebar
         page={page}
         onNavigate={p => { setPage(p); if (p !== 'trades') setJournalDate(undefined); if (p === 'diary') setDiaryInitialDate(undefined) }}
@@ -130,6 +133,9 @@ function App() {
               diaryEntries={diaryEntries}
               onSave={saveDiaryEntry}
               initialDate={diaryInitialDate}
+              templates={diaryTemplates}
+              onSaveTemplate={saveDiaryTemplate}
+              onDeleteTemplate={deleteDiaryTemplate}
             />
           </div>
         )}

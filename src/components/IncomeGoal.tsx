@@ -22,7 +22,7 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
   const isAhead = currentPnl >= goal
 
   const barColor = progress <= 0
-    ? '#1e1e1e'
+    ? 'var(--border)'
     : progress <= 33
     ? '#f87171'
     : progress <= 66
@@ -41,35 +41,35 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
   })
 
   return (
-    <div style={{ background: '#141414', border: '1px solid #1f1f1f', borderRadius: 16, padding: '24px 28px' }}>
+    <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: '24px 28px' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{
             width: 36, height: 36, borderRadius: 10,
-            background: '#1a1a1a', border: '1px solid #222',
+            background: 'var(--bg-hover)', border: '1px solid var(--border-mid)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
-            <Target size={17} color="#777" />
+            <Target size={17} color="var(--text-sub)" />
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#f0f0f0', marginBottom: 2 }}>Monthly Milestone</div>
-            <div style={{ fontSize: 11, color: '#444' }}>{monthLabel}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', marginBottom: 2 }}>Monthly Milestone</div>
+            <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{monthLabel}</div>
           </div>
         </div>
 
         {editing ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 13, color: '#555' }}>$</span>
+            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>$</span>
             <input
               type="number"
               value={inputVal}
               onChange={e => setInputVal(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSave()}
               style={{
-                background: '#0e0e0e', border: '1px solid #333', borderRadius: 8,
-                padding: '7px 12px', fontSize: 13, color: '#f0f0f0', width: 130,
+                background: 'var(--bg-input)', border: '1px solid var(--border-strong)', borderRadius: 8,
+                padding: '7px 12px', fontSize: 13, color: 'var(--text)', width: 130,
                 outline: 'none', fontFamily: 'inherit',
               }}
               autoFocus
@@ -77,12 +77,12 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
             <button
               onClick={handleSave}
               style={{
-                background: '#f0f0f0', color: '#111', border: 'none', borderRadius: 8,
+                background: 'var(--btn-bg)', color: 'var(--btn-text)', border: 'none', borderRadius: 8,
                 padding: '8px 11px', cursor: 'pointer', display: 'flex', alignItems: 'center',
                 transition: 'background 0.15s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#ffffff')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#f0f0f0')}
+              onMouseEnter={e => (e.currentTarget.style.background = 'var(--btn-hover)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'var(--btn-bg)')}
             >
               <Check size={14} />
             </button>
@@ -92,11 +92,11 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
             onClick={() => setEditing(true)}
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
-              fontSize: 12, color: '#555', background: 'none', border: 'none',
+              fontSize: 12, color: 'var(--text-muted)', background: 'none', border: 'none',
               cursor: 'pointer', transition: 'color 0.15s', fontFamily: 'inherit',
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#f0f0f0')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#555')}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
           >
             <Edit2 size={13} />
             {goal > 0 ? `Goal: ${formatCurrency(goal)}` : 'Set goal'}
@@ -111,11 +111,11 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
             <div>
               <span style={{
                 fontSize: 34, fontWeight: 700, letterSpacing: '-0.03em',
-                color: isAhead ? '#4ade80' : '#f0f0f0',
+                color: isAhead ? '#4ade80' : 'var(--text)',
               }}>
                 {formatCurrency(currentPnl)}
               </span>
-              <span style={{ fontSize: 14, color: '#3a3a3a', marginLeft: 12 }}>
+              <span style={{ fontSize: 14, color: 'var(--text-dim)', marginLeft: 12 }}>
                 of {formatCurrency(goal)}
               </span>
             </div>
@@ -125,7 +125,7 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
           </div>
 
           {/* Progress bar */}
-          <div style={{ height: 10, background: '#1a1a1a', borderRadius: 999, overflow: 'hidden', marginBottom: 16 }}>
+          <div style={{ height: 10, background: 'var(--bg-hover)', borderRadius: 999, overflow: 'hidden', marginBottom: 16 }}>
             <div style={{
               width: `${Math.max(progress, 0)}%`, height: '100%', borderRadius: 999,
               background: barColor,
@@ -134,14 +134,14 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
           </div>
 
           {/* Status label */}
-          <div style={{ fontSize: 12, color: isAhead ? '#4ade80' : '#555' }}>
+          <div style={{ fontSize: 12, color: isAhead ? '#4ade80' : 'var(--text-muted)' }}>
             {isAhead
               ? `+${formatCurrency(currentPnl - goal)} over goal`
               : `${formatCurrency(remaining)} remaining`}
           </div>
         </>
       ) : (
-        <div style={{ textAlign: 'center', padding: '32px 0', color: '#2a2a2a', fontSize: 13 }}>
+        <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-dim)', fontSize: 13 }}>
           Set a monthly goal to track your progress
         </div>
       )}
