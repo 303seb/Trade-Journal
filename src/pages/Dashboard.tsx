@@ -94,7 +94,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
           style={{
             display: 'flex', alignItems: 'center', gap: 8, padding: '9px 18px',
             background: 'var(--btn-bg)', color: 'var(--btn-text)', borderRadius: 10, border: 'none',
-            fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s',
+            fontSize: 16, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s',
           }}
           onMouseEnter={e => (e.currentTarget.style.background = 'var(--btn-hover)')}
           onMouseLeave={e => (e.currentTarget.style.background = 'var(--btn-bg)')}
@@ -155,10 +155,10 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
         background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14,
         padding: '20px 28px', textAlign: 'center',
       }}>
-        <p style={{ fontSize: 16, color: 'var(--text-sub)', fontStyle: 'italic', lineHeight: 1.7, margin: 0 }}>
+        <p style={{ fontSize: 18, color: 'var(--text-sub)', fontStyle: 'italic', lineHeight: 1.7, margin: 0 }}>
           &ldquo;{quote.text}&rdquo;
         </p>
-        <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '10px 0 0' }}>— {quote.author}</p>
+        <p style={{ fontSize: 15, color: 'var(--text-muted)', margin: '10px 0 0' }}>— {quote.author}</p>
       </div>
 
       {/* Monthly Milestone */}
@@ -208,14 +208,14 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
 
         return (
           <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: '20px 20px 16px' }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-muted)', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-muted)', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
               Recent Trades
             </h3>
 
             {/* Column headers */}
             <div style={{ display: 'grid', gridTemplateColumns: '110px 70px 70px 1fr 80px', gap: 12, padding: '0 14px 8px', marginBottom: 4, borderBottom: '1px solid var(--border)' }}>
               {['Date', 'Contract', 'Result', 'P&L', 'R:R'].map(h => (
-                <span key={h} style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</span>
+                <span key={h} style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</span>
               ))}
             </div>
 
@@ -228,7 +228,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   if (isNaN(tp) || isNaN(sl) || tp === 0 || sl === 0) return null
                   return (tp / sl).toFixed(2)
                 })()
-                const rrColor = rrVal ? (parseFloat(rrVal) >= 1 ? '#4ade80' : '#f87171') : '#555'
+                const rrColor = rrVal ? (parseFloat(rrVal) >= 1 ? '#4ade80' : '#f87171') : 'var(--text-muted)'
                 const style = RESULT_BG[t.result] ?? RESULT_BG.BE
                 const dateShort = new Date(date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
@@ -245,13 +245,13 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                     onMouseEnter={e => (e.currentTarget.style.filter = 'brightness(1.5)')}
                     onMouseLeave={e => (e.currentTarget.style.filter = 'none')}
                   >
-                    <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>{dateShort}</span>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-label)' }}>{t.symbol || '—'}</span>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: style.color }}>{t.result}</span>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: pnlColor }}>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-muted)' }}>{dateShort}</span>
+                    <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-label)' }}>{t.symbol || '—'}</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: style.color }}>{t.result}</span>
+                    <span style={{ fontSize: 16, fontWeight: 800, color: pnlColor }}>
                       {t.pnl ? (pnl >= 0 ? '+' : '') + formatCurrency(pnl) : '—'}
                     </span>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: rrColor }}>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: rrColor }}>
                       {rrVal ? `${rrVal}R` : '—'}
                     </span>
                   </div>
@@ -280,7 +280,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
           { label: 'Take Profit', val: t.takeProfit },
           { label: 'Stop Loss', val: t.stopLoss },
         ].filter(f => f.val)
-        const secLabel: React.CSSProperties = { fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }
+        const secLabel: React.CSSProperties = { fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }
         return (
           <div
             style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.82)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 24px' }}
@@ -293,14 +293,14 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
               {/* Header */}
               <div style={{ padding: '16px 22px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
                 <div>
-                  <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{dateLabel}</div>
+                  <div style={{ fontSize: 14, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{dateLabel}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: RESULT_COLORS[t.result] || 'var(--text-sub)', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
-                    {t.symbol && <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>{t.symbol}</span>}
-                    <span style={{ fontSize: 13, color: t.side === 'Long' ? '#4ade80' : '#f87171', fontWeight: 600 }}>{t.side}</span>
-                    {t.contracts && <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t.contracts} contracts</span>}
+                    <span style={{ fontSize: 15, fontWeight: 700, color: RESULT_COLORS[t.result] || 'var(--text-sub)', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
+                    {t.symbol && <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>{t.symbol}</span>}
+                    <span style={{ fontSize: 15, color: t.side === 'Long' ? '#4ade80' : '#f87171', fontWeight: 600 }}>{t.side}</span>
+                    {t.contracts && <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{t.contracts} contracts</span>}
                     {t.accounts.map(a => (
-                      <span key={a} style={{ fontSize: 10, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
+                      <span key={a} style={{ fontSize: 13, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
                     ))}
                   </div>
                 </div>
@@ -318,7 +318,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                     {priceFields.map(f => (
                       <div key={f.label} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 10px' }}>
                         <div style={{ ...secLabel, marginBottom: 3 }}>{f.label}</div>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-label)' }}>{f.val}</div>
+                        <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-label)' }}>{f.val}</div>
                       </div>
                     ))}
                   </div>
@@ -328,13 +328,13 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                     {t.pnl && (
                       <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={secLabel}>P&L</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : 'var(--text-sub)' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
+                        <div style={{ fontSize: 18, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : 'var(--text-sub)' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
                       </div>
                     )}
                     {rrVal && (
                       <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={secLabel}>R:R</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : 'var(--text-label)' }}>{rrVal}R</div>
+                        <div style={{ fontSize: 18, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : 'var(--text-label)' }}>{rrVal}R</div>
                       </div>
                     )}
                   </div>
@@ -342,14 +342,14 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                 {showDrawdown && (
                   <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={secLabel}>Drawdown</span>
-                    <span style={{ fontSize: 14, color: 'var(--text-sub)', fontWeight: 600 }}>{t.drawdown} pts</span>
+                    <span style={{ fontSize: 16, color: 'var(--text-sub)', fontWeight: 600 }}>{t.drawdown} pts</span>
                   </div>
                 )}
                 {t.sessions.length > 0 && (
                   <div>
                     <div style={secLabel}>Session</div>
                     <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                      {t.sessions.map(s => <span key={s} style={{ fontSize: 12, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{s}</span>)}
+                      {t.sessions.map(s => <span key={s} style={{ fontSize: 14, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{s}</span>)}
                     </div>
                   </div>
                 )}
@@ -357,7 +357,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   <div>
                     <div style={secLabel}>Draw on Liquidity</div>
                     <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                      {t.dol.map(d => <span key={d} style={{ fontSize: 12, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{d}</span>)}
+                      {t.dol.map(d => <span key={d} style={{ fontSize: 14, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{d}</span>)}
                     </div>
                   </div>
                 )}
@@ -365,7 +365,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   <div>
                     <div style={secLabel}>Confluences</div>
                     <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                      {t.confluences.map(c => <span key={c} style={{ fontSize: 12, color: 'var(--text-label)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{c}</span>)}
+                      {t.confluences.map(c => <span key={c} style={{ fontSize: 14, color: 'var(--text-label)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{c}</span>)}
                     </div>
                   </div>
                 )}
@@ -378,7 +378,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                 {t.execImgKey && (
                   <div>
                     <div style={secLabel}>Execution Chart</div>
-                    <img src={t.execImgKey} alt="Execution chart" style={{ width: '100%', borderRadius: 8, border: '1px solid #1f1f1f', objectFit: 'contain', maxHeight: 220 }} />
+                    <img src={t.execImgKey} alt="Execution chart" style={{ width: '100%', borderRadius: 8, border: '1px solid var(--border)', objectFit: 'contain', maxHeight: 220 }} />
                   </div>
                 )}
               </div>
@@ -399,7 +399,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
           (entry.rulesFollowed.filter(id => tradingRules.some(r => r.id === id)).length / tradingRules.length) * 100
         )
         const barColor = rulesPct <= 33 ? '#f87171' : rulesPct <= 66 ? '#fbbf24' : '#4ade80'
-        const secLabel = { fontSize: 11, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.07em', marginBottom: 10 }
+        const secLabel = { fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.07em', marginBottom: 10 }
         return (
           <div
             style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.82)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 24px' }}
@@ -412,11 +412,11 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
               {/* Popup header */}
               <div style={{ padding: '18px 24px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>{dateLabel}</div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>{dateLabel}</div>
                   {entry.trades.length > 0 && (
-                    <div style={{ fontSize: 22, fontWeight: 700, color: pnlColor }}>
+                    <div style={{ fontSize: 24, fontWeight: 700, color: pnlColor }}>
                       {dayPnl >= 0 ? '+' : ''}{formatCurrency(dayPnl)}
-                      <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 400, marginLeft: 8 }}>
+                      <span style={{ fontSize: 15, color: 'var(--text-muted)', fontWeight: 400, marginLeft: 8 }}>
                         {entry.trades.length} trade{entry.trades.length !== 1 ? 's' : ''}
                       </span>
                     </div>
@@ -425,13 +425,13 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, marginLeft: 12 }}>
                   {em && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: 22, lineHeight: 1 }}>{em.emoji}</span>
-                      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{em.label}</span>
+                      <span style={{ fontSize: 24, lineHeight: 1 }}>{em.emoji}</span>
+                      <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{em.label}</span>
                     </div>
                   )}
                   <button
                     onClick={() => { setPopupDate(null); onNavigateToJournal(popupDate) }}
-                    style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', borderRadius: 8, cursor: 'pointer', color: 'var(--text-label)', fontSize: 12, fontWeight: 600, transition: 'all 0.15s' }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', borderRadius: 8, cursor: 'pointer', color: 'var(--text-label)', fontSize: 14, fontWeight: 600, transition: 'all 0.15s' }}
                     onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-active)'; e.currentTarget.style.color = 'var(--text)' }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text-label)' }}
                   >
@@ -455,8 +455,8 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 16px', background: 'rgba(251,191,36,0.07)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 10 }}>
                     <AlertTriangle size={14} color="#fbbf24" style={{ flexShrink: 0, marginTop: 2 }} />
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#fbbf24', marginBottom: entry.redFolderNewsText ? 6 : 0 }}>Red Folder News</div>
-                      {entry.redFolderNewsText && <p style={{ fontSize: 13, color: '#999', margin: 0, lineHeight: 1.6 }}>{entry.redFolderNewsText}</p>}
+                      <div style={{ fontSize: 15, fontWeight: 700, color: '#fbbf24', marginBottom: entry.redFolderNewsText ? 6 : 0 }}>Red Folder News</div>
+                      {entry.redFolderNewsText && <p style={{ fontSize: 15, color: 'var(--text-sub)', margin: 0, lineHeight: 1.6 }}>{entry.redFolderNewsText}</p>}
                     </div>
                   </div>
                 )}
@@ -469,7 +469,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                       <img src={entry.premktImgKey} alt="Pre-market chart" style={{ width: '100%', borderRadius: 10, marginBottom: entry.premktAnalysis ? 10 : 0, border: '1px solid var(--border)', objectFit: 'contain', maxHeight: 260 }} />
                     )}
                     {entry.premktAnalysis && (
-                      <p style={{ fontSize: 13, color: 'var(--text-sub)', margin: 0, lineHeight: 1.7 }}>{entry.premktAnalysis}</p>
+                      <p style={{ fontSize: 15, color: 'var(--text-sub)', margin: 0, lineHeight: 1.7 }}>{entry.premktAnalysis}</p>
                     )}
                   </div>
                 )}
@@ -498,13 +498,13 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                           <div key={t.id} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
                             {/* Trade header */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 14px', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' }}>
-                              <span style={{ fontSize: 13, fontWeight: 700, color: RESULT_COLORS[t.result] || 'var(--text-sub)', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
-                              {t.symbol && <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-label)' }}>{t.symbol}</span>}
-                              <span style={{ fontSize: 13, color: t.side === 'Long' ? '#4ade80' : '#f87171', fontWeight: 600 }}>{t.side}</span>
-                              {t.contracts && <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t.contracts} contracts</span>}
+                              <span style={{ fontSize: 15, fontWeight: 700, color: RESULT_COLORS[t.result] || 'var(--text-sub)', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
+                              {t.symbol && <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-label)' }}>{t.symbol}</span>}
+                              <span style={{ fontSize: 15, color: t.side === 'Long' ? '#4ade80' : '#f87171', fontWeight: 600 }}>{t.side}</span>
+                              {t.contracts && <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{t.contracts} contracts</span>}
                               <div style={{ flex: 1 }} />
                               {t.accounts.map(a => (
-                                <span key={a} style={{ fontSize: 10, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
+                                <span key={a} style={{ fontSize: 13, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
                               ))}
                             </div>
                             <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -513,8 +513,8 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
                                   {priceFields.map(f => (
                                     <div key={f.label} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 10px' }}>
-                                      <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{f.label}</div>
-                                      <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-label)' }}>{f.val}</div>
+                                      <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{f.label}</div>
+                                      <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-label)' }}>{f.val}</div>
                                     </div>
                                   ))}
                                 </div>
@@ -524,63 +524,63 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                                 <div style={{ display: 'grid', gridTemplateColumns: t.pnl && rrVal ? '2fr 1fr' : '1fr', gap: 6 }}>
                                   {t.pnl && (
                                     <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>P&L</div>
-                                      <div style={{ fontSize: 16, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : 'var(--text-sub)' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
+                                      <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>P&L</div>
+                                      <div style={{ fontSize: 18, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : 'var(--text-sub)' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
                                     </div>
                                   )}
                                   {rrVal && (
                                     <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>R:R</div>
-                                      <div style={{ fontSize: 16, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : '#ccc' }}>{rrVal}R</div>
+                                      <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>R:R</div>
+                                      <div style={{ fontSize: 18, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : 'var(--text-sub)' }}>{rrVal}R</div>
                                     </div>
                                   )}
                                 </div>
                               )}
                               {/* Drawdown */}
                               {showDrawdown && (
-                                <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <span style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Drawdown</span>
-                                  <span style={{ fontSize: 14, color: '#aaa', fontWeight: 600 }}>{t.drawdown} pts</span>
+                                <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Drawdown</span>
+                                  <span style={{ fontSize: 16, color: 'var(--text-sub)', fontWeight: 600 }}>{t.drawdown} pts</span>
                                 </div>
                               )}
                               {/* Sessions */}
                               {t.sessions.length > 0 && (
                                 <div>
-                                  <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Session</div>
+                                  <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Session</div>
                                   <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                                    {t.sessions.map(s => <span key={s} style={{ fontSize: 12, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '3px 9px', borderRadius: 6 }}>{s}</span>)}
+                                    {t.sessions.map(s => <span key={s} style={{ fontSize: 14, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{s}</span>)}
                                   </div>
                                 </div>
                               )}
                               {/* DOL */}
                               {t.dol.length > 0 && (
                                 <div>
-                                  <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Draw on Liquidity</div>
+                                  <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Draw on Liquidity</div>
                                   <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                                    {t.dol.map(d => <span key={d} style={{ fontSize: 12, color: '#888', background: '#1a1a1a', border: '1px solid #252525', padding: '3px 9px', borderRadius: 6 }}>{d}</span>)}
+                                    {t.dol.map(d => <span key={d} style={{ fontSize: 14, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{d}</span>)}
                                   </div>
                                 </div>
                               )}
                               {/* Confluences */}
                               {t.confluences.length > 0 && (
                                 <div>
-                                  <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Confluences</div>
+                                  <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Confluences</div>
                                   <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                                    {t.confluences.map(c => <span key={c} style={{ fontSize: 12, color: '#aaa', background: '#1a1a1a', border: '1px solid #2a2a2a', padding: '3px 9px', borderRadius: 6 }}>{c}</span>)}
+                                    {t.confluences.map(c => <span key={c} style={{ fontSize: 14, color: 'var(--text-label)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '3px 9px', borderRadius: 6 }}>{c}</span>)}
                                   </div>
                                 </div>
                               )}
                               {/* Screenshots */}
                               {t.htfImgKey && (
                                 <div>
-                                  <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>HTF Chart</div>
-                                  <img src={t.htfImgKey} alt="HTF chart" style={{ width: '100%', borderRadius: 8, border: '1px solid #1f1f1f', objectFit: 'contain', maxHeight: 220 }} />
+                                  <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>HTF Chart</div>
+                                  <img src={t.htfImgKey} alt="HTF chart" style={{ width: '100%', borderRadius: 8, border: '1px solid var(--border)', objectFit: 'contain', maxHeight: 220 }} />
                                 </div>
                               )}
                               {t.execImgKey && (
                                 <div>
-                                  <div style={{ fontSize: 10, color: '#444', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Execution Chart</div>
-                                  <img src={t.execImgKey} alt="Execution chart" style={{ width: '100%', borderRadius: 8, border: '1px solid #1f1f1f', objectFit: 'contain', maxHeight: 220 }} />
+                                  <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Execution Chart</div>
+                                  <img src={t.execImgKey} alt="Execution chart" style={{ width: '100%', borderRadius: 8, border: '1px solid var(--border)', objectFit: 'contain', maxHeight: 220 }} />
                                 </div>
                               )}
                             </div>
@@ -596,20 +596,20 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                       <span style={secLabel}>Trading Rules</span>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: barColor }}>{rulesPct}%</span>
+                      <span style={{ fontSize: 16, fontWeight: 700, color: barColor }}>{rulesPct}%</span>
                     </div>
-                    <div style={{ height: 4, background: '#1a1a1a', borderRadius: 999, overflow: 'hidden', marginBottom: 12 }}>
+                    <div style={{ height: 4, background: 'var(--border)', borderRadius: 999, overflow: 'hidden', marginBottom: 12 }}>
                       <div style={{ width: `${rulesPct}%`, height: '100%', borderRadius: 999, background: barColor }} />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                       {tradingRules.map(rule => {
                         const followed = entry.rulesFollowed.includes(rule.id)
                         return (
-                          <div key={rule.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#0d0d0d', borderRadius: 8, border: `1px solid ${followed ? 'rgba(74,222,128,0.15)' : '#141414'}` }}>
-                            <div style={{ width: 18, height: 18, borderRadius: 5, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: followed ? 'rgba(74,222,128,0.12)' : '#141414', border: `1px solid ${followed ? 'rgba(74,222,128,0.4)' : '#252525'}` }}>
-                              {followed && <span style={{ fontSize: 11, color: '#4ade80', fontWeight: 700, lineHeight: 1 }}>✓</span>}
+                          <div key={rule.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: 'var(--bg)', borderRadius: 8, border: `1px solid ${followed ? 'rgba(74,222,128,0.2)' : 'var(--border)'}` }}>
+                            <div style={{ width: 18, height: 18, borderRadius: 5, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: followed ? 'rgba(74,222,128,0.12)' : 'var(--bg-surface)', border: `1px solid ${followed ? 'rgba(74,222,128,0.4)' : 'var(--border-mid)'}` }}>
+                              {followed && <span style={{ fontSize: 13, color: '#4ade80', fontWeight: 700, lineHeight: 1 }}>✓</span>}
                             </div>
-                            <span style={{ fontSize: 13, color: followed ? '#ccc' : '#555' }}>{rule.text}</span>
+                            <span style={{ fontSize: 15, color: followed ? 'var(--text-label)' : 'var(--text-muted)' }}>{rule.text}</span>
                           </div>
                         )
                       })}
@@ -621,7 +621,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                 {entry.postMarketNotes && (
                   <div>
                     <div style={secLabel}>Post Market Notes</div>
-                    <p style={{ fontSize: 13, color: '#999', margin: 0, lineHeight: 1.7 }}>{entry.postMarketNotes}</p>
+                    <p style={{ fontSize: 15, color: 'var(--text-sub)', margin: 0, lineHeight: 1.7 }}>{entry.postMarketNotes}</p>
                   </div>
                 )}
 

@@ -93,7 +93,7 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
 
           {/* Title */}
           <span style={{
-            fontSize: 15, fontWeight: 700, color: 'var(--text)',
+            fontSize: 17, fontWeight: 700, color: 'var(--text)',
             whiteSpace: 'nowrap', letterSpacing: '0.01em', textAlign: 'center',
           }}>
             The Market Element
@@ -122,7 +122,7 @@ export function Sidebar({ page, onNavigate, collapsed, onToggle }: SidebarProps)
                 cursor: 'pointer',
                 background: active ? 'var(--bg-active)' : 'transparent',
                 color: active ? 'var(--text)' : 'var(--text-muted)',
-                fontSize: 15,
+                fontSize: 17,
                 fontWeight: active ? 700 : 400,
                 transition: 'all 0.15s ease',
                 position: 'relative',

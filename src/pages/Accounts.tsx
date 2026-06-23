@@ -18,12 +18,12 @@ const TYPE_META = {
 
 const inp: React.CSSProperties = {
   background: 'var(--bg-input)', border: '1px solid var(--border-mid)', borderRadius: 8,
-  padding: '10px 13px', fontSize: 15, color: 'var(--text)', outline: 'none',
+  padding: '10px 13px', fontSize: 17, color: 'var(--text)', outline: 'none',
   width: '100%', boxSizing: 'border-box', fontFamily: 'inherit',
 }
 
 function fLabel(text: string) {
-  return <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{text}</div>
+  return <div style={{ fontSize: 14, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{text}</div>
 }
 
 // ── Account P&L from journal trades ──────────────────────────────────────────
@@ -124,7 +124,7 @@ function AccountModal({ initial, onSave, onClose }: {
                     transition: 'all 0.15s',
                   }}>
                     <Icon size={17} color={active ? meta.color : 'var(--text-muted)'} />
-                    <span style={{ fontSize: 12, fontWeight: 600, color: active ? meta.color : 'var(--text-muted)' }}>{meta.label}</span>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: active ? meta.color : 'var(--text-muted)' }}>{meta.label}</span>
                   </button>
                 )
               })}
@@ -177,7 +177,7 @@ function AccountModal({ initial, onSave, onClose }: {
                         flex: 1, padding: '9px 4px', borderRadius: 8, cursor: 'pointer', fontFamily: 'inherit',
                         border: `1px solid ${active ? 'rgba(251,191,36,0.4)' : 'var(--border)'}`,
                         background: active ? 'rgba(251,191,36,0.1)' : 'transparent',
-                        color: active ? '#fbbf24' : 'var(--text-muted)', fontSize: 13, fontWeight: 600, transition: 'all 0.15s',
+                        color: active ? '#fbbf24' : 'var(--text-muted)', fontSize: 15, fontWeight: 600, transition: 'all 0.15s',
                       }}>${(sz / 1000).toFixed(0)}k</button>
                     )
                   })}
@@ -206,7 +206,7 @@ function AccountModal({ initial, onSave, onClose }: {
                   onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')}
                   onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}
                 />
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 5, lineHeight: 1.5 }}>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 5, lineHeight: 1.5 }}>
                   Set this if you joined the app mid-eval. Adjusts P&L and progress to reflect your actual balance.
                 </div>
               </div>
@@ -236,7 +236,7 @@ function AccountModal({ initial, onSave, onClose }: {
 
         {/* Footer */}
         <div style={{ padding: '14px 24px', borderTop: '1px solid var(--border)', display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-          <button onClick={onClose} style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
+          <button onClick={onClose} style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', fontSize: 16, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
             onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
             onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
           >Cancel</button>
@@ -244,7 +244,7 @@ function AccountModal({ initial, onSave, onClose }: {
             padding: '9px 22px', borderRadius: 8, border: 'none',
             background: state.name.trim() ? 'var(--btn-bg)' : 'var(--bg-hover)',
             color: state.name.trim() ? 'var(--btn-text)' : 'var(--text-muted)',
-            fontSize: 14, fontWeight: 600, cursor: state.name.trim() ? 'pointer' : 'default', fontFamily: 'inherit', transition: 'all 0.15s',
+            fontSize: 16, fontWeight: 600, cursor: state.name.trim() ? 'pointer' : 'default', fontFamily: 'inherit', transition: 'all 0.15s',
           }}
             onMouseEnter={e => { if (state.name.trim()) e.currentTarget.style.background = 'var(--btn-hover)' }}
             onMouseLeave={e => { if (state.name.trim()) e.currentTarget.style.background = 'var(--btn-bg)' }}
@@ -288,7 +288,7 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
             <Icon size={16} color={meta.color} />
           </div>
           <div>
-            <div style={{ fontSize: 10, color: meta.color, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 2 }}>{meta.label}</div>
+            <div style={{ fontSize: 13, color: meta.color, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 2 }}>{meta.label}</div>
             <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', lineHeight: 1.2 }}>{account.name}</div>
           </div>
         </div>
@@ -299,8 +299,8 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
           ><Edit2 size={12} /></button>
           {confirmDel ? (
             <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-              <button onClick={() => onDelete()} style={{ padding: '4px 10px', borderRadius: 6, background: '#f87171', color: '#000', border: 'none', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Delete</button>
-              <button onClick={() => setConfirmDel(false)} style={{ padding: '4px 10px', borderRadius: 6, background: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border)', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+              <button onClick={() => onDelete()} style={{ padding: '4px 10px', borderRadius: 6, background: '#f87171', color: '#000', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Delete</button>
+              <button onClick={() => setConfirmDel(false)} style={{ padding: '4px 10px', borderRadius: 6, background: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border)', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
             </div>
           ) : (
             <button onClick={() => setConfirmDel(true)} style={{ width: 30, height: 30, borderRadius: 8, background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
@@ -343,13 +343,13 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
       {/* P&L from trades */}
       <div style={{ borderTop: '1px solid var(--border)', paddingTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>
+          <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>
             {account.type === 'Eval' && account.startingBalance != null ? 'Effective P&L' : 'P&L from Trades'}
           </div>
           <div style={{ fontSize: 20, fontWeight: 700, color: pnlColor }}>{pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}</div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Trades</div>
+          <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Trades</div>
           <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-sub)' }}>{tradeCount}</div>
         </div>
       </div>
@@ -358,8 +358,8 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
       {account.type === 'Eval' && account.profitTarget > 0 && (
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Progress to Target</span>
-            <span style={{ fontSize: 12, fontWeight: 700, color: evalHitTarget ? '#4ade80' : pnl >= 0 ? '#4ade80' : '#f87171' }}>
+            <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Progress to Target</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: evalHitTarget ? '#4ade80' : pnl >= 0 ? '#4ade80' : '#f87171' }}>
               {evalProgress}%
             </span>
           </div>
@@ -374,11 +374,11 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
         <div>
           {confirmConvert ? (
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '10px 14px', background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.25)', borderRadius: 10 }}>
-              <span style={{ flex: 1, fontSize: 12, color: '#60a5fa', fontWeight: 600 }}>Convert this eval to a funded account?</span>
-              <button onClick={() => { onConvertToFunded?.(account as EvalAccount); setConfirmConvert(false) }} style={{ padding: '5px 12px', borderRadius: 7, background: '#60a5fa', color: '#000', border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+              <span style={{ flex: 1, fontSize: 14, color: '#60a5fa', fontWeight: 600 }}>Convert this eval to a funded account?</span>
+              <button onClick={() => { onConvertToFunded?.(account as EvalAccount); setConfirmConvert(false) }} style={{ padding: '5px 12px', borderRadius: 7, background: '#60a5fa', color: '#000', border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
                 Yes, Convert
               </button>
-              <button onClick={() => setConfirmConvert(false)} style={{ padding: '5px 10px', borderRadius: 7, background: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border)', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
+              <button onClick={() => setConfirmConvert(false)} style={{ padding: '5px 10px', borderRadius: 7, background: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border)', fontSize: 14, cursor: 'pointer', fontFamily: 'inherit' }}>
                 Cancel
               </button>
             </div>
@@ -389,7 +389,7 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
                 width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
                 padding: '10px 16px', borderRadius: 10,
                 background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.3)',
-                color: '#60a5fa', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                color: '#60a5fa', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
                 transition: 'all 0.15s',
               }}
               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(96,165,250,0.18)'; e.currentTarget.style.borderColor = 'rgba(96,165,250,0.5)' }}
@@ -410,8 +410,8 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
 function Detail({ label, value, valueColor }: { label: string; value: string; valueColor?: string }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>{label}</span>
-      <span style={{ fontSize: 14, fontWeight: 600, color: valueColor || 'var(--text-sub)' }}>{value}</span>
+      <span style={{ fontSize: 15, color: 'var(--text-muted)' }}>{label}</span>
+      <span style={{ fontSize: 16, fontWeight: 600, color: valueColor || 'var(--text-sub)' }}>{value}</span>
     </div>
   )
 }
@@ -458,9 +458,9 @@ export function Accounts({ accounts, entries, onAdd, onUpdate, onDelete }: Accou
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
           <div>
             <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', margin: '0 0 4px' }}>Accounts</h1>
-            <p style={{ fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>Manage your trading accounts and track their performance.</p>
+            <p style={{ fontSize: 16, color: 'var(--text-muted)', margin: 0 }}>Manage your trading accounts and track their performance.</p>
           </div>
-          <button onClick={openAdd} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '10px 18px', background: 'var(--btn-bg)', color: 'var(--btn-text)', borderRadius: 10, border: 'none', fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s' }}
+          <button onClick={openAdd} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '10px 18px', background: 'var(--btn-bg)', color: 'var(--btn-text)', borderRadius: 10, border: 'none', fontSize: 16, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s' }}
             onMouseEnter={e => (e.currentTarget.style.background = 'var(--btn-hover)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'var(--btn-bg)')}
           ><Plus size={15} />Add Account</button>
@@ -474,8 +474,8 @@ export function Accounts({ accounts, entries, onAdd, onUpdate, onDelete }: Accou
             return (
               <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', background: count > 0 ? meta.bg : 'transparent', border: `1px solid ${count > 0 ? meta.border : 'var(--border)'}`, borderRadius: 8, transition: 'all 0.15s' }}>
                 <div style={{ width: 7, height: 7, borderRadius: '50%', background: count > 0 ? meta.color : 'var(--border-mid)' }} />
-                <span style={{ fontSize: 13, color: count > 0 ? meta.color : 'var(--text-muted)', fontWeight: 600 }}>{meta.label}</span>
-                <span style={{ fontSize: 13, color: count > 0 ? meta.color : 'var(--text-muted)', fontWeight: 700, opacity: 0.7 }}>{count}</span>
+                <span style={{ fontSize: 15, color: count > 0 ? meta.color : 'var(--text-muted)', fontWeight: 600 }}>{meta.label}</span>
+                <span style={{ fontSize: 15, color: count > 0 ? meta.color : 'var(--text-muted)', fontWeight: 700, opacity: 0.7 }}>{count}</span>
               </div>
             )
           })}
@@ -488,10 +488,10 @@ export function Accounts({ accounts, entries, onAdd, onUpdate, onDelete }: Accou
               <TrendingUp size={26} color="var(--border-mid)" />
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 6 }}>No accounts yet</div>
-              <div style={{ fontSize: 14, color: 'var(--text-dim)' }}>Add a live, eval, or funded account to get started.</div>
+              <div style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 6 }}>No accounts yet</div>
+              <div style={{ fontSize: 16, color: 'var(--text-dim)' }}>Add a live, eval, or funded account to get started.</div>
             </div>
-            <button onClick={openAdd} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', background: 'var(--bg-card)', border: '1px solid var(--border-mid)', color: 'var(--text-sub)', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s' }}
+            <button onClick={openAdd} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', background: 'var(--bg-card)', border: '1px solid var(--border-mid)', color: 'var(--text-sub)', borderRadius: 9, fontSize: 16, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s' }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text)' }}
               onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.color = 'var(--text-sub)' }}
             ><Plus size={14} />Add First Account</button>

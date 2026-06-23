@@ -54,14 +54,14 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
             <Target size={17} color="var(--text-sub)" />
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', marginBottom: 2 }}>Monthly Milestone</div>
-            <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{monthLabel}</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', marginBottom: 2 }}>Monthly Milestone</div>
+            <div style={{ fontSize: 13, color: 'var(--text-dim)' }}>{monthLabel}</div>
           </div>
         </div>
 
         {editing ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>$</span>
+            <span style={{ fontSize: 15, color: 'var(--text-muted)' }}>$</span>
             <input
               type="number"
               value={inputVal}
@@ -69,7 +69,7 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
               onKeyDown={e => e.key === 'Enter' && handleSave()}
               style={{
                 background: 'var(--bg-input)', border: '1px solid var(--border-strong)', borderRadius: 8,
-                padding: '7px 12px', fontSize: 13, color: 'var(--text)', width: 130,
+                padding: '7px 12px', fontSize: 15, color: 'var(--text)', width: 130,
                 outline: 'none', fontFamily: 'inherit',
               }}
               autoFocus
@@ -92,7 +92,7 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
             onClick={() => setEditing(true)}
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
-              fontSize: 12, color: 'var(--text-muted)', background: 'none', border: 'none',
+              fontSize: 14, color: 'var(--text-muted)', background: 'none', border: 'none',
               cursor: 'pointer', transition: 'color 0.15s', fontFamily: 'inherit',
             }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
@@ -115,11 +115,11 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
               }}>
                 {formatCurrency(currentPnl)}
               </span>
-              <span style={{ fontSize: 14, color: 'var(--text-dim)', marginLeft: 12 }}>
+              <span style={{ fontSize: 16, color: 'var(--text-dim)', marginLeft: 12 }}>
                 of {formatCurrency(goal)}
               </span>
             </div>
-            <span style={{ fontSize: 16, fontWeight: 700, color: barColor }}>
+            <span style={{ fontSize: 18, fontWeight: 700, color: barColor }}>
               {progress.toFixed(1)}%
             </span>
           </div>
@@ -134,14 +134,14 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
           </div>
 
           {/* Status label */}
-          <div style={{ fontSize: 12, color: isAhead ? '#4ade80' : 'var(--text-muted)' }}>
+          <div style={{ fontSize: 14, color: isAhead ? '#4ade80' : 'var(--text-muted)' }}>
             {isAhead
               ? `+${formatCurrency(currentPnl - goal)} over goal`
               : `${formatCurrency(remaining)} remaining`}
           </div>
         </>
       ) : (
-        <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-dim)', fontSize: 13 }}>
+        <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-dim)', fontSize: 15 }}>
           Set a monthly goal to track your progress
         </div>
       )}

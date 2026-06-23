@@ -45,7 +45,7 @@ const COMMON_TIMEZONES = [
 
 const inputStyle: React.CSSProperties = {
   background: 'var(--bg-input)', border: '1px solid var(--border-mid)', borderRadius: 9,
-  padding: '10px 14px', fontSize: 14, color: 'var(--text-label)', outline: 'none',
+  padding: '10px 14px', fontSize: 16, color: 'var(--text-label)', outline: 'none',
   fontFamily: 'inherit', width: '100%', boxSizing: 'border-box',
   transition: 'border-color 0.15s',
 }
@@ -59,8 +59,8 @@ function Toggle({ checked, onChange, label, description }: {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
       <div>
-        <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-label)', marginBottom: description ? 3 : 0 }}>{label}</div>
-        {description && <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{description}</div>}
+        <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-label)', marginBottom: description ? 3 : 0 }}>{label}</div>
+        {description && <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>{description}</div>}
       </div>
       <button
         onClick={() => onChange(!checked)}
@@ -74,7 +74,7 @@ function Toggle({ checked, onChange, label, description }: {
         <div style={{
           position: 'absolute', top: 3, left: checked ? 23 : 3,
           width: 18, height: 18, borderRadius: '50%',
-          background: checked ? '#fff' : '#555',
+          background: checked ? 'var(--btn-bg)' : 'var(--text-dim)',
           transition: 'left 0.2s, background 0.2s',
           boxShadow: '0 1px 4px rgba(0,0,0,0.4)',
         }} />
@@ -97,7 +97,7 @@ function Section({ title, icon, children }: { title: string; icon: React.ReactNo
         background: 'var(--bg-surface)',
       }}>
         <div style={{ color: 'var(--text-muted)' }}>{icon}</div>
-        <span style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.09em' }}>{title}</span>
+        <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.09em' }}>{title}</span>
       </div>
       <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 18 }}>
         {children}
@@ -176,8 +176,8 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
 
         {/* Page header */}
         <div style={{ marginBottom: 8 }}>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: 'var(--text)', margin: '0 0 6px', letterSpacing: '-0.02em' }}>Settings</h1>
-          <p style={{ fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>Manage your preferences and account data.</p>
+          <h1 style={{ fontSize: 28, fontWeight: 800, color: 'var(--text)', margin: '0 0 6px', letterSpacing: '-0.02em' }}>Settings</h1>
+          <p style={{ fontSize: 16, color: 'var(--text-muted)', margin: 0 }}>Manage your preferences and account data.</p>
         </div>
 
         {/* Accessibility */}
@@ -194,8 +194,8 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
           />
           <Divider />
           <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-label)', marginBottom: 6 }}>Font Scale</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-label)', marginBottom: 6 }}>Font Scale</div>
+            <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 10 }}>
               Adjust the global font size. Takes effect immediately.
             </div>
             <div style={{ display: 'flex', gap: 6 }}>
@@ -211,7 +211,7 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
                       setFontScale(size)
                     }}
                     style={{
-                      padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600,
+                      padding: '7px 14px', borderRadius: 8, fontSize: 14, fontWeight: 600,
                       border: `1px solid ${isActive ? 'var(--border-strong)' : 'var(--border-mid)'}`,
                       background: isActive ? 'var(--bg-hover)' : 'transparent',
                       color: isActive ? 'var(--text)' : 'var(--text-muted)',
@@ -240,8 +240,8 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
         {/* Date & Time */}
         <Section title="Date & Time" icon={<Clock size={15} />}>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-label)', marginBottom: 4 }}>Timezone</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-label)', marginBottom: 4 }}>Timezone</div>
+            <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 10 }}>
               Used for displaying trade times and daily P&L grouping. Current: <span style={{ color: 'var(--text-sub)' }}>{settings.timezone}</span>
             </div>
             <div style={{ position: 'relative' }}>
@@ -256,18 +256,18 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
                   <option key={tz} value={tz}>{tz.replace('_', ' ').replace('/', ' / ')}</option>
                 ))}
               </select>
-              <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-dim)', fontSize: 10 }}>▾</div>
+              <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-dim)', fontSize: 13 }}>▾</div>
             </div>
           </div>
           <Divider />
           <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-label)', marginBottom: 4 }}>Date Format</div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-label)', marginBottom: 4 }}>Date Format</div>
             <div style={{ display: 'flex', gap: 6 }}>
               {['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD'].map(fmt => {
                 const active = (settings.dateFormat ?? 'MM/DD/YYYY') === fmt
                 return (
                   <button key={fmt} onClick={() => onUpdate({ ...settings, dateFormat: fmt })} style={{
-                    padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600,
+                    padding: '7px 14px', borderRadius: 8, fontSize: 14, fontWeight: 600,
                     border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border-mid)'}`,
                     background: active ? 'var(--bg-hover)' : 'transparent',
                     color: active ? 'var(--text)' : 'var(--text-muted)', cursor: 'pointer',
@@ -316,8 +316,8 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
               { label: 'Accounts', value: accountCount },
             ].map(({ label, value }) => (
               <div key={label} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-label)', letterSpacing: '-0.02em' }}>{value}</div>
-                <div style={{ fontSize: 11, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: 3 }}>{label}</div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-label)', letterSpacing: '-0.02em' }}>{value}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: 3 }}>{label}</div>
               </div>
             ))}
           </div>
@@ -326,8 +326,8 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
 
           {/* Export */}
           <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-label)', marginBottom: 4 }}>Export Data</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-label)', marginBottom: 4 }}>Export Data</div>
+            <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 10 }}>
               Download all your trades, diary entries, and account data as a JSON file.
             </div>
             <button
@@ -335,7 +335,7 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
               style={{
                 display: 'flex', alignItems: 'center', gap: 7, padding: '9px 18px', borderRadius: 9,
                 border: '1px solid var(--border-mid)', background: 'var(--bg-card)', color: exported ? '#4ade80' : 'var(--text-label)',
-                fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
               }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
               onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
@@ -349,14 +349,14 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
 
           {/* Import */}
           <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-label)', marginBottom: 4 }}>Import Data</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-label)', marginBottom: 4 }}>Import Data</div>
+            <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 10 }}>
               Restore from a previously exported JSON file. Settings will be applied immediately.
             </div>
             <label style={{
               display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 18px', borderRadius: 9,
               border: '1px solid var(--border-mid)', background: 'var(--bg-card)', color: imported ? '#4ade80' : 'var(--text-label)',
-              fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s',
+              fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s',
             }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)' }}
               onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-card)' }}
@@ -371,8 +371,8 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
 
           {/* Clear */}
           <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: '#f87171', marginBottom: 4 }}>Clear All Data</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: '#f87171', marginBottom: 4 }}>Clear All Data</div>
+            <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 10 }}>
               Permanently delete all trades, diary entries, accounts, and settings. This cannot be undone.
             </div>
             <button
@@ -383,10 +383,10 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
                 border: `1px solid ${clearConfirm ? 'rgba(248,113,113,0.5)' : 'var(--border-mid)'}`,
                 background: clearConfirm ? 'rgba(248,113,113,0.08)' : 'transparent',
                 color: clearConfirm ? '#f87171' : 'var(--text-muted)',
-                fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
               }}
               onMouseEnter={e => { if (!clearConfirm) e.currentTarget.style.color = '#f87171' }}
-              onMouseLeave={e => { if (!clearConfirm) e.currentTarget.style.color = '#555' }}
+              onMouseLeave={e => { if (!clearConfirm) e.currentTarget.style.color = 'var(--text-muted)' }}
             >
               <Trash2 size={14} />
               {clearConfirm ? 'Click again to confirm — this is permanent' : 'Clear All Data'}
@@ -403,13 +403,13 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
               { label: 'Built with', value: 'React + Vite + TypeScript' },
               { label: 'Storage', value: 'localStorage (local only)' },
             ].map(({ label, value }) => (
-              <div key={label} style={{ background: '#0a0a0a', border: '1px solid #141414', borderRadius: 10, padding: '10px 14px' }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#3a3a3a', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>{label}</div>
-                <div style={{ fontSize: 13, color: '#888', fontWeight: 500 }}>{value}</div>
+              <div key={label} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '10px 14px' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>{label}</div>
+                <div style={{ fontSize: 15, color: 'var(--text-sub)', fontWeight: 500 }}>{value}</div>
               </div>
             ))}
           </div>
-          <div style={{ fontSize: 12, color: '#333', lineHeight: 1.6 }}>
+          <div style={{ fontSize: 14, color: '#333', lineHeight: 1.6 }}>
             All data is stored locally in your browser's localStorage. No data is sent to any server. Export regularly to keep backups.
           </div>
         </Section>

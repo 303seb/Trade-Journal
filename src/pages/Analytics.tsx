@@ -14,19 +14,19 @@ const CARD: React.CSSProperties = {
   background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: '20px 22px 16px',
 }
 const CHART_TITLE: React.CSSProperties = {
-  fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', margin: '0 0 16px',
+  fontSize: 15, fontWeight: 700, color: 'var(--text-muted)', margin: '0 0 16px',
   textTransform: 'uppercase', letterSpacing: '0.07em',
 }
 const TOOLTIP_STYLE = {
-  contentStyle: { background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', borderRadius: 8, fontSize: 13, color: 'var(--text-sub)', padding: '7px 11px' },
+  contentStyle: { background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', borderRadius: 8, fontSize: 15, color: 'var(--text-sub)', padding: '7px 11px' },
   itemStyle: { color: 'var(--text-sub)', padding: 0 },
-  labelStyle: { color: 'var(--text-muted)', fontSize: 11, marginBottom: 2 },
+  labelStyle: { color: 'var(--text-muted)', fontSize: 13, marginBottom: 2 },
   cursor: { fill: 'rgba(255,255,255,0.03)' },
 }
-const AXIS_TICK = { fontSize: 11, fill: 'var(--text-dim)' }
+const AXIS_TICK = { fontSize: 13, fill: 'var(--text-dim)' }
 
 const EMPTY_CHART = (
-  <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dim)', fontSize: 14, fontWeight: 600 }}>
+  <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dim)', fontSize: 16, fontWeight: 600 }}>
     No data yet
   </div>
 )
@@ -49,11 +49,11 @@ function StatCard({ label, value, sub, positive, icon }: {
   return (
     <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '16px 18px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{label}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{label}</div>
         {icon && <div style={{ color: 'var(--text-dim)', opacity: 0.7 }}>{icon}</div>}
       </div>
-      <div style={{ fontSize: 22, fontWeight: 700, color: valueColor, letterSpacing: '-0.02em', marginBottom: sub ? 4 : 0 }}>{value}</div>
-      {sub && <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{sub}</div>}
+      <div style={{ fontSize: 24, fontWeight: 700, color: valueColor, letterSpacing: '-0.02em', marginBottom: sub ? 4 : 0 }}>{value}</div>
+      {sub && <div style={{ fontSize: 14, color: 'var(--text-dim)' }}>{sub}</div>}
     </div>
   )
 }
@@ -281,7 +281,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', margin: '0 0 4px' }}>Analytics</h1>
-            <p style={{ fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>Deep dive into your trading performance.</p>
+            <p style={{ fontSize: 16, color: 'var(--text-muted)', margin: 0 }}>Deep dive into your trading performance.</p>
           </div>
 
           {/* Period controls */}
@@ -290,7 +290,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
             <div style={{ display: 'flex', gap: 3, background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 9, padding: 3 }}>
               {(['all', 'year', 'month'] as Period[]).map(p => (
                 <button key={p} onClick={() => setPeriod(p)} style={{
-                  padding: '6px 14px', borderRadius: 7, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', border: 'none',
+                  padding: '6px 14px', borderRadius: 7, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', border: 'none',
                   background: period === p ? 'var(--btn-bg)' : 'transparent',
                   color: period === p ? 'var(--btn-text)' : 'var(--text-muted)',
                   transition: 'all 0.15s',
@@ -305,14 +305,14 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                   onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
                 ><ChevronLeft size={14} /></button>
-                <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-sub)', minWidth: 100, textAlign: 'center' }}>{periodLabel}</span>
+                <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-sub)', minWidth: 100, textAlign: 'center' }}>{periodLabel}</span>
                 <button onClick={nextPeriod} style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
                   onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
                 ><ChevronRight size={14} /></button>
               </div>
             )}
-            {period === 'all' && <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-dim)' }}>All Time</span>}
+            {period === 'all' && <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-dim)' }}>All Time</span>}
           </div>
         </div>
 
@@ -324,7 +324,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
             background: 'var(--bg-surface)', border: '1px solid var(--border)',
             boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
           }}>
-            <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.09em', whiteSpace: 'nowrap' }}>Accounts</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.09em', whiteSpace: 'nowrap' }}>Accounts</span>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {accountNames.map(name => {
                 const active = effectiveSelected.includes(name)
@@ -335,7 +335,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                     key={name}
                     onClick={() => toggleAccount(name)}
                     style={{
-                      padding: '5px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600,
+                      padding: '5px 14px', borderRadius: 8, fontSize: 14, fontWeight: 600,
                       border: `1px solid ${active ? typeColor + '55' : 'var(--border-mid)'}`,
                       background: active ? typeColor + '14' : 'transparent',
                       color: active ? typeColor : 'var(--text-muted)',
@@ -349,11 +349,11 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
             </div>
             <div style={{ flex: 1 }} />
             <div style={{ display: 'flex', gap: 5 }}>
-              <button onClick={selectAll} style={{ padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: '1px solid var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
+              <button onClick={selectAll} style={{ padding: '4px 10px', borderRadius: 6, fontSize: 13, fontWeight: 600, border: '1px solid var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-sub)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
               >All</button>
-              <button onClick={selectNone} style={{ padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: '1px solid var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
+              <button onClick={selectNone} style={{ padding: '4px 10px', borderRadius: 6, fontSize: 13, fontWeight: 600, border: '1px solid var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-sub)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
               >None</button>
@@ -407,7 +407,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
               <LineChart data={equityData} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
                 <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} interval="preserveStartEnd" />
                 <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={60} />
-                <ReferenceLine y={0} stroke="#252525" strokeDasharray="3 3" />
+                <ReferenceLine y={0} stroke="var(--border-strong)" strokeDasharray="3 3" />
                 <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'Equity']} />
                 <Line type="monotone" dataKey="value" stroke={equityColor} strokeWidth={2.5} dot={false} />
               </LineChart>
@@ -423,7 +423,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
               <LineChart data={rrData} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
                 <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} interval="preserveStartEnd" />
                 <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={v => `${v}R`} width={50} />
-                <ReferenceLine y={0} stroke="#252525" strokeDasharray="3 3" />
+                <ReferenceLine y={0} stroke="var(--border-strong)" strokeDasharray="3 3" />
                 <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [`${Number(v)}R`, 'Cum. R']} />
                 <Line type="monotone" dataKey="value" stroke={rrColor} strokeWidth={2.5} dot={false} />
               </LineChart>
@@ -440,7 +440,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                 <BarChart data={monthlyData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                   <XAxis dataKey="short" tick={AXIS_TICK} axisLine={false} tickLine={false} />
                   <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={56} />
-                  <ReferenceLine y={0} stroke="#252525" />
+                  <ReferenceLine y={0} stroke="var(--border-strong)" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
                   <Bar dataKey="value" radius={[3, 3, 0, 0]}>
                     {monthlyData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
@@ -457,7 +457,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                 <BarChart data={dailyData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                   <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
                   <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={56} />
-                  <ReferenceLine y={0} stroke="#252525" />
+                  <ReferenceLine y={0} stroke="var(--border-strong)" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
                   <Bar dataKey="value" radius={[3, 3, 0, 0]}>
                     {dailyData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
@@ -477,7 +477,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                 <BarChart data={symbolData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                   <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
                   <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={60} />
-                  <ReferenceLine y={0} stroke="#252525" />
+                  <ReferenceLine y={0} stroke="var(--border-strong)" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
                   <Bar dataKey="value" radius={[3, 3, 0, 0]}>
                     {symbolData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
@@ -494,7 +494,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                 <BarChart data={sessionData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                   <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
                   <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={60} />
-                  <ReferenceLine y={0} stroke="#252525" />
+                  <ReferenceLine y={0} stroke="var(--border-strong)" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
                   <Bar dataKey="value" radius={[3, 3, 0, 0]}>
                     {sessionData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
@@ -531,7 +531,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                 <BarChart data={dowData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                   <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
                   <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={yFmt} width={60} />
-                  <ReferenceLine y={0} stroke="#252525" />
+                  <ReferenceLine y={0} stroke="var(--border-strong)" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
                   <Bar dataKey="pnl" name="pnl" radius={[3, 3, 0, 0]}>
                     {dowData.map((d, i) => <Cell key={i} fill={d.pnl >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
@@ -572,8 +572,8 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                   return (
                     <div key={key}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <span style={{ fontSize: 13, color: 'var(--text-sub)', fontWeight: 600 }}>{key}</span>
-                        <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>{count} <span style={{ color: 'var(--text-dim)' }}>({pct.toFixed(1)}%)</span></span>
+                        <span style={{ fontSize: 15, color: 'var(--text-sub)', fontWeight: 600 }}>{key}</span>
+                        <span style={{ fontSize: 15, color: 'var(--text-sub)' }}>{count} <span style={{ color: 'var(--text-dim)' }}>({pct.toFixed(1)}%)</span></span>
                       </div>
                       <div style={{ height: 6, background: 'var(--border)', borderRadius: 999, overflow: 'hidden' }}>
                         <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 999, opacity: 0.75 }} />
@@ -599,34 +599,34 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                   <div key={acc.id} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                       <div style={{ width: 8, height: 8, borderRadius: '50%', background: tc }} />
-                      <span style={{ fontSize: 11, color: tc, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{acc.type}</span>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', marginLeft: 2 }}>{acc.name}</span>
+                      <span style={{ fontSize: 13, color: tc, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{acc.type}</span>
+                      <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', marginLeft: 2 }}>{acc.name}</span>
                     </div>
                     {acc.type === 'Live' && (
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>{acc.broker || 'No broker set'}</div>
+                      <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 8 }}>{acc.broker || 'No broker set'}</div>
                     )}
                     {(acc.type === 'Eval' || acc.type === 'Funded') && (
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>{acc.propFirm || '—'} · {formatCurrency(acc.size)}</div>
+                      <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 8 }}>{acc.propFirm || '—'} · {formatCurrency(acc.size)}</div>
                     )}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                       <div>
-                        <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>P&L</div>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: pnlColor }}>{pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}</div>
+                        <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>P&L</div>
+                        <div style={{ fontSize: 17, fontWeight: 700, color: pnlColor }}>{pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Trades</div>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-sub)' }}>{trades}</div>
+                        <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Trades</div>
+                        <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-sub)' }}>{trades}</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: 10, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Win %</div>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: wr >= 50 ? '#4ade80' : '#f87171' }}>{trades > 0 ? formatPct(wr) : '—'}</div>
+                        <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Win %</div>
+                        <div style={{ fontSize: 17, fontWeight: 700, color: wr >= 50 ? '#4ade80' : '#f87171' }}>{trades > 0 ? formatPct(wr) : '—'}</div>
                       </div>
                     </div>
                     {acc.type === 'Eval' && acc.profitTarget > 0 && (
                       <div style={{ marginTop: 10 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                          <span style={{ fontSize: 11, color: 'var(--text-dim)' }}>Target progress</span>
-                          <span style={{ fontSize: 11, color: pnl >= 0 ? '#4ade80' : '#f87171', fontWeight: 600 }}>{Math.round((pnl / acc.profitTarget) * 100)}%</span>
+                          <span style={{ fontSize: 13, color: 'var(--text-dim)' }}>Target progress</span>
+                          <span style={{ fontSize: 13, color: pnl >= 0 ? '#4ade80' : '#f87171', fontWeight: 600 }}>{Math.round((pnl / acc.profitTarget) * 100)}%</span>
                         </div>
                         <div style={{ height: 4, background: 'var(--border)', borderRadius: 999, overflow: 'hidden' }}>
                           <div style={{ width: `${Math.max(0, Math.min(100, (pnl / acc.profitTarget) * 100))}%`, height: '100%', background: '#fbbf24', borderRadius: 999 }} />

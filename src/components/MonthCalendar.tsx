@@ -69,7 +69,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
 
       {/* Header row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-        <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-dim)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Trade Calendar</h3>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-dim)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Trade Calendar</h3>
 
         {/* Month navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -81,7 +81,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
           >
             <ChevronLeft size={13} strokeWidth={2} />
           </button>
-          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-sub)', minWidth: 120, textAlign: 'center' }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-sub)', minWidth: 120, textAlign: 'center' }}>
             {monthLabel}
           </span>
           <button
@@ -97,7 +97,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
         {/* Month P&L + trade count */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-            <span style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Monthly Profit</span>
+            <span style={{ fontSize: 14, color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Monthly Profit</span>
             <span style={{
               fontSize: 18, fontWeight: 700,
               color: monthTradeCount === 0 ? '#333' : monthPnl >= 0 ? '#4ade80' : '#f87171',
@@ -107,7 +107,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
           </div>
           <div style={{ width: 1, height: 28, background: 'var(--border-mid)' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-            <span style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Total Trades</span>
+            <span style={{ fontSize: 14, color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Total Trades</span>
             <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-sub)' }}>
               {monthTradeCount}
             </span>
@@ -118,11 +118,11 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
       {/* Weekday headers + Week column header */}
       <div style={{ display: 'grid', gridTemplateColumns: colTemplate, gap: 4, marginBottom: 6 }}>
         {WEEKDAYS.map(d => (
-          <div key={d} style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-dim)', padding: '4px 0 4px 7px' }}>
+          <div key={d} style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-dim)', padding: '4px 0 4px 7px' }}>
             {d}
           </div>
         ))}
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-dim)', padding: '4px 0', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-dim)', padding: '4px 0', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
           Week
         </div>
       </div>
@@ -208,14 +208,14 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                     onMouseLeave={e => { e.currentTarget.style.borderColor = isToday ? 'var(--border-strong)' : cellBorder; e.currentTarget.style.background = cellBg }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: dayNumColor, lineHeight: 1 }}>
+                      <span style={{ fontSize: 16, fontWeight: 700, color: dayNumColor, lineHeight: 1 }}>
                         {day}
                       </span>
                       {hasDiary && (
                         <button
                           onClick={e => { e.stopPropagation(); onDiaryClick?.(dateStr) }}
                           title="Open Daily Journal"
-                          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontSize: 11, lineHeight: 1, opacity: 0.7, display: 'flex', transition: 'opacity 0.15s' }}
+                          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontSize: 13, lineHeight: 1, opacity: 0.7, display: 'flex', transition: 'opacity 0.15s' }}
                           onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
                           onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}
                         >📝</button>
@@ -223,19 +223,19 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                     </div>
                     {hasData && (
                       <>
-                        <span style={{ fontSize: 13, fontWeight: 800, color: isPositive ? '#4ade80' : isNegative ? '#f87171' : '#888', lineHeight: 1, marginTop: 2 }}>
+                        <span style={{ fontSize: 15, fontWeight: 800, color: isPositive ? '#4ade80' : isNegative ? '#f87171' : '#888', lineHeight: 1, marginTop: 2 }}>
                           {pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}
                         </span>
                         {dayR !== null && (
-                          <span style={{ fontSize: 12, fontWeight: 700, color: dayR > 0 ? '#4ade80' : dayR < 0 ? '#f87171' : '#888', lineHeight: 1 }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: dayR > 0 ? '#4ade80' : dayR < 0 ? '#f87171' : '#888', lineHeight: 1 }}>
                             {dayR >= 0 ? '+' : ''}{dayR.toFixed(1)}R
                           </span>
                         )}
-                        <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1 }}>
+                        <span style={{ fontSize: 14, color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1 }}>
                           {count} trade{count !== 1 ? 's' : ''}
                         </span>
                         {wlbeParts.length > 0 && (
-                          <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
+                          <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
                             {wlbeParts.join(' - ')}
                           </span>
                         )}
@@ -254,30 +254,30 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                 border: `1px solid ${weekBorder}`,
                 borderLeft: `2px solid ${weekHasData ? (weekPnl > 0 ? 'rgba(52,211,153,0.4)' : weekPnl < 0 ? 'rgba(248,113,113,0.4)' : '#2a2a2a') : '#1a1a1a'}`,
               }}>
-                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: 1 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: 1 }}>
                   WK {wi + 1}
                 </span>
                 {weekHasData ? (
                   <>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: weekPnlColor, lineHeight: 1, marginTop: 2 }}>
+                    <span style={{ fontSize: 15, fontWeight: 800, color: weekPnlColor, lineHeight: 1, marginTop: 2 }}>
                       {weekPnl >= 0 ? '+' : ''}{formatCurrency(weekPnl)}
                     </span>
                     {weekR !== null && (
-                      <span style={{ fontSize: 12, fontWeight: 700, color: weekR > 0 ? '#4ade80' : weekR < 0 ? '#f87171' : '#888', lineHeight: 1 }}>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: weekR > 0 ? '#4ade80' : weekR < 0 ? '#f87171' : '#888', lineHeight: 1 }}>
                         {weekR >= 0 ? '+' : ''}{weekR.toFixed(1)}R
                       </span>
                     )}
-                    <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1 }}>
+                    <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1 }}>
                       {weekCount} trade{weekCount !== 1 ? 's' : ''}
                     </span>
                     {weekWLBE.length > 0 && (
-                      <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
+                      <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
                         {weekWLBE.join(' - ')}
                       </span>
                     )}
                   </>
                 ) : (
-                  <span style={{ fontSize: 12, color: 'var(--border-mid)', marginTop: 4 }}>—</span>
+                  <span style={{ fontSize: 14, color: 'var(--border-mid)', marginTop: 4 }}>—</span>
                 )}
               </div>
             </div>
@@ -294,7 +294,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
         ].map(({ bg, border, label }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <div style={{ width: 12, height: 12, borderRadius: 3, background: bg, border: `1px solid ${border}` }} />
-            <span style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 600 }}>{label}</span>
+            <span style={{ fontSize: 14, color: 'var(--text-dim)', fontWeight: 600 }}>{label}</span>
           </div>
         ))}
       </div>

@@ -45,7 +45,7 @@ export function StatCard({ label, value, sub, positive, icon }: StatCardProps) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+        <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {label}
         </span>
         <span style={{ color: 'var(--border-strong)' }}>{icon}</span>
@@ -55,7 +55,7 @@ export function StatCard({ label, value, sub, positive, icon }: StatCardProps) {
           {value}
         </div>
         {sub && (
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 7 }}>{sub}</div>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 7 }}>{sub}</div>
         )}
       </div>
     </div>

@@ -167,12 +167,12 @@ const EXIT_REASONS = ['Full TP', 'Swept Internal High/Low', 'SMT']
 
 const inputBase: React.CSSProperties = {
   background: 'var(--bg-input)', border: '1px solid var(--border-mid)', borderRadius: 8,
-  padding: '10px 13px', fontSize: 16, color: 'var(--text)', outline: 'none',
+  padding: '10px 13px', fontSize: 18, color: 'var(--text)', outline: 'none',
   width: '100%', boxSizing: 'border-box', transition: 'border-color 0.15s',
   fontFamily: 'inherit',
 }
 const fieldLabel = (text: string) => (
-  <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 7 }}>{text}</div>
+  <div style={{ fontSize: 15, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 7 }}>{text}</div>
 )
 
 // ── Screenshot Upload ─────────────────────────────────────────────────────────
@@ -191,7 +191,7 @@ function ScreenshotUpload({ label, preview, onFile, onClear }: {
     <div>
       {fieldLabel(label)}
       {preview ? (
-        <div style={{ position: 'relative', borderRadius: 8, overflow: 'hidden', border: '1px solid #222' }}>
+        <div style={{ position: 'relative', borderRadius: 8, overflow: 'hidden', border: '1px solid var(--border-mid)' }}>
           <img src={preview} alt={label} style={{ width: '100%', maxHeight: 220, objectFit: 'contain', background: '#000', display: 'block' }} />
           <button onClick={onClear}
             style={{ position: 'absolute', top: 6, right: 6, background: 'rgba(0,0,0,0.75)', border: 'none', borderRadius: '50%', width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}
@@ -204,12 +204,12 @@ function ScreenshotUpload({ label, preview, onFile, onClear }: {
           onClick={() => ref.current?.click()}
           onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handle(f) }}
           onDragOver={e => e.preventDefault()}
-          style={{ border: '2px dashed #1a1a1a', borderRadius: 8, padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, cursor: 'pointer', transition: 'border-color 0.15s' }}
-          onMouseEnter={e => (e.currentTarget.style.borderColor = '#333')}
-          onMouseLeave={e => (e.currentTarget.style.borderColor = '#1a1a1a')}
+          style={{ border: '2px dashed var(--border-mid)', borderRadius: 8, padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, cursor: 'pointer', transition: 'border-color 0.15s' }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border-mid)')}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border-mid)')}
         >
-          <ImageIcon size={16} color="#555" />
-          <span style={{ fontSize: 12, color: '#555' }}>Click or drag image</span>
+          <ImageIcon size={16} color="var(--text-muted)" />
+          <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>Click or drag image</span>
         </div>
       )}
       <input ref={ref} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) handle(f) }} />
@@ -224,7 +224,7 @@ function PillBtn({ label, active, onClick, activeColor, activeBg }: {
 }) {
   return (
     <button onClick={onClick} style={{
-      flex: 1, padding: '8px 4px', borderRadius: 8, fontSize: 13, fontWeight: 600,
+      flex: 1, padding: '8px 4px', borderRadius: 8, fontSize: 15, fontWeight: 600,
       border: `1px solid ${active ? activeColor + '55' : 'var(--border-mid)'}`,
       background: active ? activeBg : 'transparent',
       color: active ? activeColor : 'var(--text-muted)',
@@ -239,7 +239,7 @@ function PillBtn({ label, active, onClick, activeColor, activeBg }: {
 function TagChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} style={{
-      padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 500,
+      padding: '5px 12px', borderRadius: 999, fontSize: 14, fontWeight: 500,
       border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border-mid)'}`,
       background: active ? 'var(--bg-active)' : 'transparent',
       color: active ? 'var(--text)' : 'var(--text-muted)',
@@ -273,11 +273,11 @@ function ConfluenceWizard({ confluences, onChange }: {
         {confluences.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
             {confluences.map(tag => (
-              <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 7px 3px 10px', borderRadius: 999, fontSize: 12, background: '#1e1e1e', border: '1px solid #333', color: '#e0e0e0' }}>
+              <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 7px 3px 10px', borderRadius: 999, fontSize: 14, background: 'var(--bg-active)', border: '1px solid var(--border-strong)', color: 'var(--text)' }}>
                 {tag}
-                <button onClick={() => toggle(tag)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#666', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
+                <button onClick={() => toggle(tag)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#666')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                 ><X size={9} /></button>
               </span>
             ))}
@@ -287,12 +287,12 @@ function ConfluenceWizard({ confluences, onChange }: {
           onClick={() => setStep(0)}
           style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px',
-            borderRadius: 8, border: '1px dashed #222', background: 'transparent',
-            color: '#555', fontSize: 12, fontWeight: 500, cursor: 'pointer',
+            borderRadius: 8, border: '1px dashed var(--border-mid)', background: 'transparent',
+            color: 'var(--text-muted)', fontSize: 14, fontWeight: 500, cursor: 'pointer',
             transition: 'all 0.15s', fontFamily: 'inherit',
           }}
-          onMouseEnter={e => { e.currentTarget.style.color = '#aaa'; e.currentTarget.style.borderColor = '#3a3a3a' }}
-          onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#222' }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
         >
           {confluences.length > 0 ? '✏ Edit Confluences' : '+ Add Confluences'}
         </button>
@@ -305,15 +305,15 @@ function ConfluenceWizard({ confluences, onChange }: {
   const pct = Math.round(((step + 1) / total) * 100)
 
   return (
-    <div style={{ background: '#0e0e0e', border: '1px solid #1e1e1e', borderRadius: 12, padding: '14px 16px', boxShadow: '0 4px 16px rgba(0,0,0,0.4)' }}>
+    <div style={{ background: 'var(--bg-panel)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
       {/* Step header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#d0d0d0' }}>{current}</span>
-        <span style={{ fontSize: 11, color: '#444', fontWeight: 600 }}>{step + 1} / {total}</span>
+        <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-label)' }}>{current}</span>
+        <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600 }}>{step + 1} / {total}</span>
       </div>
 
       {/* Progress bar */}
-      <div style={{ height: 2, background: '#1a1a1a', borderRadius: 999, marginBottom: 12, overflow: 'hidden' }}>
+      <div style={{ height: 2, background: 'var(--border)', borderRadius: 999, marginBottom: 12, overflow: 'hidden' }}>
         <div style={{ width: `${pct}%`, height: '100%', background: '#4ade80', borderRadius: 999, transition: 'width 0.3s ease' }} />
       </div>
 
@@ -324,10 +324,10 @@ function ConfluenceWizard({ confluences, onChange }: {
           const sel = confluences.includes(combo)
           return (
             <button key={tf} onClick={() => toggle(combo)} style={{
-              padding: '4px 10px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-              border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : '#1a1a1a'}`,
+              padding: '4px 10px', borderRadius: 999, fontSize: 14, fontWeight: 500,
+              border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : 'var(--border)'}`,
               background: sel ? 'rgba(74,222,128,0.1)' : 'transparent',
-              color: sel ? '#4ade80' : '#666',
+              color: sel ? '#4ade80' : 'var(--text-muted)',
               cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
             }}>{tf}</button>
           )
@@ -337,10 +337,10 @@ function ConfluenceWizard({ confluences, onChange }: {
           const sel = confluences.includes(tag)
           return (
             <button key={lv} onClick={() => toggle(tag)} style={{
-              padding: '4px 10px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-              border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : '#1a1a1a'}`,
+              padding: '4px 10px', borderRadius: 999, fontSize: 14, fontWeight: 500,
+              border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : 'var(--border)'}`,
               background: sel ? 'rgba(74,222,128,0.1)' : 'transparent',
-              color: sel ? '#4ade80' : '#666',
+              color: sel ? '#4ade80' : 'var(--text-muted)',
               cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
             }}>{lv}σ</button>
           )
@@ -351,24 +351,24 @@ function ConfluenceWizard({ confluences, onChange }: {
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
         <button
           onClick={() => { if (step === 0) setStep(null); else setStep(s => (s ?? 1) - 1) }}
-          style={{ padding: '5px 11px', borderRadius: 7, fontSize: 12, fontWeight: 500, border: '1px solid #1e1e1e', background: 'transparent', color: '#555', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
-          onMouseEnter={e => { e.currentTarget.style.color = '#aaa'; e.currentTarget.style.borderColor = '#2a2a2a' }}
-          onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#1e1e1e' }}
+          style={{ padding: '5px 11px', borderRadius: 7, fontSize: 14, fontWeight: 500, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
         >{step === 0 ? '✕ Close' : '← Back'}</button>
         <div style={{ flex: 1 }} />
         {step < total - 1 ? (
           <>
-            <button onClick={() => setStep(s => (s ?? 0) + 1)} style={{ padding: '5px 11px', borderRadius: 7, fontSize: 12, fontWeight: 500, border: '1px solid #1e1e1e', background: 'transparent', color: '#555', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#aaa' }}
-              onMouseLeave={e => { e.currentTarget.style.color = '#555' }}
+            <button onClick={() => setStep(s => (s ?? 0) + 1)} style={{ padding: '5px 11px', borderRadius: 7, fontSize: 14, fontWeight: 500, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)' }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)' }}
             >Skip</button>
-            <button onClick={() => setStep(s => (s ?? 0) + 1)} style={{ padding: '5px 14px', borderRadius: 7, fontSize: 12, fontWeight: 600, border: 'none', background: '#f0f0f0', color: '#111', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#fff' }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#f0f0f0' }}
+            <button onClick={() => setStep(s => (s ?? 0) + 1)} style={{ padding: '5px 14px', borderRadius: 7, fontSize: 14, fontWeight: 600, border: 'none', background: 'var(--btn-bg)', color: 'var(--btn-text)', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--btn-hover)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--btn-bg)' }}
             >Next →</button>
           </>
         ) : (
-          <button onClick={() => setStep(null)} style={{ padding: '5px 14px', borderRadius: 7, fontSize: 12, fontWeight: 600, border: '1px solid rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.08)', color: '#4ade80', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}>
+          <button onClick={() => setStep(null)} style={{ padding: '5px 14px', borderRadius: 7, fontSize: 14, fontWeight: 600, border: '1px solid rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.08)', color: '#4ade80', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}>
             Done ✓
           </button>
         )}
@@ -376,15 +376,15 @@ function ConfluenceWizard({ confluences, onChange }: {
 
       {/* Selected summary at bottom */}
       {confluences.length > 0 && (
-        <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #141414' }}>
-          <div style={{ fontSize: 10, color: '#3a3a3a', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 5 }}>Selected</div>
+        <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
+          <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 5 }}>Selected</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
             {confluences.map(tag => (
-              <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 6px 2px 8px', borderRadius: 999, fontSize: 11, background: '#1a1a1a', border: '1px solid #2a2a2a', color: '#ccc' }}>
+              <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 6px 2px 8px', borderRadius: 999, fontSize: 13, background: 'var(--bg-surface)', border: '1px solid var(--border-mid)', color: 'var(--text-label)' }}>
                 {tag}
-                <button onClick={() => toggle(tag)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#555', display: 'flex', lineHeight: 1 }}
+                <button onClick={() => toggle(tag)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', lineHeight: 1 }}
                   onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#555')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                 ><X size={8} /></button>
               </span>
             ))}
@@ -413,11 +413,11 @@ function TFTagPicker({ bases, selected, onChange }: {
       {selected.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
           {selected.map(tag => (
-            <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 7px 3px 10px', borderRadius: 999, fontSize: 12, background: '#1e1e1e', border: '1px solid #333', color: '#e0e0e0' }}>
+            <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 7px 3px 10px', borderRadius: 999, fontSize: 14, background: 'var(--bg-active)', border: '1px solid var(--border-strong)', color: 'var(--text)' }}>
               {tag}
-              <button onClick={() => toggle(tag)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#666', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
+              <button onClick={() => toggle(tag)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#666')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
               ><X size={9} /></button>
             </span>
           ))}
@@ -429,31 +429,31 @@ function TFTagPicker({ bases, selected, onChange }: {
           const isOpen = activePicker === base
           return (
             <button key={base} onClick={() => setActivePicker(isOpen ? null : base)} style={{
-              padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-              border: `1px solid ${hasAny || isOpen ? '#4a4a4a' : '#222'}`,
-              background: hasAny || isOpen ? '#252525' : 'transparent',
-              color: hasAny || isOpen ? '#f0f0f0' : '#666',
+              padding: '5px 12px', borderRadius: 999, fontSize: 14, fontWeight: 500,
+              border: `1px solid ${hasAny || isOpen ? 'var(--border-strong)' : 'var(--border)'}`,
+              background: hasAny || isOpen ? 'var(--bg-active)' : 'transparent',
+              color: hasAny || isOpen ? 'var(--text)' : 'var(--text-muted)',
               cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
             }}
-              onMouseEnter={e => { if (!hasAny && !isOpen) { e.currentTarget.style.color = '#bbb'; e.currentTarget.style.borderColor = '#333' } }}
-              onMouseLeave={e => { if (!hasAny && !isOpen) { e.currentTarget.style.color = '#666'; e.currentTarget.style.borderColor = '#222' } }}
+              onMouseEnter={e => { if (!hasAny && !isOpen) { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
+              onMouseLeave={e => { if (!hasAny && !isOpen) { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' } }}
             >{base}</button>
           )
         })}
       </div>
       {activePicker && (
-        <div style={{ padding: '8px 12px', background: '#111', borderRadius: 10, border: '1px solid #1a1a1a' }}>
-          <div style={{ fontSize: 11, color: '#888', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Timeframe</div>
+        <div style={{ padding: '8px 12px', background: 'var(--bg-surface)', borderRadius: 10, border: '1px solid var(--border)' }}>
+          <div style={{ fontSize: 13, color: 'var(--text-sub)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Timeframe</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
             {TIMEFRAMES.map(tf => {
               const combo = `${activePicker} (${tf})`
               const sel = selected.includes(combo)
               return (
                 <button key={tf} onClick={() => toggle(combo)} style={{
-                  padding: '4px 10px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-                  border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : '#1a1a1a'}`,
+                  padding: '4px 10px', borderRadius: 999, fontSize: 14, fontWeight: 500,
+                  border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : 'var(--border)'}`,
                   background: sel ? 'rgba(74,222,128,0.1)' : 'transparent',
-                  color: sel ? '#4ade80' : '#666',
+                  color: sel ? '#4ade80' : 'var(--text-muted)',
                   cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                 }}>{tf}</button>
               )
@@ -473,9 +473,9 @@ function SectionHeader({ title, open, onToggle }: { title: string; open: boolean
       display: 'flex', alignItems: 'center', gap: 12, width: '100%',
       background: 'none', border: 'none', cursor: 'pointer', padding: '22px 0 0', margin: 0,
     }}>
-      <span style={{ fontSize: 11, fontWeight: 700, color: open ? '#aaa' : '#666', textTransform: 'uppercase', letterSpacing: '0.1em', whiteSpace: 'nowrap', transition: 'color 0.15s' }}>{title}</span>
-      <div style={{ flex: 1, height: 1, background: '#1e1e1e' }} />
-      <ChevronDown size={13} color="#555" style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s', flexShrink: 0 }} />
+      <span style={{ fontSize: 13, fontWeight: 700, color: open ? 'var(--text-sub)' : 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', whiteSpace: 'nowrap', transition: 'color 0.15s' }}>{title}</span>
+      <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+      <ChevronDown size={13} color="var(--text-dim)" style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s', flexShrink: 0 }} />
     </button>
   )
 }
@@ -540,11 +540,11 @@ function ICTWizard({ fields, onChange }: {
         {allChips.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
             {allChips.map((chip, i) => (
-              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 7px 3px 10px', borderRadius: 999, fontSize: 12, background: '#1e1e1e', border: '1px solid #333', color: '#e0e0e0' }}>
+              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 7px 3px 10px', borderRadius: 999, fontSize: 14, background: 'var(--bg-active)', border: '1px solid var(--border-strong)', color: 'var(--text)' }}>
                 {chip.label}
-                <button onClick={chip.remove} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#666', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
+                <button onClick={chip.remove} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#666')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                 ><X size={9} /></button>
               </span>
             ))}
@@ -552,9 +552,9 @@ function ICTWizard({ fields, onChange }: {
         )}
         <button
           onClick={() => setStep(0)}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, border: '1px dashed #222', background: 'transparent', color: '#555', fontSize: 12, fontWeight: 500, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
-          onMouseEnter={e => { e.currentTarget.style.color = '#aaa'; e.currentTarget.style.borderColor = '#3a3a3a' }}
-          onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#222' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, border: '1px dashed var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
         >{allChips.length > 0 ? '✏ Edit ICT Context' : '+ Add ICT Context'}</button>
       </div>
     )
@@ -574,10 +574,10 @@ function ICTWizard({ fields, onChange }: {
             const col = opt === 'Yes' ? '#4ade80' : '#f87171'
             return (
               <button key={opt} onClick={() => onChange('displacement', active ? '' : opt)} style={{
-                padding: '6px 20px', borderRadius: 8, fontSize: 13, fontWeight: 600,
-                border: `1px solid ${active ? col + '44' : '#1e1e1e'}`,
+                padding: '6px 20px', borderRadius: 8, fontSize: 15, fontWeight: 600,
+                border: `1px solid ${active ? col + '44' : 'var(--border)'}`,
                 background: active ? `${col}14` : 'transparent',
-                color: active ? col : '#666',
+                color: active ? col : 'var(--text-muted)',
                 cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
               }}>{opt}</button>
             )
@@ -590,35 +590,35 @@ function ICTWizard({ fields, onChange }: {
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div>
-            <div style={{ fontSize: 10, color: '#555', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Timeframe</div>
+            <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Timeframe</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
               {TIMEFRAMES.map(tf => {
                 const tag = `STDV (${tf})`
                 const sel = arr.includes(tag)
                 return (
                   <button key={tf} onClick={() => toggleTag('stdvPresent', arr, tag)} style={{
-                    padding: '4px 10px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-                    border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : '#1a1a1a'}`,
+                    padding: '4px 10px', borderRadius: 999, fontSize: 14, fontWeight: 500,
+                    border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : 'var(--border)'}`,
                     background: sel ? 'rgba(74,222,128,0.1)' : 'transparent',
-                    color: sel ? '#4ade80' : '#666',
+                    color: sel ? '#4ade80' : 'var(--text-muted)',
                     cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                   }}>{tf}</button>
                 )
               })}
             </div>
           </div>
-          <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: 10 }}>
-            <div style={{ fontSize: 10, color: '#555', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Level</div>
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 10 }}>
+            <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Level</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
               {STDV_CONTEXT_LEVELS.map(lv => {
                 const tag = `STDV ${lv}`
                 const sel = arr.includes(tag)
                 return (
                   <button key={lv} onClick={() => toggleTag('stdvPresent', arr, tag)} style={{
-                    padding: '4px 10px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-                    border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : '#1a1a1a'}`,
+                    padding: '4px 10px', borderRadius: 999, fontSize: 14, fontWeight: 500,
+                    border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : 'var(--border)'}`,
                     background: sel ? 'rgba(74,222,128,0.1)' : 'transparent',
-                    color: sel ? '#4ade80' : '#666',
+                    color: sel ? '#4ade80' : 'var(--text-muted)',
                     cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                   }}>{lv}</button>
                 )
@@ -638,10 +638,10 @@ function ICTWizard({ fields, onChange }: {
           const sel = arr.includes(tag)
           return (
             <button key={tf} onClick={() => toggleTag(curStep.key, arr, tag)} style={{
-              padding: '4px 10px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-              border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : '#1a1a1a'}`,
+              padding: '4px 10px', borderRadius: 999, fontSize: 14, fontWeight: 500,
+              border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : 'var(--border)'}`,
               background: sel ? 'rgba(74,222,128,0.1)' : 'transparent',
-              color: sel ? '#4ade80' : '#666',
+              color: sel ? '#4ade80' : 'var(--text-muted)',
               cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
             }}>{tf}</button>
           )
@@ -651,50 +651,50 @@ function ICTWizard({ fields, onChange }: {
   }
 
   return (
-    <div style={{ background: '#0e0e0e', border: '1px solid #1e1e1e', borderRadius: 12, padding: '14px 16px', boxShadow: '0 4px 16px rgba(0,0,0,0.4)' }}>
+    <div style={{ background: 'var(--bg-panel)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#d0d0d0' }}>{curStep.label}</span>
-        <span style={{ fontSize: 11, color: '#444', fontWeight: 600 }}>{step + 1} / {total}</span>
+        <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-label)' }}>{curStep.label}</span>
+        <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600 }}>{step + 1} / {total}</span>
       </div>
-      <div style={{ height: 2, background: '#1a1a1a', borderRadius: 999, marginBottom: 12, overflow: 'hidden' }}>
+      <div style={{ height: 2, background: 'var(--border)', borderRadius: 999, marginBottom: 12, overflow: 'hidden' }}>
         <div style={{ width: `${pct}%`, height: '100%', background: '#4ade80', borderRadius: 999, transition: 'width 0.3s ease' }} />
       </div>
       <div style={{ marginBottom: 12 }}>{stepContent()}</div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
         <button
           onClick={() => { if (step === 0) setStep(null); else setStep(s => (s ?? 1) - 1) }}
-          style={{ padding: '5px 11px', borderRadius: 7, fontSize: 12, fontWeight: 500, border: '1px solid #1e1e1e', background: 'transparent', color: '#555', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
-          onMouseEnter={e => { e.currentTarget.style.color = '#aaa'; e.currentTarget.style.borderColor = '#2a2a2a' }}
-          onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#1e1e1e' }}
+          style={{ padding: '5px 11px', borderRadius: 7, fontSize: 14, fontWeight: 500, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
         >{step === 0 ? '✕ Close' : '← Back'}</button>
         <div style={{ flex: 1 }} />
         {step < total - 1 ? (
           <>
-            <button onClick={() => setStep(s => (s ?? 0) + 1)} style={{ padding: '5px 11px', borderRadius: 7, fontSize: 12, fontWeight: 500, border: '1px solid #1e1e1e', background: 'transparent', color: '#555', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#aaa' }}
-              onMouseLeave={e => { e.currentTarget.style.color = '#555' }}
+            <button onClick={() => setStep(s => (s ?? 0) + 1)} style={{ padding: '5px 11px', borderRadius: 7, fontSize: 14, fontWeight: 500, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)' }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)' }}
             >Skip</button>
-            <button onClick={() => setStep(s => (s ?? 0) + 1)} style={{ padding: '5px 14px', borderRadius: 7, fontSize: 12, fontWeight: 600, border: 'none', background: '#f0f0f0', color: '#111', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#fff' }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#f0f0f0' }}
+            <button onClick={() => setStep(s => (s ?? 0) + 1)} style={{ padding: '5px 14px', borderRadius: 7, fontSize: 14, fontWeight: 600, border: 'none', background: 'var(--btn-bg)', color: 'var(--btn-text)', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--btn-hover)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--btn-bg)' }}
             >Next →</button>
           </>
         ) : (
-          <button onClick={() => setStep(null)} style={{ padding: '5px 14px', borderRadius: 7, fontSize: 12, fontWeight: 600, border: '1px solid rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.08)', color: '#4ade80', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}>
+          <button onClick={() => setStep(null)} style={{ padding: '5px 14px', borderRadius: 7, fontSize: 14, fontWeight: 600, border: '1px solid rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.08)', color: '#4ade80', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}>
             Done ✓
           </button>
         )}
       </div>
       {allChips.length > 0 && (
-        <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #141414' }}>
-          <div style={{ fontSize: 10, color: '#3a3a3a', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 5 }}>Selected</div>
+        <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
+          <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 5 }}>Selected</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
             {allChips.map((chip, i) => (
-              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 6px 2px 8px', borderRadius: 999, fontSize: 11, background: '#1a1a1a', border: '1px solid #2a2a2a', color: '#ccc' }}>
+              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 6px 2px 8px', borderRadius: 999, fontSize: 13, background: 'var(--bg-surface)', border: '1px solid var(--border-mid)', color: 'var(--text-label)' }}>
                 {chip.label}
-                <button onClick={chip.remove} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#555', display: 'flex', lineHeight: 1 }}
+                <button onClick={chip.remove} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', lineHeight: 1 }}
                   onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#555')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                 ><X size={8} /></button>
               </span>
             ))}
@@ -758,7 +758,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
 
   // Auto-grade
   const autoGradeResult = calcSetupGrade(trade)
-  const autoGradeColor = autoGradeResult ? (GRADE_COLORS[autoGradeResult.grade] || '#888') : '#252525'
+  const autoGradeColor = autoGradeResult ? (GRADE_COLORS[autoGradeResult.grade] || 'var(--text-sub)') : 'var(--bg-active)'
 
   function handleSave() {
     const finalTrade = {
@@ -780,7 +780,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
 
         {/* Header */}
         <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', padding: '18px 24px', borderBottom: '1px solid var(--border)' }}>
-          <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', flex: 1 }}>New Trade</span>
+          <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', flex: 1 }}>New Trade</span>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', display: 'flex', padding: 4, borderRadius: 6, transition: 'color 0.15s' }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-sub)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-dim)')}
@@ -827,14 +827,14 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                           const active = (trade.accounts || []).includes(label)
                           return (
                             <button key={label} onClick={() => toggleArr('accounts', label)} style={{
-                              padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 500,
-                              border: `1px solid ${active ? '#4a4a4a' : '#1a1a1a'}`,
-                              background: active ? '#1e1e1e' : 'transparent',
-                              color: active ? '#e0e0e0' : '#555',
+                              padding: '6px 12px', borderRadius: 8, fontSize: 14, fontWeight: 500,
+                              border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
+                              background: active ? 'var(--bg-active)' : 'transparent',
+                              color: active ? 'var(--text)' : 'var(--text-muted)',
                               cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                             }}
-                              onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#aaa' }}
-                              onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#555' }}
+                              onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-sub)' }}
+                              onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
                             >{label}</button>
                           )
                         })}
@@ -854,14 +854,14 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                       const col = side === 'Long' ? '#22d3ee' : '#f87171'
                       return (
                         <button key={side} onClick={() => set('side', side)} style={{
-                          flex: 1, borderRadius: 8, fontSize: 12, fontWeight: 600,
-                          border: `1px solid ${active ? col + '44' : '#1e1e1e'}`,
+                          flex: 1, borderRadius: 8, fontSize: 14, fontWeight: 600,
+                          border: `1px solid ${active ? col + '44' : 'var(--border)'}`,
                           background: active ? `${col}14` : 'transparent',
-                          color: active ? col : '#3a3a3a',
+                          color: active ? col : 'var(--text-dim)',
                           cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                         }}
-                          onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#666' }}
-                          onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#3a3a3a' }}
+                          onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                          onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
                         >{side}</button>
                       )
                     })}
@@ -950,7 +950,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
 
               {/* Auto-Calculated subsection */}
               <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px', marginTop: 4 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Auto-Calculated</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Auto-Calculated</div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0, borderLeft: '1px solid var(--border)' }}>
                   {[
                     { label: 'Gross P&L', value: hasPnl ? (grossPnl >= 0 ? '+' : '') + formatCurrency(grossPnl) : '—', color: hasPnl ? grossColor : 'var(--text-dim)' },
@@ -958,8 +958,8 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                     { label: 'R Multiple', value: rMultiple !== null ? `${rMultiple >= 0 ? '+' : ''}${rMultiple}R` : '—', color: rMultiple !== null ? rColor : 'var(--text-dim)' },
                   ].map(item => (
                     <div key={item.label} style={{ padding: '0 20px', borderRight: '1px solid var(--border)' }}>
-                      <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>{item.label}</div>
-                      <div style={{ fontSize: 26, fontWeight: 700, color: item.color, letterSpacing: '-0.02em' }}>{item.value}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>{item.label}</div>
+                      <div style={{ fontSize: 28, fontWeight: 700, color: item.color, letterSpacing: '-0.02em' }}>{item.value}</div>
                     </div>
                   ))}
                 </div>
@@ -983,14 +983,14 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                       const col = side === 'Long' ? '#22d3ee' : '#f87171'
                       return (
                         <button key={side} onClick={() => set('htfBias', active ? '' : side)} style={{
-                          flex: 1, borderRadius: 8, fontSize: 12, fontWeight: 600,
-                          border: `1px solid ${active ? col + '44' : '#1e1e1e'}`,
+                          flex: 1, borderRadius: 8, fontSize: 14, fontWeight: 600,
+                          border: `1px solid ${active ? col + '44' : 'var(--border)'}`,
                           background: active ? `${col}14` : 'transparent',
-                          color: active ? col : '#3a3a3a',
+                          color: active ? col : 'var(--text-dim)',
                           cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                         }}
-                          onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#666' }}
-                          onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#3a3a3a' }}
+                          onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                          onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
                         >{side}</button>
                       )
                     })}
@@ -1003,14 +1003,14 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                       const active = trade.marketCondition === mc
                       return (
                         <button key={mc} onClick={() => set('marketCondition', active ? '' : mc)} style={{
-                          flex: 1, borderRadius: 8, fontSize: 12, fontWeight: 600,
-                          border: `1px solid ${active ? '#4a4a4a' : '#1e1e1e'}`,
-                          background: active ? '#1e1e1e' : 'transparent',
-                          color: active ? '#e0e0e0' : '#3a3a3a',
+                          flex: 1, borderRadius: 8, fontSize: 14, fontWeight: 600,
+                          border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
+                          background: active ? 'var(--bg-active)' : 'transparent',
+                          color: active ? 'var(--text)' : 'var(--text-dim)',
                           cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                         }}
-                          onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#666' }}
-                          onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#3a3a3a' }}
+                          onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                          onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
                         >{mc}</button>
                       )
                     })}
@@ -1075,14 +1075,14 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                       const active = trade.timeframeExecuted === tf
                       return (
                         <button key={tf} onClick={() => set('timeframeExecuted', active ? '' : tf)} style={{
-                          padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 500,
+                          padding: '5px 12px', borderRadius: 999, fontSize: 14, fontWeight: 500,
                           border: `1px solid ${active ? 'rgba(74,222,128,0.4)' : '#222'}`,
                           background: active ? 'rgba(74,222,128,0.1)' : 'transparent',
                           color: active ? '#4ade80' : '#666',
                           cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                         }}
-                          onMouseEnter={e => { if (!active) { e.currentTarget.style.color = '#bbb'; e.currentTarget.style.borderColor = '#333' } }}
-                          onMouseLeave={e => { if (!active) { e.currentTarget.style.color = '#666'; e.currentTarget.style.borderColor = '#222' } }}
+                          onMouseEnter={e => { if (!active) { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
+                          onMouseLeave={e => { if (!active) { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' } }}
                         >{tf}</button>
                       )
                     })}
@@ -1095,14 +1095,14 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                       const active = (trade.exitReason || []).includes(r)
                       return (
                         <button key={r} onClick={() => toggleArr('exitReason', r)} style={{
-                          padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-                          border: `1px solid ${active ? '#4a4a4a' : '#222'}`,
-                          background: active ? '#252525' : 'transparent',
-                          color: active ? '#f0f0f0' : '#666',
+                          padding: '5px 12px', borderRadius: 999, fontSize: 14, fontWeight: 500,
+                          border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
+                          background: active ? 'var(--bg-active)' : 'transparent',
+                          color: active ? 'var(--text)' : 'var(--text-muted)',
                           cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                         }}
-                          onMouseEnter={e => { if (!active) { e.currentTarget.style.color = '#bbb'; e.currentTarget.style.borderColor = '#333' } }}
-                          onMouseLeave={e => { if (!active) { e.currentTarget.style.color = '#666'; e.currentTarget.style.borderColor = '#222' } }}
+                          onMouseEnter={e => { if (!active) { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
+                          onMouseLeave={e => { if (!active) { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' } }}
                         >{r}</button>
                       )
                     })}
@@ -1120,14 +1120,14 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                       const col = opt === 'Yes' ? '#fbbf24' : '#888'
                       return (
                         <button key={opt} onClick={() => set('newsPresent', active ? '' : opt)} style={{
-                          padding: '6px 18px', borderRadius: 8, fontSize: 12, fontWeight: 600,
-                          border: `1px solid ${active ? col + '44' : '#1e1e1e'}`,
+                          padding: '6px 18px', borderRadius: 8, fontSize: 14, fontWeight: 600,
+                          border: `1px solid ${active ? col + '44' : 'var(--border)'}`,
                           background: active ? `${col}14` : 'transparent',
-                          color: active ? col : '#3a3a3a',
+                          color: active ? col : 'var(--text-dim)',
                           cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                         }}
-                          onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#666' }}
-                          onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#3a3a3a' }}
+                          onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                          onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
                         >{opt}</button>
                       )
                     })}
@@ -1138,8 +1138,8 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                       onChange={e => set('newsType', e.target.value)}
                       placeholder="News event / type…"
                       style={{ ...inputBase, flex: 1, minWidth: 160 }}
-                      onFocus={e => (e.target.style.borderColor = '#333')}
-                      onBlur={e => (e.target.style.borderColor = '#1e1e1e')}
+                      onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')}
+                      onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}
                     />
                   )}
                 </div>
@@ -1147,18 +1147,18 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
 
               {/* Auto-Grade subsection */}
               <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px' }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Setup Grade — Auto Calculated</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Setup Grade — Auto Calculated</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-                  <div style={{ fontSize: 48, fontWeight: 800, color: autoGradeColor, letterSpacing: '-0.03em', lineHeight: 1, minWidth: 60 }}>
+                  <div style={{ fontSize: 52, fontWeight: 800, color: autoGradeColor, letterSpacing: '-0.03em', lineHeight: 1, minWidth: 60 }}>
                     {autoGradeResult?.grade ?? '—'}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                    <div style={{ fontSize: 14, color: 'var(--text-sub)', fontWeight: 500 }}>
+                    <div style={{ fontSize: 16, color: 'var(--text-sub)', fontWeight: 500 }}>
                       {autoGradeResult
                         ? `${autoGradeResult.score} signal${autoGradeResult.score !== 1 ? 's' : ''} detected`
                         : 'Fill in trade context fields to generate a grade'}
                     </div>
-                    <div style={{ fontSize: 12, color: '#555' }}>
+                    <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
                       HTF bias · DOL · Liquidity · PD Arrays · Structure · Execution
                     </div>
                   </div>
@@ -1166,10 +1166,10 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                     {GRADES.map(g => (
                       <div key={g} style={{
                         width: 32, height: 32, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 12, fontWeight: 700,
+                        fontSize: 14, fontWeight: 700,
                         background: autoGradeResult?.grade === g ? `${GRADE_COLORS[g]}20` : 'transparent',
-                        border: `1px solid ${autoGradeResult?.grade === g ? GRADE_COLORS[g] + '55' : '#1a1a1a'}`,
-                        color: autoGradeResult?.grade === g ? GRADE_COLORS[g] : '#444',
+                        border: `1px solid ${autoGradeResult?.grade === g ? GRADE_COLORS[g] + '55' : 'var(--border)'}`,
+                        color: autoGradeResult?.grade === g ? GRADE_COLORS[g] : 'var(--text-muted)',
                         transition: 'all 0.2s',
                       }}>{g}</div>
                     ))}
@@ -1206,12 +1206,12 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                   onClick={() => setScreenshots(prev => [...prev, ''])}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px',
-                    background: 'transparent', border: '1px dashed #1e1e1e', borderRadius: 8,
-                    color: '#3a3a3a', fontSize: 12, fontWeight: 500, cursor: 'pointer',
+                    background: 'transparent', border: '1px dashed var(--border)', borderRadius: 8,
+                    color: 'var(--text-dim)', fontSize: 14, fontWeight: 500, cursor: 'pointer',
                     transition: 'all 0.15s', fontFamily: 'inherit', alignSelf: 'flex-start',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.color = '#888'; e.currentTarget.style.borderColor = '#333' }}
-                  onMouseLeave={e => { e.currentTarget.style.color = '#3a3a3a'; e.currentTarget.style.borderColor = '#1e1e1e' }}
+                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-dim)'; e.currentTarget.style.borderColor = 'var(--border)' }}
                 ><Plus size={12} /> Add Screenshot</button>
               </div>
 
@@ -1224,8 +1224,8 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                   placeholder="Post-trade reflections, what went well, what to improve…"
                   rows={4}
                   style={{ ...inputBase, resize: 'vertical', lineHeight: 1.6 }}
-                  onFocus={e => (e.target.style.borderColor = '#333')}
-                  onBlur={e => (e.target.style.borderColor = '#1e1e1e')}
+                  onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')}
+                  onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}
                 />
               </div>
 
@@ -1238,13 +1238,13 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
         {/* Footer */}
         <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10, padding: '14px 24px', borderTop: '1px solid var(--border)', background: 'var(--bg-panel)' }}>
           <button onClick={onClose}
-            style={{ padding: '8px 18px', borderRadius: 8, border: '1px solid #1e1e1e', background: 'transparent', color: '#555', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#ccc'; e.currentTarget.style.borderColor = '#333' }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#1e1e1e' }}
+            style={{ padding: '8px 18px', borderRadius: 8, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-muted)', fontSize: 15, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-label)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
           >Cancel</button>
           <button onClick={handleSave}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 22px', borderRadius: 8, border: 'none', background: saved ? 'rgba(74,222,128,0.15)' : '#f0f0f0', color: saved ? '#4ade80' : '#111', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.2s', outline: saved ? '1px solid rgba(74,222,128,0.3)' : 'none' }}
-            onMouseEnter={e => { if (!saved) e.currentTarget.style.background = '#fff' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 22px', borderRadius: 8, border: 'none', background: saved ? 'rgba(74,222,128,0.15)' : '#f0f0f0', color: saved ? '#4ade80' : '#111', fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.2s', outline: saved ? '1px solid rgba(74,222,128,0.3)' : 'none' }}
+            onMouseEnter={e => { if (!saved) e.currentTarget.style.background = 'var(--btn-hover)' }}
             onMouseLeave={e => { if (!saved) e.currentTarget.style.background = saved ? 'rgba(74,222,128,0.15)' : '#f0f0f0' }}
           ><Save size={13} />{saved ? 'Saved!' : 'Save Trade'}</button>
         </div>
@@ -1324,11 +1324,11 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           <div style={{ flex: 1 }} />
           <button
             onClick={() => { if (confirmDelete) onDelete(); else setConfirmDelete(true) }}
-            style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, padding: '6px 10px', borderRadius: 7, border: `1px solid ${confirmDelete ? 'rgba(239,68,68,0.4)' : 'var(--border-mid)'}`, background: confirmDelete ? 'rgba(239,68,68,0.1)' : 'transparent', color: confirmDelete ? '#f87171' : 'var(--text-dim)', cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, padding: '6px 10px', borderRadius: 7, border: `1px solid ${confirmDelete ? 'rgba(239,68,68,0.4)' : 'var(--border-mid)'}`, background: confirmDelete ? 'rgba(239,68,68,0.1)' : 'transparent', color: confirmDelete ? '#f87171' : 'var(--text-dim)', cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
             onMouseEnter={e => { if (!confirmDelete) { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)' } }}
             onMouseLeave={e => { if (!confirmDelete) { e.currentTarget.style.color = 'var(--text-dim)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
           ><Trash2 size={11} />{confirmDelete ? 'Confirm?' : 'Delete'}</button>
-          <button onClick={onSave} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 16px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, background: saved ? 'rgba(74,222,128,0.12)' : 'var(--btn-bg)', color: saved ? '#4ade80' : 'var(--btn-text)', outline: saved ? '1px solid rgba(74,222,128,0.25)' : 'none', transition: 'all 0.2s', fontFamily: 'inherit' }}>
+          <button onClick={onSave} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 16px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600, background: saved ? 'rgba(74,222,128,0.12)' : 'var(--btn-bg)', color: saved ? '#4ade80' : 'var(--btn-text)', outline: saved ? '1px solid rgba(74,222,128,0.25)' : 'none', transition: 'all 0.2s', fontFamily: 'inherit' }}>
             <Save size={12} />{saved ? 'Saved!' : 'Save'}
           </button>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', display: 'flex', padding: 4, transition: 'color 0.15s' }}
@@ -1361,14 +1361,14 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
                     const active = (trade.accounts || []).includes(label)
                     return (
                       <button key={label} onClick={() => toggleAccount(label)} style={{
-                        padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 500,
-                        border: `1px solid ${active ? '#4a4a4a' : '#1a1a1a'}`,
-                        background: active ? '#1e1e1e' : 'transparent',
-                        color: active ? '#e0e0e0' : '#555',
+                        padding: '6px 12px', borderRadius: 8, fontSize: 14, fontWeight: 500,
+                        border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
+                        background: active ? 'var(--bg-active)' : 'transparent',
+                        color: active ? 'var(--text)' : 'var(--text-muted)',
                         cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                       }}
-                        onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#aaa' }}
-                        onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#555' }}
+                        onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-sub)' }}
+                        onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
                       >{label}</button>
                     )
                   })}
@@ -1392,14 +1392,14 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
                 const col = side === 'Long' ? '#22d3ee' : '#f87171'
                 return (
                   <button key={side} onClick={() => set('side', side)} style={{
-                    flex: 1, borderRadius: 8, fontSize: 12, fontWeight: 600,
-                    border: `1px solid ${active ? col + '44' : '#1e1e1e'}`,
+                    flex: 1, borderRadius: 8, fontSize: 14, fontWeight: 600,
+                    border: `1px solid ${active ? col + '44' : 'var(--border)'}`,
                     background: active ? `${col}14` : 'transparent',
-                    color: active ? col : '#3a3a3a',
+                    color: active ? col : 'var(--text-dim)',
                     cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                   }}
-                    onMouseEnter={e => { if (!active) e.currentTarget.style.color = '#666' }}
-                    onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#3a3a3a' }}
+                    onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                    onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
                   >{side}</button>
                 )
               })}
@@ -1433,15 +1433,15 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           ))}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {fieldLabel('Calc P&L')}
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d0d0d', borderRadius: 8, border: '1px solid #1a1a1a', padding: '0 10px' }}>
-              <span style={{ fontSize: 17, fontWeight: 700, color: hasPnl ? pnlColor : '#2a2a2a' }}>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', borderRadius: 8, border: '1px solid var(--border)', padding: '0 10px' }}>
+              <span style={{ fontSize: 17, fontWeight: 700, color: hasPnl ? pnlColor : 'var(--text-dim)' }}>
                 {hasPnl ? (pnlVal >= 0 ? '+' : '') + formatCurrency(pnlVal) : '—'}
               </span>
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {fieldLabel('R:R')}
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d0d0d', borderRadius: 8, border: '1px solid #1a1a1a', padding: '0 10px' }}>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', borderRadius: 8, border: '1px solid var(--border)', padding: '0 10px' }}>
               <span style={{ fontSize: 17, fontWeight: 700, color: rrColor }}>
                 {rrVal ? `${parseFloat(rrVal) >= 0 ? '+' : ''}${rrVal}R` : '—'}
               </span>
@@ -1511,8 +1511,8 @@ function SummaryRow({ trade, date, expanded, onToggle, COL }: {
   const rrVal = calcRR(trade.takeProfit, trade.stopLoss)
   const rrNum = rrVal ? parseFloat(rrVal) : null
   const rrColor = rrNum === null ? 'var(--text-dim)' : rrNum >= 1 ? '#4ade80' : '#f87171'
-  const rc = RESULT_COLORS[trade.result] || '#888'
-  const gc = trade.grade ? (GRADE_COLORS[trade.grade] || '#888') : null
+  const rc = RESULT_COLORS[trade.result] || 'var(--text-sub)'
+  const gc = trade.grade ? (GRADE_COLORS[trade.grade] || 'var(--text-sub)') : null
   const dateLabel = `${date.slice(5).replace('-', '/')}${trade.time ? ' · ' + trade.time : ''}`
   const sessionLabel = trade.sessions.length > 0 ? trade.sessions.join(', ') : '—'
   const setupLabel = trade.setup || (trade.confluences[0] || '—')
@@ -1530,36 +1530,36 @@ function SummaryRow({ trade, date, expanded, onToggle, COL }: {
       onMouseEnter={e => { if (!expanded) e.currentTarget.style.background = 'var(--bg-hover)' }}
       onMouseLeave={e => { if (!expanded) e.currentTarget.style.background = 'transparent' }}
     >
-      <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>{dateLabel}</span>
-      <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{trade.symbol || '—'}</span>
+      <span style={{ fontSize: 14, color: 'var(--text-muted)', fontWeight: 500 }}>{dateLabel}</span>
+      <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>{trade.symbol || '—'}</span>
       <span style={{
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700, width: 'fit-content',
+        padding: '3px 10px', borderRadius: 999, fontSize: 13, fontWeight: 700, width: 'fit-content',
         background: trade.side === 'Long' ? 'rgba(34,211,238,0.12)' : 'rgba(248,113,113,0.1)',
         border: `1px solid ${trade.side === 'Long' ? 'rgba(34,211,238,0.25)' : 'rgba(248,113,113,0.2)'}`,
         color: trade.side === 'Long' ? '#22d3ee' : '#f87171',
       }}>{trade.side}</span>
-      <span style={{ fontSize: 13, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 10 }}>{setupLabel}</span>
-      <span style={{ fontSize: 12, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sessionLabel}</span>
-      <span style={{ fontSize: 14, fontWeight: 700, color: pnlColor }}>
+      <span style={{ fontSize: 15, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 10 }}>{setupLabel}</span>
+      <span style={{ fontSize: 14, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sessionLabel}</span>
+      <span style={{ fontSize: 16, fontWeight: 700, color: pnlColor }}>
         {trade.pnl ? (pnl >= 0 ? '+' : '') + formatCurrency(pnl) : '—'}
       </span>
-      <span style={{ fontSize: 13, fontWeight: 700, color: rrColor }}>
+      <span style={{ fontSize: 15, fontWeight: 700, color: rrColor }}>
         {rrVal ? `${rrNum! >= 0 ? '+' : ''}${rrVal}R` : '—'}
       </span>
       <span style={{
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        padding: '3px 8px', borderRadius: 999, fontSize: 11, fontWeight: 700, width: 'fit-content',
+        padding: '3px 8px', borderRadius: 999, fontSize: 13, fontWeight: 700, width: 'fit-content',
         background: `${rc}18`, border: `1px solid ${rc}44`, color: rc,
       }}>{trade.result}</span>
       {gc ? (
         <span style={{
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          padding: '3px 8px', borderRadius: 6, fontSize: 12, fontWeight: 700, width: 'fit-content',
+          padding: '3px 8px', borderRadius: 6, fontSize: 14, fontWeight: 700, width: 'fit-content',
           background: `${gc}18`, border: `1px solid ${gc}44`, color: gc,
         }}>{trade.grade}</span>
       ) : (
-        <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>—</span>
+        <span style={{ fontSize: 14, color: 'var(--text-dim)' }}>—</span>
       )}
       <ChevronDown size={14} color="var(--text-muted)" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s', justifySelf: 'end' }} />
     </div>
@@ -1684,14 +1684,14 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
   const COL = '150px 70px 84px 1fr 130px 110px 70px 76px 56px 24px'
 
   const hStyle: React.CSSProperties = {
-    fontSize: 11, fontWeight: 700, color: 'var(--text-muted)',
+    fontSize: 13, fontWeight: 700, color: 'var(--text-muted)',
     textTransform: 'uppercase', letterSpacing: '0.09em', padding: '9px 0',
   }
   const selectStyle = (active: boolean): React.CSSProperties => ({
     background: active ? 'var(--bg-hover)' : 'var(--bg-input)',
     border: `1px solid ${active ? 'var(--border-mid)' : 'var(--border)'}`,
     borderRadius: 8, padding: '6px 26px 6px 10px',
-    fontSize: 12, color: active ? 'var(--text)' : 'var(--text-muted)',
+    fontSize: 14, color: active ? 'var(--text)' : 'var(--text-muted)',
     cursor: 'pointer', outline: 'none', fontFamily: 'inherit',
     appearance: 'none', WebkitAppearance: 'none',
   })
@@ -1710,14 +1710,14 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
 
       {/* Filter bar */}
       <div style={{ flexShrink: 0, padding: '12px 36px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10, background: 'var(--bg-panel)' }}>
-        <span style={{ fontSize: 13, color: 'var(--text-muted)', marginRight: 4, whiteSpace: 'nowrap' }}>Log, scan and review every trade.</span>
+        <span style={{ fontSize: 15, color: 'var(--text-muted)', marginRight: 4, whiteSpace: 'nowrap' }}>Log, scan and review every trade.</span>
         <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
           <Search size={12} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)', pointerEvents: 'none' }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search trades…"
-            style={{ ...inputBase, paddingLeft: 30, fontSize: 13, padding: '7px 12px 7px 30px', borderRadius: 8, background: 'var(--bg-input)', border: '1px solid var(--border-mid)' }}
+            style={{ ...inputBase, paddingLeft: 30, fontSize: 15, padding: '7px 12px 7px 30px', borderRadius: 8, background: 'var(--bg-input)', border: '1px solid var(--border-mid)' }}
             onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
         </div>
-        <button onClick={() => openNew()} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'var(--btn-bg)', color: 'var(--btn-text)', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
+        <button onClick={() => openNew()} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'var(--btn-bg)', color: 'var(--btn-text)', borderRadius: 8, border: 'none', fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
           onMouseEnter={e => (e.currentTarget.style.background = 'var(--btn-hover)')}
           onMouseLeave={e => (e.currentTarget.style.background = 'var(--btn-bg)')}
         ><Plus size={13} /> New Trade</button>
@@ -1730,12 +1730,12 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
             <select value={f.value} onChange={e => f.set(e.target.value)} style={selectStyle(f.value !== 'All')}>
               {f.opts.map(o => <option key={o} value={o}>{f.label}: {o}</option>)}
             </select>
-            <ChevronDown size={10} style={{ position: 'absolute', right: 7, top: '50%', transform: 'translateY(-50%)', color: '#444', pointerEvents: 'none' }} />
+            <ChevronDown size={10} style={{ position: 'absolute', right: 7, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }} />
           </div>
         ))}
         {filtersActive && (
           <button onClick={() => { setSearch(''); setFilterResult('All'); setFilterSession('All'); setFilterPnl('All') }}
-            style={{ padding: '6px 12px', background: 'transparent', border: '1px solid var(--border-mid)', borderRadius: 8, color: 'var(--text-dim)', fontSize: 12, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
+            style={{ padding: '6px 12px', background: 'transparent', border: '1px solid var(--border-mid)', borderRadius: 8, color: 'var(--text-dim)', fontSize: 14, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
             onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
             onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-dim)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
           >Clear</button>
@@ -1754,7 +1754,7 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
         {filtered.length === 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '70px 0', gap: 12 }}>
             <BookOpen size={30} color="var(--text-dim)" />
-            <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0 }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 16, margin: 0 }}>
               {allTrades.length === 0 ? 'No trades yet — click New Trade to add one' : 'No trades match your filters'}
             </p>
           </div>
