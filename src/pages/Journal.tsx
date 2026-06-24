@@ -152,11 +152,11 @@ const GRADES = ['A+', 'A', 'B', 'C', 'D', 'F']
 const GRADE_COLORS: Record<string, string> = { 'A+': '#22c55e', A: '#4ade80', B: '#fbbf24', C: '#fb923c', D: '#ef4444', F: '#ef4444' }
 
 const SESSION_OPTIONS = [
-  { value: 'Asia', label: 'Asia' }, { value: 'London', label: 'London' },
-  { value: 'London Open', label: 'London Open' }, { value: 'London Close', label: 'London Close' },
-  { value: 'NY', label: 'New York' }, { value: 'NY Open', label: 'NY Open' },
-  { value: 'NY Lunch', label: 'NY Lunch' }, { value: '9:30 Open', label: '9:30 Open' },
-  { value: 'Midnight Open', label: 'Midnight Open' },
+  { value: 'Asia Session', label: 'Asia Session' },
+  { value: 'London Session', label: 'London Session' },
+  { value: 'Pre-market', label: 'Pre-market' },
+  { value: 'New York AM Session', label: 'New York AM Session' },
+  { value: 'Pre-market Asia Session', label: 'Pre-market Asia Session' },
 ]
 const EXIT_REASONS = ['Full TP', 'Swept Internal High/Low', 'SMT']
 
@@ -519,6 +519,12 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
     setNewDolInput('')
   }
 
+  const removeDolFromLibrary = (val: string) => {
+    const updated = customDols.filter(d => d !== val)
+    setCustomDols(updated)
+    saveCustomDols(updated)
+  }
+
   // Auto-calculated P&L
   const grossPnl = parseFloat(trade.pnl) || 0
   const feesVal = parseFloat(trade.fees || '0') || 0
@@ -860,10 +866,25 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
               {/* Row 2: Draw on Liquidity | OB Present | Entry Model | Exit Reason | A+ Setup */}
               <div>
                 {fieldLabel('Draw on Liquidity')}
-                {customDols.length > 0 && (
+                {(customDols.length > 0 || (trade.dol || []).some(d => !customDols.includes(d))) && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 7 }}>
-                    {customDols.map(d => (
-                      <TagChip key={d} label={d} active={(trade.dol || []).includes(d)} onClick={() => toggleArr('dol', d)} />
+                    {customDols.map(d => {
+                      const active = (trade.dol || []).includes(d)
+                      return (
+                        <div key={d} style={{ display: 'inline-flex', alignItems: 'center', borderRadius: 999, overflow: 'hidden', border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border-mid)'}`, background: active ? 'var(--bg-active)' : 'transparent' }}>
+                          <button onClick={() => toggleArr('dol', d)} style={{ padding: '5px 8px 5px 12px', fontSize: 14, fontWeight: 500, background: 'none', border: 'none', color: active ? 'var(--text)' : 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
+                            onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-sub)' }}
+                            onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                          >{d}</button>
+                          <button onClick={() => removeDolFromLibrary(d)} title="Remove from library" style={{ padding: '5px 7px 5px 2px', background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'color 0.15s' }}
+                            onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-dim)')}
+                          ><X size={9} /></button>
+                        </div>
+                      )
+                    })}
+                    {(trade.dol || []).filter(d => !customDols.includes(d)).map(d => (
+                      <TagChip key={d} label={d} active={true} onClick={() => toggleArr('dol', d)} />
                     ))}
                   </div>
                 )}
@@ -1179,6 +1200,12 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
     setNewDolInput('')
   }
 
+  const removeDolFromLibraryInline = (val: string) => {
+    const updated = customDols.filter(d => d !== val)
+    setCustomDols(updated)
+    saveCustomDols(updated)
+  }
+
   const pnlVal = parseFloat(trade.pnl)
   const hasPnl = trade.pnl !== ''
   const pnlColor = pnlVal > 0 ? '#22c55e' : pnlVal < 0 ? '#ef4444' : 'var(--text-sub)'
@@ -1358,10 +1385,25 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           </div>
           <div>
             {fieldLabel('Draw on Liquidity')}
-            {customDols.length > 0 && (
+            {(customDols.length > 0 || (trade.dol || []).some(d => !customDols.includes(d))) && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 7 }}>
-                {customDols.map(d => (
-                  <TagChip key={d} label={d} active={(trade.dol || []).includes(d)} onClick={() => toggleDol(d)} />
+                {customDols.map(d => {
+                  const active = (trade.dol || []).includes(d)
+                  return (
+                    <div key={d} style={{ display: 'inline-flex', alignItems: 'center', borderRadius: 999, overflow: 'hidden', border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border-mid)'}`, background: active ? 'var(--bg-active)' : 'transparent' }}>
+                      <button onClick={() => toggleDol(d)} style={{ padding: '5px 8px 5px 12px', fontSize: 14, fontWeight: 500, background: 'none', border: 'none', color: active ? 'var(--text)' : 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
+                        onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-sub)' }}
+                        onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                      >{d}</button>
+                      <button onClick={() => removeDolFromLibraryInline(d)} title="Remove from library" style={{ padding: '5px 7px 5px 2px', background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'color 0.15s' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-dim)')}
+                      ><X size={9} /></button>
+                    </div>
+                  )
+                })}
+                {(trade.dol || []).filter(d => !customDols.includes(d)).map(d => (
+                  <TagChip key={d} label={d} active={true} onClick={() => toggleDol(d)} />
                 ))}
               </div>
             )}
@@ -1385,6 +1427,308 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
               >+</button>
             </div>
           </div>
+        </div>
+
+        {/* ── Row 2b: Prop Firm / Trade # / Fees / Duration / Target Price ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: 16 }}>
+          <div>
+            {fieldLabel('Prop Firm')}
+            <input value={trade.propFirm || ''} onChange={e => set('propFirm', e.target.value)}
+              placeholder="e.g. Apex" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+          </div>
+          <div>
+            {fieldLabel('Trade # for day')}
+            <input type="number" value={trade.tradeNumber} onChange={e => set('tradeNumber', e.target.value)}
+              placeholder="1" min="1" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+          </div>
+          <div>
+            {fieldLabel('Fees $')}
+            <input type="number" value={trade.fees} onChange={e => set('fees', e.target.value)}
+              placeholder="0.00" min="0" step="0.01" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+          </div>
+          <div>
+            {fieldLabel('Duration (mins)')}
+            <input value={trade.duration} onChange={e => set('duration', e.target.value)}
+              placeholder="e.g. 45" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+          </div>
+          <div>
+            {fieldLabel('Target Price')}
+            <input type="number" value={trade.targetPrice} onChange={e => set('targetPrice', e.target.value)}
+              placeholder="0" style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+          </div>
+        </div>
+
+        {/* ── ICT / Trade Context ── */}
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: 14, paddingBottom: 8, borderBottom: '1px solid var(--border)' }}>ICT / Trade Context</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 14, alignItems: 'start' }}>
+
+            {/* Row 1 */}
+            <div>
+              {fieldLabel('HTF Bias')}
+              <div style={{ display: 'flex', gap: 4 }}>
+                {(['Long', 'Short'] as const).map(side => {
+                  const active = trade.htfBias === side
+                  const col = side === 'Long' ? '#22d3ee' : '#ef4444'
+                  return (
+                    <button key={side} onClick={() => set('htfBias', active ? '' : side)} style={{
+                      flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
+                      border: `1px solid ${active ? col + '44' : 'var(--border)'}`,
+                      background: active ? `${col}14` : 'transparent',
+                      color: active ? col : 'var(--text-dim)',
+                      cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                    }}
+                      onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                      onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
+                    >{side}</button>
+                  )
+                })}
+              </div>
+            </div>
+            <div>
+              {fieldLabel('SMT Present')}
+              <TFTagPicker bases={['SMT']} selected={trade.smtPresent || []} onChange={v => set('smtPresent', v)} />
+            </div>
+            <div>
+              {fieldLabel('Rejection Block')}
+              <TFTagPicker bases={['RB']} selected={trade.rejectionBlock || []} onChange={v => set('rejectionBlock', v)} />
+            </div>
+            <div>
+              {fieldLabel('Market Condition')}
+              <div style={{ display: 'flex', gap: 4 }}>
+                {(['Consolidation', 'Distribution'] as const).map(mc => {
+                  const short = mc === 'Consolidation' ? 'Consol.' : 'Distrib.'
+                  const active = trade.marketCondition === mc
+                  return (
+                    <button key={mc} onClick={() => set('marketCondition', active ? '' : mc)} style={{
+                      flex: 1, padding: '8px 2px', borderRadius: 7, fontSize: 12, fontWeight: 600,
+                      border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
+                      background: active ? 'var(--bg-active)' : 'transparent',
+                      color: active ? 'var(--text)' : 'var(--text-dim)',
+                      cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                    }}
+                      onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                      onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
+                    >{short}</button>
+                  )
+                })}
+              </div>
+            </div>
+            <div>
+              {fieldLabel('News Present')}
+              <div style={{ display: 'flex', gap: 4 }}>
+                {(['Yes', 'No'] as const).map(opt => {
+                  const active = trade.newsPresent === opt
+                  return (
+                    <button key={opt} onClick={() => set('newsPresent', active ? '' : opt)} style={{
+                      flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
+                      border: `1px solid ${active ? (opt === 'Yes' ? '#fbbf2444' : 'var(--border-strong)') : 'var(--border)'}`,
+                      background: active ? (opt === 'Yes' ? '#fbbf2414' : 'var(--bg-active)') : 'transparent',
+                      color: active ? (opt === 'Yes' ? '#fbbf24' : 'var(--text)') : 'var(--text-dim)',
+                      cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                    }}
+                      onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                      onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
+                    >{opt}</button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Row 2 */}
+            <div>
+              {fieldLabel('OB Present')}
+              <TFTagPicker bases={['OB']} selected={trade.orderBlock || []} onChange={v => set('orderBlock', v)} />
+            </div>
+            <div>
+              {fieldLabel('Entry Model')}
+              <input value={trade.entryModel || ''} onChange={e => set('entryModel', e.target.value)}
+                placeholder="Model name..." style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+            </div>
+            <div>
+              {fieldLabel('Exit Reason')}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                {EXIT_REASONS.map(r => {
+                  const active = (trade.exitReason || []).includes(r)
+                  return (
+                    <button key={r} onClick={() => { const l = trade.exitReason || []; set('exitReason', l.includes(r) ? l.filter(x => x !== r) : [...l, r]) }} style={{
+                      padding: '4px 8px', borderRadius: 999, fontSize: 13, fontWeight: 500,
+                      border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
+                      background: active ? 'var(--bg-active)' : 'transparent',
+                      color: active ? 'var(--text)' : 'var(--text-muted)',
+                      cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                    }}
+                      onMouseEnter={e => { if (!active) { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
+                      onMouseLeave={e => { if (!active) { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' } }}
+                    >{r}</button>
+                  )
+                })}
+              </div>
+            </div>
+            <div>
+              {fieldLabel('A+ Setup')}
+              <div style={{ display: 'flex', gap: 4 }}>
+                {(['Yes', 'No'] as const).map(opt => {
+                  const active = trade.aplusSetup === opt
+                  return (
+                    <button key={opt} onClick={() => set('aplusSetup', active ? '' : opt)} style={{
+                      flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
+                      border: `1px solid ${active ? (opt === 'Yes' ? 'rgba(34,197,94,0.4)' : 'var(--border-strong)') : 'var(--border)'}`,
+                      background: active ? (opt === 'Yes' ? 'rgba(34,197,94,0.1)' : 'var(--bg-active)') : 'transparent',
+                      color: active ? (opt === 'Yes' ? '#22c55e' : 'var(--text)') : 'var(--text-dim)',
+                      cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                    }}
+                      onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                      onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
+                    >{opt}</button>
+                  )
+                })}
+              </div>
+            </div>
+            <div>
+              {fieldLabel('Setup Type')}
+              <input value={trade.setupType || ''} onChange={e => set('setupType', e.target.value)}
+                placeholder="Type..." style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+            </div>
+
+            {/* Row 3 */}
+            <div>
+              {fieldLabel('Internal Range Liq')}
+              <TFTagPicker bases={['FVG']} selected={trade.internalRangeLiquidity || []} onChange={v => set('internalRangeLiquidity', v)} />
+            </div>
+            <div>
+              {fieldLabel('FVG Present')}
+              <TFTagPicker bases={['FVG']} selected={trade.fvgPresent || []} onChange={v => set('fvgPresent', v)} />
+            </div>
+            <div>
+              {fieldLabel('Displacement')}
+              <div style={{ display: 'flex', gap: 4 }}>
+                {(['Yes', 'No'] as const).map(opt => {
+                  const active = trade.displacement === opt
+                  return (
+                    <button key={opt} onClick={() => set('displacement', active ? '' : opt)} style={{
+                      flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
+                      border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
+                      background: active ? 'var(--bg-active)' : 'transparent',
+                      color: active ? 'var(--text)' : 'var(--text-dim)',
+                      cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                    }}
+                      onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                      onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
+                    >{opt}</button>
+                  )
+                })}
+              </div>
+            </div>
+            <div>
+              {fieldLabel('Target Logic')}
+              <input value={trade.targetLogic || ''} onChange={e => set('targetLogic', e.target.value)}
+                placeholder="Logic..." style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+            </div>
+            <div>
+              {fieldLabel('Risk Placement Logic')}
+              <input value={trade.riskPlacementLogic || ''} onChange={e => set('riskPlacementLogic', e.target.value)}
+                placeholder="Logic..." style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+            </div>
+
+            {/* Row 4 */}
+            <div>
+              {fieldLabel('External Range Liq')}
+              <TFTagPicker bases={['Swing High', 'Swing Low']} selected={trade.externalRangeLiquidity || []} onChange={v => set('externalRangeLiquidity', v)} />
+            </div>
+            <div>
+              {fieldLabel('iFVG Present')}
+              <TFTagPicker bases={['iFVG']} selected={trade.ifvgPresent || []} onChange={v => set('ifvgPresent', v)} />
+            </div>
+            <div>
+              {fieldLabel('Payback Used')}
+              <div style={{ display: 'flex', gap: 4 }}>
+                {(['Yes', 'No'] as const).map(opt => {
+                  const active = trade.paybackUsed === opt
+                  return (
+                    <button key={opt} onClick={() => set('paybackUsed', active ? '' : opt)} style={{
+                      flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
+                      border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
+                      background: active ? 'var(--bg-active)' : 'transparent',
+                      color: active ? 'var(--text)' : 'var(--text-dim)',
+                      cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                    }}
+                      onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                      onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
+                    >{opt}</button>
+                  )
+                })}
+              </div>
+            </div>
+            <div>
+              {fieldLabel('Liquidity Swept')}
+              <TFTagPicker bases={['Swing High', 'Swing Low']} selected={trade.liquiditySwept || []} onChange={v => set('liquiditySwept', v)} />
+            </div>
+            <div>
+              {fieldLabel('IPVD Present')}
+              <div style={{ display: 'flex', gap: 4 }}>
+                {(['Yes', 'No'] as const).map(opt => {
+                  const active = trade.ipvdPresent === opt
+                  return (
+                    <button key={opt} onClick={() => set('ipvdPresent', active ? '' : opt)} style={{
+                      flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
+                      border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
+                      background: active ? 'var(--bg-active)' : 'transparent',
+                      color: active ? 'var(--text)' : 'var(--text-dim)',
+                      cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                    }}
+                      onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
+                      onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
+                    >{opt}</button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Row 5 */}
+            <div>
+              {fieldLabel('Timeframe Used')}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                {TIMEFRAMES.map(tf => {
+                  const active = trade.timeframeExecuted === tf
+                  return (
+                    <button key={tf} onClick={() => set('timeframeExecuted', active ? '' : tf)} style={{
+                      padding: '4px 8px', borderRadius: 999, fontSize: 13, fontWeight: 500,
+                      border: `1px solid ${active ? 'rgba(34,197,94,0.4)' : 'var(--border)'}`,
+                      background: active ? 'rgba(34,197,94,0.1)' : 'transparent',
+                      color: active ? '#22c55e' : 'var(--text-muted)',
+                      cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
+                    }}
+                      onMouseEnter={e => { if (!active) { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
+                      onMouseLeave={e => { if (!active) { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' } }}
+                    >{tf}</button>
+                  )
+                })}
+              </div>
+            </div>
+            <div>
+              {fieldLabel('News Impact')}
+              <input value={trade.newsImpact || ''} onChange={e => set('newsImpact', e.target.value)}
+                placeholder="Low / Med / High..." style={inputBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+            </div>
+            <div />
+            <div />
+            <div />
+          </div>
+        </div>
+
+        {/* ── Notes ── */}
+        <div>
+          {fieldLabel('Notes')}
+          <textarea
+            value={trade.notes || ''}
+            onChange={e => set('notes', e.target.value)}
+            placeholder="Post-trade reflections, what went well, what to improve..."
+            rows={3}
+            style={{ ...inputBase, resize: 'vertical', lineHeight: 1.6 }}
+            onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')}
+            onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}
+          />
         </div>
 
         {/* ── Row 4: Screenshots ── */}
@@ -1630,7 +1974,7 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
         ><Plus size={13} /> New Trade</button>
         {[
           { label: 'Result',  value: filterResult,  opts: ['All', 'Win', 'Loss', 'BE', "Didn't take"],                              set: setFilterResult  },
-          { label: 'Session', value: filterSession, opts: ['All', 'Asia', 'London', 'NY', 'London Open', 'NY Open'],               set: setFilterSession },
+          { label: 'Session', value: filterSession, opts: ['All', 'Asia Session', 'London Session', 'Pre-market', 'New York AM Session', 'Pre-market Asia Session'], set: setFilterSession },
           { label: 'P&L',    value: filterPnl,     opts: ['All', 'Profitable', 'Unprofitable'],                                    set: setFilterPnl     },
         ].map(f => (
           <div key={f.label} style={{ position: 'relative' }}>

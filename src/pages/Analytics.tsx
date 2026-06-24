@@ -213,6 +213,55 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
     .map(([label, value]) => ({ label, value: parseFloat(value.toFixed(2)) }))
     .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
 
+  // ── Session Performance (detailed) ──
+  const sessionPerfMap = new Map<string, { pnl: number; wins: number; losses: number; total: number }>()
+  filteredTrades.forEach(t => {
+    const sessions = (t.sessions || []).length > 0 ? t.sessions : ['Other']
+    const pnl = parseFloat(t.pnl) || 0
+    sessions.forEach(s => {
+      const cur = sessionPerfMap.get(s) ?? { pnl: 0, wins: 0, losses: 0, total: 0 }
+      sessionPerfMap.set(s, { pnl: cur.pnl + pnl, wins: cur.wins + (pnl > 0 ? 1 : 0), losses: cur.losses + (pnl < 0 ? 1 : 0), total: cur.total + 1 })
+    })
+  })
+  const sessionPerfData = Array.from(sessionPerfMap.entries())
+    .map(([label, d]) => ({ label, pnl: parseFloat(d.pnl.toFixed(2)), wins: d.wins, losses: d.losses, total: d.total, winRate: d.total > 0 ? (d.wins / d.total) * 100 : 0 }))
+    .sort((a, b) => b.total - a.total)
+
+  // ── Confluence Performance ──
+  const confluencePerfMap = new Map<string, { pnl: number; wins: number; total: number }>()
+  filteredTrades.forEach(t => {
+    const confs = t.confluences || []
+    const pnl = parseFloat(t.pnl) || 0
+    confs.forEach(c => {
+      const cur = confluencePerfMap.get(c) ?? { pnl: 0, wins: 0, total: 0 }
+      confluencePerfMap.set(c, { pnl: cur.pnl + pnl, wins: cur.wins + (pnl > 0 ? 1 : 0), total: cur.total + 1 })
+    })
+  })
+  const confluencePerfData = Array.from(confluencePerfMap.entries())
+    .map(([label, d]) => ({ label, pnl: parseFloat(d.pnl.toFixed(2)), wins: d.wins, total: d.total, winRate: d.total > 0 ? (d.wins / d.total) * 100 : 0 }))
+    .sort((a, b) => b.total - a.total)
+
+  // ── R Multiple Distribution ──
+  const RR_BUCKETS = ['<0R', '0–1R', '1–2R', '2–3R', '3R+']
+  const rrBucketMap = new Map<string, { trades: number; wins: number; totalR: number }>(
+    RR_BUCKETS.map(b => [b, { trades: 0, wins: 0, totalR: 0 }])
+  )
+  filteredTrades.forEach(t => {
+    const pv = PVMAP[t.symbol] ?? 0
+    const sl = parseFloat(t.stopLoss), c = parseFloat(t.contracts), pnl = parseFloat(t.pnl) || 0
+    if (!pv || isNaN(sl) || isNaN(c) || c <= 0 || sl === 0) return
+    const risk = sl * pv * c
+    if (risk === 0) return
+    const r = pnl / risk
+    let bucket = r < 0 ? '<0R' : r < 1 ? '0–1R' : r < 2 ? '1–2R' : r < 3 ? '2–3R' : '3R+'
+    const cur = rrBucketMap.get(bucket)!
+    rrBucketMap.set(bucket, { trades: cur.trades + 1, wins: cur.wins + (pnl > 0 ? 1 : 0), totalR: cur.totalR + r })
+  })
+  const rrDistData = RR_BUCKETS.map(b => {
+    const d = rrBucketMap.get(b)!
+    return { label: b, trades: d.trades, wins: d.wins, winRate: d.trades > 0 ? parseFloat(((d.wins / d.trades) * 100).toFixed(1)) : 0, avgR: d.trades > 0 ? parseFloat((d.totalR / d.trades).toFixed(2)) : 0 }
+  })
+
   // ── Win Rate by Symbol ──
   const symWinMap = new Map<string, { wins: number; total: number }>()
   filteredTrades.forEach(t => {
@@ -503,6 +552,104 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
               </ResponsiveContainer>
             )}
           </div>
+        </div>
+
+        {/* ── Session Performance Table ── */}
+        <div style={CARD}>
+          <p style={CHART_TITLE}>Session Performance</p>
+          {sessionPerfData.length === 0 ? EMPTY_CHART : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15 }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border)' }}>
+                    {['Session', 'Trades', 'Wins', 'Losses', 'Win Rate', 'Total P&L', 'Avg P&L'].map(h => (
+                      <th key={h} style={{ padding: '6px 12px', textAlign: h === 'Session' ? 'left' : 'right', fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', whiteSpace: 'nowrap' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sessionPerfData.map((row, i) => {
+                    const avgPnl = row.total > 0 ? row.pnl / row.total : 0
+                    return (
+                      <tr key={row.label} style={{ borderBottom: '1px solid var(--border)', background: i % 2 === 0 ? 'transparent' : 'var(--bg-surface)' }}>
+                        <td style={{ padding: '9px 12px', color: 'var(--text)', fontWeight: 600 }}>{row.label}</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: 'var(--text-sub)' }}>{row.total}</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: '#22c55e', fontWeight: 600 }}>{row.wins}</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: '#ef4444', fontWeight: 600 }}>{row.losses}</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: row.winRate >= 50 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>{row.winRate.toFixed(1)}%</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: row.pnl >= 0 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>{row.pnl >= 0 ? '+' : ''}{formatCurrency(row.pnl)}</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: avgPnl >= 0 ? '#22c55e' : '#ef4444', fontWeight: 600 }}>{avgPnl >= 0 ? '+' : ''}{formatCurrency(avgPnl)}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* ── Confluence Performance Table ── */}
+        <div style={CARD}>
+          <p style={CHART_TITLE}>Confluence Performance</p>
+          {confluencePerfData.length === 0 ? (
+            <div style={{ height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dim)', fontSize: 16, fontWeight: 600 }}>No confluence data yet</div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15 }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border)' }}>
+                    {['Confluence', 'Trades', 'Wins', 'Win Rate', 'Total P&L', 'Avg P&L'].map(h => (
+                      <th key={h} style={{ padding: '6px 12px', textAlign: h === 'Confluence' ? 'left' : 'right', fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', whiteSpace: 'nowrap' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {confluencePerfData.map((row, i) => {
+                    const avgPnl = row.total > 0 ? row.pnl / row.total : 0
+                    return (
+                      <tr key={row.label} style={{ borderBottom: '1px solid var(--border)', background: i % 2 === 0 ? 'transparent' : 'var(--bg-surface)' }}>
+                        <td style={{ padding: '9px 12px', color: 'var(--text)', fontWeight: 600 }}>{row.label}</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: 'var(--text-sub)' }}>{row.total}</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: '#22c55e', fontWeight: 600 }}>{row.wins}</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: row.winRate >= 50 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>{row.winRate.toFixed(1)}%</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: row.pnl >= 0 ? '#22c55e' : '#ef4444', fontWeight: 700 }}>{row.pnl >= 0 ? '+' : ''}{formatCurrency(row.pnl)}</td>
+                        <td style={{ padding: '9px 12px', textAlign: 'right', color: avgPnl >= 0 ? '#22c55e' : '#ef4444', fontWeight: 600 }}>{avgPnl >= 0 ? '+' : ''}{formatCurrency(avgPnl)}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* ── R Multiple Distribution ── */}
+        <div style={CARD}>
+          <p style={CHART_TITLE}>R Multiple Distribution</p>
+          {rrDistData.every(d => d.trades === 0) ? EMPTY_CHART : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {rrDistData.map(d => {
+                const maxTrades = Math.max(...rrDistData.map(x => x.trades), 1)
+                const barColor = d.label === '<0R' ? '#ef4444' : d.label === '0–1R' ? '#fbbf24' : '#22c55e'
+                return (
+                  <div key={d.label}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5 }}>
+                      <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-sub)', width: 52, flexShrink: 0 }}>{d.label}</span>
+                      <div style={{ flex: 1, height: 20, background: 'var(--bg-surface)', borderRadius: 4, overflow: 'hidden' }}>
+                        <div style={{ width: `${(d.trades / maxTrades) * 100}%`, height: '100%', background: barColor, opacity: 0.75, borderRadius: 4, minWidth: d.trades > 0 ? 4 : 0, transition: 'width 0.3s' }} />
+                      </div>
+                      <span style={{ fontSize: 14, color: 'var(--text-muted)', width: 24, textAlign: 'right', flexShrink: 0 }}>{d.trades}</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: d.winRate >= 50 ? '#22c55e' : d.winRate > 0 ? '#ef4444' : 'var(--text-dim)', width: 50, textAlign: 'right', flexShrink: 0 }}>{d.trades > 0 ? `${d.winRate}%` : '—'}</span>
+                      <span style={{ fontSize: 14, color: 'var(--text-muted)', width: 60, textAlign: 'right', flexShrink: 0 }}>{d.trades > 0 ? `avg ${d.avgR}R` : ''}</span>
+                    </div>
+                  </div>
+                )
+              })}
+              <div style={{ display: 'flex', gap: 20, paddingTop: 8, borderTop: '1px solid var(--border)' }}>
+                <span style={{ fontSize: 13, color: 'var(--text-dim)' }}>Bar = trade count · % = win rate in bucket · avg = average R multiple</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ── Win Rate by Symbol + P&L by Day of Week ── */}
