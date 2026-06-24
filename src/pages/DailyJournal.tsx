@@ -200,7 +200,7 @@ export function DailyJournal({ diaryEntries, onSave, initialDate, templates, onS
                     onClick={() => onDeleteTemplate(t.id)}
                     title="Delete template"
                     style={{ padding: '3px 5px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: 13, transition: 'color 0.15s', flexShrink: 0 }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
                     onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-dim)')}
                   >✕</button>
                 </div>
@@ -248,7 +248,7 @@ export function DailyJournal({ diaryEntries, onSave, initialDate, templates, onS
                       {formatDateShort(date)}
                     </span>
                     {isToday && (
-                      <span style={{ fontSize: 9, fontWeight: 700, color: '#4ade80', background: 'rgba(74,222,128,0.12)', border: '1px solid rgba(74,222,128,0.2)', borderRadius: 4, padding: '1px 5px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                      <span style={{ fontSize: 9, fontWeight: 700, color: '#22c55e', background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 4, padding: '1px 5px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                         Today
                       </span>
                     )}
@@ -296,7 +296,7 @@ export function DailyJournal({ diaryEntries, onSave, initialDate, templates, onS
               color: 'var(--text)',
               lineHeight: 1.85,
               fontFamily: 'inherit',
-              caretColor: '#4ade80',
+              caretColor: '#22c55e',
             }}
           />
         </div>
@@ -316,7 +316,7 @@ export function DailyJournal({ diaryEntries, onSave, initialDate, templates, onS
           {draft.trim() && (
             <>
               <span style={{ fontSize: 14, color: 'var(--border-mid)' }}>·</span>
-              <span style={{ fontSize: 14, color: '#4ade8055' }}>Auto-saved</span>
+              <span style={{ fontSize: 14, color: '#22c55e55' }}>Auto-saved</span>
             </>
           )}
         </div>

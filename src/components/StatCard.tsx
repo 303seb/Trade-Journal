@@ -11,15 +11,15 @@ export function StatCard({ label, value, sub, positive, icon }: StatCardProps) {
     positive === null || positive === undefined
       ? 'var(--text)'
       : positive
-      ? '#4ade80'
-      : '#f87171'
+      ? '#22c55e'
+      : '#ef4444'
 
   const accentColor =
     positive === null || positive === undefined
       ? 'var(--border-mid)'
       : positive
-      ? 'rgba(74,222,128,0.5)'
-      : 'rgba(248,113,113,0.5)'
+      ? 'rgba(34,197,94,0.5)'
+      : 'rgba(239,68,68,0.5)'
 
   return (
     <div

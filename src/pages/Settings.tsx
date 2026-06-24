@@ -66,9 +66,9 @@ function Toggle({ checked, onChange, label, description }: {
         onClick={() => onChange(!checked)}
         style={{
           width: 44, height: 24, borderRadius: 999, border: 'none', cursor: 'pointer',
-          background: checked ? '#4ade80' : 'var(--bg-hover)',
+          background: checked ? '#22c55e' : 'var(--bg-hover)',
           position: 'relative', flexShrink: 0, transition: 'background 0.2s',
-          boxShadow: checked ? '0 0 12px rgba(74,222,128,0.3)' : 'none',
+          boxShadow: checked ? '0 0 12px rgba(34,197,94,0.3)' : 'none',
         }}
       >
         <div style={{
@@ -334,7 +334,7 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
               onClick={handleExport}
               style={{
                 display: 'flex', alignItems: 'center', gap: 7, padding: '9px 18px', borderRadius: 9,
-                border: '1px solid var(--border-mid)', background: 'var(--bg-card)', color: exported ? '#4ade80' : 'var(--text-label)',
+                border: '1px solid var(--border-mid)', background: 'var(--bg-card)', color: exported ? '#22c55e' : 'var(--text-label)',
                 fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
               }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
@@ -355,7 +355,7 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
             </div>
             <label style={{
               display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 18px', borderRadius: 9,
-              border: '1px solid var(--border-mid)', background: 'var(--bg-card)', color: imported ? '#4ade80' : 'var(--text-label)',
+              border: '1px solid var(--border-mid)', background: 'var(--bg-card)', color: imported ? '#22c55e' : 'var(--text-label)',
               fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s',
             }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)' }}
@@ -371,7 +371,7 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
 
           {/* Clear */}
           <div>
-            <div style={{ fontSize: 16, fontWeight: 600, color: '#f87171', marginBottom: 4 }}>Clear All Data</div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: '#ef4444', marginBottom: 4 }}>Clear All Data</div>
             <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 10 }}>
               Permanently delete all trades, diary entries, accounts, and settings. This cannot be undone.
             </div>
@@ -380,12 +380,12 @@ export function Settings({ settings, onUpdate, journalEntries, diaryEntries, tra
               onBlur={() => setTimeout(() => setClearConfirm(false), 200)}
               style={{
                 display: 'flex', alignItems: 'center', gap: 7, padding: '9px 18px', borderRadius: 9,
-                border: `1px solid ${clearConfirm ? 'rgba(248,113,113,0.5)' : 'var(--border-mid)'}`,
-                background: clearConfirm ? 'rgba(248,113,113,0.08)' : 'transparent',
-                color: clearConfirm ? '#f87171' : 'var(--text-muted)',
+                border: `1px solid ${clearConfirm ? 'rgba(239,68,68,0.5)' : 'var(--border-mid)'}`,
+                background: clearConfirm ? 'rgba(239,68,68,0.08)' : 'transparent',
+                color: clearConfirm ? '#ef4444' : 'var(--text-muted)',
                 fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
               }}
-              onMouseEnter={e => { if (!clearConfirm) e.currentTarget.style.color = '#f87171' }}
+              onMouseEnter={e => { if (!clearConfirm) e.currentTarget.style.color = '#ef4444' }}
               onMouseLeave={e => { if (!clearConfirm) e.currentTarget.style.color = 'var(--text-muted)' }}
             >
               <Trash2 size={14} />

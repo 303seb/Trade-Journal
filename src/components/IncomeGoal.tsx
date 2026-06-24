@@ -24,10 +24,10 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
   const barColor = progress <= 0
     ? 'var(--border)'
     : progress <= 33
-    ? '#f87171'
+    ? '#ef4444'
     : progress <= 66
     ? '#fbbf24'
-    : '#4ade80'
+    : '#22c55e'
 
   const handleSave = () => {
     const parsed = parseFloat(inputVal.replace(/[^0-9.-]/g, ''))
@@ -111,7 +111,7 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
             <div>
               <span style={{
                 fontSize: 34, fontWeight: 700, letterSpacing: '-0.03em',
-                color: isAhead ? '#4ade80' : 'var(--text)',
+                color: isAhead ? '#22c55e' : 'var(--text)',
               }}>
                 {formatCurrency(currentPnl)}
               </span>
@@ -134,7 +134,7 @@ export function IncomeGoal({ month, currentPnl, goal, onSetGoal }: IncomeGoalPro
           </div>
 
           {/* Status label */}
-          <div style={{ fontSize: 14, color: isAhead ? '#4ade80' : 'var(--text-muted)' }}>
+          <div style={{ fontSize: 14, color: isAhead ? '#22c55e' : 'var(--text-muted)' }}>
             {isAhead
               ? `+${formatCurrency(currentPnl - goal)} over goal`
               : `${formatCurrency(remaining)} remaining`}

@@ -51,7 +51,7 @@ export function DashboardCharts({ allTrades, monthTrades, journalEntries }: Prop
       return { label: t.date.slice(5), value: parseFloat(cum.toFixed(2)) }
     }),
   ]
-  const equityColor = equityData[equityData.length - 1]?.value >= 0 ? '#4ade80' : '#f87171'
+  const equityColor = equityData[equityData.length - 1]?.value >= 0 ? '#22c55e' : '#ef4444'
 
   // ── 2. Cumulative R:R (all time) ───────────────────────────────────────
   const allJournalTrades = journalEntries
@@ -69,7 +69,7 @@ export function DashboardCharts({ allTrades, monthTrades, journalEntries }: Prop
     cumR += (parseFloat(t.pnl) || 0) / risk
     rrData.push({ label: date.slice(5), value: parseFloat(cumR.toFixed(2)) })
   })
-  const rrColor = rrData[rrData.length - 1]?.value >= 0 ? '#4ade80' : '#f87171'
+  const rrColor = rrData[rrData.length - 1]?.value >= 0 ? '#22c55e' : '#ef4444'
 
   // ── 3. Daily Performance (current month) ──────────────────────────────
   const dayMap = new Map<string, number>()
@@ -138,7 +138,7 @@ export function DashboardCharts({ allTrades, monthTrades, journalEntries }: Prop
               <Tooltip {...TOOLTIP} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
               <Bar dataKey="value" radius={[3, 3, 0, 0]}>
                 {dailyData.map((d, i) => (
-                  <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />
+                  <Cell key={i} fill={d.value >= 0 ? '#22c55e' : '#ef4444'} fillOpacity={0.75} />
                 ))}
               </Bar>
             </BarChart>
@@ -158,7 +158,7 @@ export function DashboardCharts({ allTrades, monthTrades, journalEntries }: Prop
               <Tooltip {...TOOLTIP} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
               <Bar dataKey="value" radius={[3, 3, 0, 0]}>
                 {sessionData.map((d, i) => (
-                  <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />
+                  <Cell key={i} fill={d.value >= 0 ? '#22c55e' : '#ef4444'} fillOpacity={0.75} />
                 ))}
               </Bar>
             </BarChart>

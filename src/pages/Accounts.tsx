@@ -11,7 +11,7 @@ const EVAL_SIZES = [25000, 50000, 100000, 150000]
 const PROP_FIRMS = ['FTMO', 'MyForexFunds', 'The Funded Trader', 'Apex Trader', 'TopStep', 'E8 Funding', 'True Forex Funds', 'Other']
 
 const TYPE_META = {
-  Live:    { color: '#4ade80', bg: 'rgba(74,222,128,0.1)',    border: 'rgba(74,222,128,0.25)',  icon: TrendingUp, label: 'Live Account'    },
+  Live:    { color: '#22c55e', bg: 'rgba(34,197,94,0.1)',    border: 'rgba(34,197,94,0.25)',  icon: TrendingUp, label: 'Live Account'    },
   Eval:    { color: '#fbbf24', bg: 'rgba(251,191,36,0.1)',    border: 'rgba(251,191,36,0.25)',  icon: Shield,     label: 'Evaluation'      },
   Funded:  { color: '#60a5fa', bg: 'rgba(96,165,250,0.1)',    border: 'rgba(96,165,250,0.25)',  icon: Award,      label: 'Funded Account'  },
 }
@@ -270,7 +270,7 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
   const meta = TYPE_META[account.type]
   const Icon = meta.icon
   const pnl = getAccountPnl(account, entries)
-  const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : 'var(--text-muted)'
+  const pnlColor = pnl > 0 ? '#22c55e' : pnl < 0 ? '#ef4444' : 'var(--text-muted)'
   const tradeCount = entries.flatMap(e => e.trades).filter(t => (t.accounts || []).includes(account.name)).length
 
   const evalProgress = account.type === 'Eval' && account.profitTarget > 0
@@ -299,12 +299,12 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
           ><Edit2 size={12} /></button>
           {confirmDel ? (
             <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-              <button onClick={() => onDelete()} style={{ padding: '4px 10px', borderRadius: 6, background: '#f87171', color: '#000', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Delete</button>
+              <button onClick={() => onDelete()} style={{ padding: '4px 10px', borderRadius: 6, background: '#ef4444', color: '#000', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Delete</button>
               <button onClick={() => setConfirmDel(false)} style={{ padding: '4px 10px', borderRadius: 6, background: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border)', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
             </div>
           ) : (
             <button onClick={() => setConfirmDel(true)} style={{ width: 30, height: 30, borderRadius: 8, background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.borderColor = 'rgba(248,113,113,0.3)' }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)' }}
               onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
             ><Trash2 size={12} /></button>
           )}
@@ -327,8 +327,8 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
               <Detail label="Starting Balance" value={formatCurrency(account.startingBalance)} valueColor="var(--text-sub)" />
             )}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              <Detail label="Max Drawdown" value={`-${formatCurrency(account.maxDrawdown)}`} valueColor="#f87171" />
-              <Detail label="Profit Target" value={`+${formatCurrency(account.profitTarget)}`} valueColor="#4ade80" />
+              <Detail label="Max Drawdown" value={`-${formatCurrency(account.maxDrawdown)}`} valueColor="#ef4444" />
+              <Detail label="Profit Target" value={`+${formatCurrency(account.profitTarget)}`} valueColor="#22c55e" />
             </div>
           </>
         )}
@@ -359,12 +359,12 @@ function AccountCard({ account, entries, onEdit, onDelete, onConvertToFunded }: 
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
             <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Progress to Target</span>
-            <span style={{ fontSize: 14, fontWeight: 700, color: evalHitTarget ? '#4ade80' : pnl >= 0 ? '#4ade80' : '#f87171' }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: evalHitTarget ? '#22c55e' : pnl >= 0 ? '#22c55e' : '#ef4444' }}>
               {evalProgress}%
             </span>
           </div>
           <div style={{ height: 5, background: 'var(--bg-hover)', borderRadius: 999, overflow: 'hidden' }}>
-            <div style={{ width: `${Math.max(0, Math.min(100, (pnl / account.profitTarget) * 100))}%`, height: '100%', background: evalHitTarget ? '#4ade80' : pnl >= 0 ? '#4ade80' : '#f87171', borderRadius: 999, transition: 'width 0.4s' }} />
+            <div style={{ width: `${Math.max(0, Math.min(100, (pnl / account.profitTarget) * 100))}%`, height: '100%', background: evalHitTarget ? '#22c55e' : pnl >= 0 ? '#22c55e' : '#ef4444', borderRadius: 999, transition: 'width 0.4s' }} />
           </div>
         </div>
       )}

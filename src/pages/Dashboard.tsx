@@ -38,7 +38,7 @@ const EMOTION_DISPLAY: Record<string, { emoji: string; label: string }> = {
 }
 
 const RESULT_COLORS: Record<string, string> = {
-  Win: '#4ade80', Loss: '#f87171', BE: '#aaaaaa', "Didn't take": '#fb923c',
+  Win: '#22c55e', Loss: '#ef4444', BE: '#aaaaaa', "Didn't take": '#fb923c',
 }
 
 interface DashboardProps {
@@ -200,8 +200,8 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
         if (recentTrades.length === 0) return null
 
         const RESULT_BG: Record<string, { bg: string; border: string; color: string }> = {
-          Win:  { bg: 'rgba(74,222,128,0.08)',  border: 'rgba(74,222,128,0.2)',  color: '#4ade80' },
-          Loss: { bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)', color: '#f87171' },
+          Win:  { bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.2)',  color: '#22c55e' },
+          Loss: { bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)', color: '#ef4444' },
           BE:   { bg: 'rgba(255,255,255,0.03)', border: 'var(--border-mid)',        color: '#aaaaaa' },
           "Didn't take":{ bg: 'rgba(251,146,60,0.08)', border: 'rgba(251,146,60,0.2)', color: '#fb923c' },
         }
@@ -222,13 +222,13 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
             <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               {recentTrades.map(({ trade: t, date }, idx) => {
                 const pnl = parseFloat(t.pnl) || 0
-                const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : 'var(--text-sub)'
+                const pnlColor = pnl > 0 ? '#22c55e' : pnl < 0 ? '#ef4444' : 'var(--text-sub)'
                 const rrVal = (() => {
                   const tp = parseFloat(t.takeProfit), sl = parseFloat(t.stopLoss)
                   if (isNaN(tp) || isNaN(sl) || tp === 0 || sl === 0) return null
                   return (tp / sl).toFixed(2)
                 })()
-                const rrColor = rrVal ? (parseFloat(rrVal) >= 1 ? '#4ade80' : '#f87171') : 'var(--text-muted)'
+                const rrColor = rrVal ? (parseFloat(rrVal) >= 1 ? '#22c55e' : '#ef4444') : 'var(--text-muted)'
                 const style = RESULT_BG[t.result] ?? RESULT_BG.BE
                 const dateShort = new Date(date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
@@ -297,7 +297,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                     <span style={{ fontSize: 15, fontWeight: 700, color: RESULT_COLORS[t.result] || 'var(--text-sub)', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
                     {t.symbol && <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>{t.symbol}</span>}
-                    <span style={{ fontSize: 15, color: t.side === 'Long' ? '#4ade80' : '#f87171', fontWeight: 600 }}>{t.side}</span>
+                    <span style={{ fontSize: 15, color: t.side === 'Long' ? '#22c55e' : '#ef4444', fontWeight: 600 }}>{t.side}</span>
                     {t.contracts && <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{t.contracts} contracts</span>}
                     {t.accounts.map(a => (
                       <span key={a} style={{ fontSize: 13, color: 'var(--text-sub)', background: 'var(--bg-hover)', border: '1px solid var(--border-mid)', padding: '2px 7px', borderRadius: 5, fontWeight: 600 }}>{a}</span>
@@ -328,13 +328,13 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                     {t.pnl && (
                       <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={secLabel}>P&L</div>
-                        <div style={{ fontSize: 18, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : 'var(--text-sub)' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
+                        <div style={{ fontSize: 18, fontWeight: 700, color: tradePnl > 0 ? '#22c55e' : tradePnl < 0 ? '#ef4444' : 'var(--text-sub)' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
                       </div>
                     )}
                     {rrVal && (
                       <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={secLabel}>R:R</div>
-                        <div style={{ fontSize: 18, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : 'var(--text-label)' }}>{rrVal}R</div>
+                        <div style={{ fontSize: 18, fontWeight: 700, color: rrPositive ? '#22c55e' : rrPositive === false ? '#ef4444' : 'var(--text-label)' }}>{rrVal}R</div>
                       </div>
                     )}
                   </div>
@@ -392,13 +392,13 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
         const entry = journalEntries.find(e => e.date === popupDate)
         if (!entry) return null
         const dayPnl = entry.trades.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0)
-        const pnlColor = dayPnl > 0 ? '#4ade80' : dayPnl < 0 ? '#f87171' : 'var(--text-sub)'
+        const pnlColor = dayPnl > 0 ? '#22c55e' : dayPnl < 0 ? '#ef4444' : 'var(--text-sub)'
         const em = entry.emotion ? EMOTION_DISPLAY[entry.emotion] : null
         const dateLabel = new Date(entry.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
         const rulesPct = tradingRules.length === 0 ? 0 : Math.round(
           (entry.rulesFollowed.filter(id => tradingRules.some(r => r.id === id)).length / tradingRules.length) * 100
         )
-        const barColor = rulesPct <= 33 ? '#f87171' : rulesPct <= 66 ? '#fbbf24' : '#4ade80'
+        const barColor = rulesPct <= 33 ? '#ef4444' : rulesPct <= 66 ? '#fbbf24' : '#22c55e'
         const secLabel = { fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.07em', marginBottom: 10 }
         return (
           <div
@@ -500,7 +500,7 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 14px', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' }}>
                               <span style={{ fontSize: 15, fontWeight: 700, color: RESULT_COLORS[t.result] || 'var(--text-sub)', background: `${RESULT_COLORS[t.result]}1a`, padding: '3px 9px', borderRadius: 6 }}>{t.result}</span>
                               {t.symbol && <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-label)' }}>{t.symbol}</span>}
-                              <span style={{ fontSize: 15, color: t.side === 'Long' ? '#4ade80' : '#f87171', fontWeight: 600 }}>{t.side}</span>
+                              <span style={{ fontSize: 15, color: t.side === 'Long' ? '#22c55e' : '#ef4444', fontWeight: 600 }}>{t.side}</span>
                               {t.contracts && <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{t.contracts} contracts</span>}
                               <div style={{ flex: 1 }} />
                               {t.accounts.map(a => (
@@ -525,13 +525,13 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                                   {t.pnl && (
                                     <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                       <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>P&L</div>
-                                      <div style={{ fontSize: 18, fontWeight: 700, color: tradePnl > 0 ? '#4ade80' : tradePnl < 0 ? '#f87171' : 'var(--text-sub)' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
+                                      <div style={{ fontSize: 18, fontWeight: 700, color: tradePnl > 0 ? '#22c55e' : tradePnl < 0 ? '#ef4444' : 'var(--text-sub)' }}>{tradePnl >= 0 ? '+' : ''}{formatCurrency(tradePnl)}</div>
                                     </div>
                                   )}
                                   {rrVal && (
                                     <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                       <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>R:R</div>
-                                      <div style={{ fontSize: 18, fontWeight: 700, color: rrPositive ? '#4ade80' : rrPositive === false ? '#f87171' : 'var(--text-sub)' }}>{rrVal}R</div>
+                                      <div style={{ fontSize: 18, fontWeight: 700, color: rrPositive ? '#22c55e' : rrPositive === false ? '#ef4444' : 'var(--text-sub)' }}>{rrVal}R</div>
                                     </div>
                                   )}
                                 </div>
@@ -605,9 +605,9 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
                       {tradingRules.map(rule => {
                         const followed = entry.rulesFollowed.includes(rule.id)
                         return (
-                          <div key={rule.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: 'var(--bg)', borderRadius: 8, border: `1px solid ${followed ? 'rgba(74,222,128,0.2)' : 'var(--border)'}` }}>
-                            <div style={{ width: 18, height: 18, borderRadius: 5, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: followed ? 'rgba(74,222,128,0.12)' : 'var(--bg-surface)', border: `1px solid ${followed ? 'rgba(74,222,128,0.4)' : 'var(--border-mid)'}` }}>
-                              {followed && <span style={{ fontSize: 13, color: '#4ade80', fontWeight: 700, lineHeight: 1 }}>✓</span>}
+                          <div key={rule.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: 'var(--bg)', borderRadius: 8, border: `1px solid ${followed ? 'rgba(34,197,94,0.2)' : 'var(--border)'}` }}>
+                            <div style={{ width: 18, height: 18, borderRadius: 5, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: followed ? 'rgba(34,197,94,0.12)' : 'var(--bg-surface)', border: `1px solid ${followed ? 'rgba(34,197,94,0.4)' : 'var(--border-mid)'}` }}>
+                              {followed && <span style={{ fontSize: 13, color: '#22c55e', fontWeight: 700, lineHeight: 1 }}>✓</span>}
                             </div>
                             <span style={{ fontSize: 15, color: followed ? 'var(--text-label)' : 'var(--text-muted)' }}>{rule.text}</span>
                           </div>

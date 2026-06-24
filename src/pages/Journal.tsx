@@ -141,15 +141,15 @@ const TIMEFRAMES = ['1m', '2m', '3m', '4m', '5m', '15m', '30m', '1hr', '4hr', 'D
 const STDV_LEVELS = ['+0.5', '+1', '+1.5', '+2', '+2.5', '-0.5', '-1', '-1.5', '-2', '-2.5']
 
 const RESULTS: { value: TradeResult; label: string; color: string; bg: string }[] = [
-  { value: 'Win',   label: 'Win',   color: '#4ade80', bg: 'rgba(74,222,128,0.12)'  },
-  { value: 'Loss',  label: 'Loss',  color: '#f87171', bg: 'rgba(248,113,113,0.12)' },
+  { value: 'Win',   label: 'Win',   color: '#22c55e', bg: 'rgba(34,197,94,0.12)'  },
+  { value: 'Loss',  label: 'Loss',  color: '#ef4444', bg: 'rgba(239,68,68,0.12)' },
   { value: 'BE',    label: 'BE',    color: '#aaaaaa', bg: 'rgba(170,170,170,0.1)'  },
   { value: "Didn't take", label: "Didn't take", color: '#fb923c', bg: 'rgba(251,146,60,0.1)'   },
 ]
-const RESULT_COLORS: Record<string, string> = { Win: '#4ade80', Loss: '#f87171', BE: '#aaaaaa', "Didn't take": '#fb923c' }
+const RESULT_COLORS: Record<string, string> = { Win: '#22c55e', Loss: '#ef4444', BE: '#aaaaaa', "Didn't take": '#fb923c' }
 
 const GRADES = ['A+', 'A', 'B', 'C', 'D', 'F']
-const GRADE_COLORS: Record<string, string> = { 'A+': '#4ade80', A: '#86efac', B: '#fbbf24', C: '#fb923c', D: '#f87171', F: '#ef4444' }
+const GRADE_COLORS: Record<string, string> = { 'A+': '#22c55e', A: '#4ade80', B: '#fbbf24', C: '#fb923c', D: '#ef4444', F: '#ef4444' }
 
 const SESSION_OPTIONS = [
   { value: 'Asia', label: 'Asia' }, { value: 'London', label: 'London' },
@@ -158,16 +158,16 @@ const SESSION_OPTIONS = [
   { value: 'NY Lunch', label: 'NY Lunch' }, { value: '9:30 Open', label: '9:30 Open' },
   { value: 'Midnight Open', label: 'Midnight Open' },
 ]
-const DOL_OPTIONS = [
-  'Asia High', 'Asia Low', 'London High', 'London Low',
-  'Equal Highs', 'Equal Lows', 'HTF PD Array',
-  'Previous Day High', 'Previous Day Low', 'Weekly High', 'Weekly Low', 'Daily Open',
-]
-const MODAL_DOL_OPTIONS = [
-  'Asia High', 'Asia Low', 'London High', 'London Low',
-  'New York AM High', 'New York AM Low', 'New York PM High', 'New York PM Low',
-]
 const EXIT_REASONS = ['Full TP', 'Swept Internal High/Low', 'SMT']
+
+const DOL_STORAGE_KEY = 'journal_custom_dols'
+
+function loadCustomDols(): string[] {
+  try { return JSON.parse(localStorage.getItem(DOL_STORAGE_KEY) || '[]') } catch { return [] }
+}
+function saveCustomDols(dols: string[]) {
+  localStorage.setItem(DOL_STORAGE_KEY, JSON.stringify(dols))
+}
 
 // ── Shared styles ─────────────────────────────────────────────────────────────
 
@@ -282,7 +282,7 @@ function ConfluenceWizard({ confluences, onChange }: {
               <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 7px 3px 10px', borderRadius: 999, fontSize: 14, background: 'var(--bg-active)', border: '1px solid var(--border-strong)', color: 'var(--text)' }}>
                 {tag}
                 <button onClick={() => toggle(tag)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                 ><X size={9} /></button>
               </span>
@@ -320,7 +320,7 @@ function ConfluenceWizard({ confluences, onChange }: {
 
       {/* Progress bar */}
       <div style={{ height: 2, background: 'var(--border)', borderRadius: 999, marginBottom: 12, overflow: 'hidden' }}>
-        <div style={{ width: `${pct}%`, height: '100%', background: '#4ade80', borderRadius: 999, transition: 'width 0.3s ease' }} />
+        <div style={{ width: `${pct}%`, height: '100%', background: '#22c55e', borderRadius: 999, transition: 'width 0.3s ease' }} />
       </div>
 
       {/* Timeframe options */}
@@ -331,9 +331,9 @@ function ConfluenceWizard({ confluences, onChange }: {
           return (
             <button key={tf} onClick={() => toggle(combo)} style={{
               padding: '4px 10px', borderRadius: 999, fontSize: 14, fontWeight: 500,
-              border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : 'var(--border)'}`,
-              background: sel ? 'rgba(74,222,128,0.1)' : 'transparent',
-              color: sel ? '#4ade80' : 'var(--text-muted)',
+              border: `1px solid ${sel ? 'rgba(34,197,94,0.4)' : 'var(--border)'}`,
+              background: sel ? 'rgba(34,197,94,0.1)' : 'transparent',
+              color: sel ? '#22c55e' : 'var(--text-muted)',
               cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
             }}>{tf}</button>
           )
@@ -344,9 +344,9 @@ function ConfluenceWizard({ confluences, onChange }: {
           return (
             <button key={lv} onClick={() => toggle(tag)} style={{
               padding: '4px 10px', borderRadius: 999, fontSize: 14, fontWeight: 500,
-              border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : 'var(--border)'}`,
-              background: sel ? 'rgba(74,222,128,0.1)' : 'transparent',
-              color: sel ? '#4ade80' : 'var(--text-muted)',
+              border: `1px solid ${sel ? 'rgba(34,197,94,0.4)' : 'var(--border)'}`,
+              background: sel ? 'rgba(34,197,94,0.1)' : 'transparent',
+              color: sel ? '#22c55e' : 'var(--text-muted)',
               cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
             }}>{lv}σ</button>
           )
@@ -374,7 +374,7 @@ function ConfluenceWizard({ confluences, onChange }: {
             >Next →</button>
           </>
         ) : (
-          <button onClick={() => setStep(null)} style={{ padding: '5px 14px', borderRadius: 7, fontSize: 14, fontWeight: 600, border: '1px solid rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.08)', color: '#4ade80', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}>
+          <button onClick={() => setStep(null)} style={{ padding: '5px 14px', borderRadius: 7, fontSize: 14, fontWeight: 600, border: '1px solid rgba(34,197,94,0.3)', background: 'rgba(34,197,94,0.08)', color: '#22c55e', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}>
             Done ✓
           </button>
         )}
@@ -389,7 +389,7 @@ function ConfluenceWizard({ confluences, onChange }: {
               <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 6px 2px 8px', borderRadius: 999, fontSize: 13, background: 'var(--bg-surface)', border: '1px solid var(--border-mid)', color: 'var(--text-label)' }}>
                 {tag}
                 <button onClick={() => toggle(tag)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', lineHeight: 1 }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                 ><X size={8} /></button>
               </span>
@@ -422,7 +422,7 @@ function TFTagPicker({ bases, selected, onChange }: {
             <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 7px 3px 10px', borderRadius: 999, fontSize: 14, background: 'var(--bg-active)', border: '1px solid var(--border-strong)', color: 'var(--text)' }}>
               {tag}
               <button onClick={() => toggle(tag)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
+                onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
               ><X size={9} /></button>
             </span>
@@ -457,9 +457,9 @@ function TFTagPicker({ bases, selected, onChange }: {
               return (
                 <button key={tf} onClick={() => toggle(combo)} style={{
                   padding: '4px 10px', borderRadius: 999, fontSize: 14, fontWeight: 500,
-                  border: `1px solid ${sel ? 'rgba(74,222,128,0.4)' : 'var(--border)'}`,
-                  background: sel ? 'rgba(74,222,128,0.1)' : 'transparent',
-                  color: sel ? '#4ade80' : 'var(--text-muted)',
+                  border: `1px solid ${sel ? 'rgba(34,197,94,0.4)' : 'var(--border)'}`,
+                  background: sel ? 'rgba(34,197,94,0.1)' : 'transparent',
+                  color: sel ? '#22c55e' : 'var(--text-muted)',
                   cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                 }}>{tf}</button>
               )
@@ -485,6 +485,8 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
   const [screenshots, setScreenshots] = useState<string[]>([''])
+  const [customDols, setCustomDols] = useState<string[]>(() => loadCustomDols())
+  const [newDolInput, setNewDolInput] = useState('')
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -506,6 +508,17 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
     set(k, (arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val]) as TradeLog[typeof k])
   }
 
+  const addDol = (raw: string) => {
+    const val = raw.trim()
+    if (!val) return
+    const updated = customDols.includes(val) ? customDols : [...customDols, val]
+    setCustomDols(updated)
+    saveCustomDols(updated)
+    const cur = trade.dol || []
+    if (!cur.includes(val)) set('dol', [...cur, val])
+    setNewDolInput('')
+  }
+
   // Auto-calculated P&L
   const grossPnl = parseFloat(trade.pnl) || 0
   const feesVal = parseFloat(trade.fees || '0') || 0
@@ -517,9 +530,9 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
   const riskDollars = pv && !isNaN(slPts) && !isNaN(c) && c > 0 && slPts > 0 ? slPts * pv * c : 0
   const rMultiple = riskDollars > 0 && hasPnl ? parseFloat((grossPnl / riskDollars).toFixed(2)) : null
 
-  const grossColor = grossPnl > 0 ? '#4ade80' : grossPnl < 0 ? '#f87171' : '#555'
-  const netColor = netPnl > 0 ? '#4ade80' : netPnl < 0 ? '#f87171' : '#555'
-  const rColor = rMultiple === null ? '#555' : rMultiple >= 1 ? '#4ade80' : '#f87171'
+  const grossColor = grossPnl > 0 ? '#22c55e' : grossPnl < 0 ? '#ef4444' : '#555'
+  const netColor = netPnl > 0 ? '#22c55e' : netPnl < 0 ? '#ef4444' : '#555'
+  const rColor = rMultiple === null ? '#555' : rMultiple >= 1 ? '#22c55e' : '#ef4444'
 
   // Auto-grade
   const autoGradeResult = calcSetupGrade(trade)
@@ -576,9 +589,9 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
             onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
           >Cancel</button>
           <button onClick={handleSave}
-            style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 16px', borderRadius: 7, border: 'none', background: saved ? 'rgba(74,222,128,0.15)' : '#f0f0f0', color: saved ? '#4ade80' : '#111', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.2s', outline: saved ? '1px solid rgba(74,222,128,0.3)' : 'none', flexShrink: 0 }}
+            style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 16px', borderRadius: 7, border: 'none', background: saved ? 'rgba(34,197,94,0.15)' : '#f0f0f0', color: saved ? '#22c55e' : '#111', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.2s', outline: saved ? '1px solid rgba(34,197,94,0.3)' : 'none', flexShrink: 0 }}
             onMouseEnter={e => { if (!saved) e.currentTarget.style.background = 'var(--btn-hover)' }}
-            onMouseLeave={e => { if (!saved) e.currentTarget.style.background = saved ? 'rgba(74,222,128,0.15)' : '#f0f0f0' }}
+            onMouseLeave={e => { if (!saved) e.currentTarget.style.background = saved ? 'rgba(34,197,94,0.15)' : '#f0f0f0' }}
           ><Save size={13} />{saved ? 'Saved!' : 'Add Trade'}</button>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', display: 'flex', padding: 4, borderRadius: 6, transition: 'color 0.15s', flexShrink: 0 }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-sub)')}
@@ -679,7 +692,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                 <div style={{ display: 'flex', gap: 5 }}>
                   {(['Long', 'Short'] as const).map(side => {
                     const active = trade.side === side
-                    const col = side === 'Long' ? '#22d3ee' : '#f87171'
+                    const col = side === 'Long' ? '#22d3ee' : '#ef4444'
                     return (
                       <button key={side} onClick={() => set('side', side)} style={{
                         flex: 1, padding: '10px 4px', borderRadius: 8, fontSize: 14, fontWeight: 600,
@@ -778,7 +791,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                 <div style={{ display: 'flex', gap: 4 }}>
                   {(['Long', 'Short'] as const).map(side => {
                     const active = trade.htfBias === side
-                    const col = side === 'Long' ? '#22d3ee' : '#f87171'
+                    const col = side === 'Long' ? '#22d3ee' : '#ef4444'
                     return (
                       <button key={side} onClick={() => set('htfBias', active ? '' : side)} style={{
                         flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
@@ -847,10 +860,31 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
               {/* Row 2: Draw on Liquidity | OB Present | Entry Model | Exit Reason | A+ Setup */}
               <div>
                 {fieldLabel('Draw on Liquidity')}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                  {MODAL_DOL_OPTIONS.map(d => (
-                    <TagChip key={d} label={d} active={(trade.dol || []).includes(d)} onClick={() => toggleArr('dol', d)} />
-                  ))}
+                {customDols.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 7 }}>
+                    {customDols.map(d => (
+                      <TagChip key={d} label={d} active={(trade.dol || []).includes(d)} onClick={() => toggleArr('dol', d)} />
+                    ))}
+                  </div>
+                )}
+                <div style={{ display: 'flex', gap: 5 }}>
+                  <input
+                    value={newDolInput}
+                    onChange={e => setNewDolInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addDol(newDolInput) } }}
+                    placeholder="Add DOL…"
+                    style={{ ...inputBase, fontSize: 14, padding: '7px 10px' }}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')}
+                    onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}
+                  />
+                  <button onClick={() => addDol(newDolInput)} style={{
+                    padding: '7px 12px', borderRadius: 8, border: '1px solid var(--border-mid)',
+                    background: 'transparent', color: 'var(--text-muted)', fontSize: 16, fontWeight: 600,
+                    cursor: 'pointer', flexShrink: 0, fontFamily: 'inherit', transition: 'all 0.15s',
+                  }}
+                    onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+                    onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
+                  >+</button>
                 </div>
               </div>
               <div>
@@ -891,9 +925,9 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                     return (
                       <button key={opt} onClick={() => set('aplusSetup', active ? '' : opt)} style={{
                         flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
-                        border: `1px solid ${active ? (opt === 'Yes' ? 'rgba(74,222,128,0.4)' : 'var(--border-strong)') : 'var(--border)'}`,
-                        background: active ? (opt === 'Yes' ? 'rgba(74,222,128,0.1)' : 'var(--bg-active)') : 'transparent',
-                        color: active ? (opt === 'Yes' ? '#4ade80' : 'var(--text)') : 'var(--text-dim)',
+                        border: `1px solid ${active ? (opt === 'Yes' ? 'rgba(34,197,94,0.4)' : 'var(--border-strong)') : 'var(--border)'}`,
+                        background: active ? (opt === 'Yes' ? 'rgba(34,197,94,0.1)' : 'var(--bg-active)') : 'transparent',
+                        color: active ? (opt === 'Yes' ? '#22c55e' : 'var(--text)') : 'var(--text-dim)',
                         cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                       }}
                         onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
@@ -1016,9 +1050,9 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                     return (
                       <button key={tf} onClick={() => set('timeframeExecuted', active ? '' : tf)} style={{
                         padding: '4px 8px', borderRadius: 999, fontSize: 13, fontWeight: 500,
-                        border: `1px solid ${active ? 'rgba(74,222,128,0.4)' : 'var(--border)'}`,
-                        background: active ? 'rgba(74,222,128,0.1)' : 'transparent',
-                        color: active ? '#4ade80' : 'var(--text-muted)',
+                        border: `1px solid ${active ? 'rgba(34,197,94,0.4)' : 'var(--border)'}`,
+                        background: active ? 'rgba(34,197,94,0.1)' : 'transparent',
+                        color: active ? '#22c55e' : 'var(--text-muted)',
                         cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
                       }}
                         onMouseEnter={e => { if (!active) { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
@@ -1111,6 +1145,8 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
   const [htfPreview, setHtfPreview] = useState<string | null>(trade.htfImgKey?.startsWith('data:') ? trade.htfImgKey : null)
   const [execPreview, setExecPreview] = useState<string | null>(trade.execImgKey?.startsWith('data:') ? trade.execImgKey : null)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [customDols, setCustomDols] = useState<string[]>(() => loadCustomDols())
+  const [newDolInput, setNewDolInput] = useState('')
 
   const set = <K extends keyof TradeLog>(k: K, v: TradeLog[K]) => {
     const next = { ...trade, [k]: v }
@@ -1132,11 +1168,22 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
     set('dol', l.includes(d) ? l.filter(x => x !== d) : [...l, d])
   }
 
+  const addDolInline = (raw: string) => {
+    const val = raw.trim()
+    if (!val) return
+    const updated = customDols.includes(val) ? customDols : [...customDols, val]
+    setCustomDols(updated)
+    saveCustomDols(updated)
+    const cur = trade.dol || []
+    if (!cur.includes(val)) set('dol', [...cur, val])
+    setNewDolInput('')
+  }
+
   const pnlVal = parseFloat(trade.pnl)
   const hasPnl = trade.pnl !== ''
-  const pnlColor = pnlVal > 0 ? '#4ade80' : pnlVal < 0 ? '#f87171' : 'var(--text-sub)'
+  const pnlColor = pnlVal > 0 ? '#22c55e' : pnlVal < 0 ? '#ef4444' : 'var(--text-sub)'
   const rrVal = calcRR(trade.takeProfit, trade.stopLoss)
-  const rrColor = !rrVal ? 'var(--text-dim)' : parseFloat(rrVal) >= 1 ? '#4ade80' : '#f87171'
+  const rrColor = !rrVal ? 'var(--text-dim)' : parseFloat(rrVal) >= 1 ? '#22c55e' : '#ef4444'
   const showDrawdown = trade.result === 'Win' || trade.result === 'BE' || trade.result === "Didn't take"
 
   return (
@@ -1163,11 +1210,11 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           <div style={{ flex: 1 }} />
           <button
             onClick={() => { if (confirmDelete) onDelete(); else setConfirmDelete(true) }}
-            style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, padding: '6px 10px', borderRadius: 7, border: `1px solid ${confirmDelete ? 'rgba(239,68,68,0.4)' : 'var(--border-mid)'}`, background: confirmDelete ? 'rgba(239,68,68,0.1)' : 'transparent', color: confirmDelete ? '#f87171' : 'var(--text-dim)', cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
-            onMouseEnter={e => { if (!confirmDelete) { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)' } }}
+            style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, padding: '6px 10px', borderRadius: 7, border: `1px solid ${confirmDelete ? 'rgba(239,68,68,0.4)' : 'var(--border-mid)'}`, background: confirmDelete ? 'rgba(239,68,68,0.1)' : 'transparent', color: confirmDelete ? '#ef4444' : 'var(--text-dim)', cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit' }}
+            onMouseEnter={e => { if (!confirmDelete) { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)' } }}
             onMouseLeave={e => { if (!confirmDelete) { e.currentTarget.style.color = 'var(--text-dim)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
           ><Trash2 size={11} />{confirmDelete ? 'Confirm?' : 'Delete'}</button>
-          <button onClick={onSave} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 16px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600, background: saved ? 'rgba(74,222,128,0.12)' : 'var(--btn-bg)', color: saved ? '#4ade80' : 'var(--btn-text)', outline: saved ? '1px solid rgba(74,222,128,0.25)' : 'none', transition: 'all 0.2s', fontFamily: 'inherit' }}>
+          <button onClick={onSave} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 16px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600, background: saved ? 'rgba(34,197,94,0.12)' : 'var(--btn-bg)', color: saved ? '#22c55e' : 'var(--btn-text)', outline: saved ? '1px solid rgba(34,197,94,0.25)' : 'none', transition: 'all 0.2s', fontFamily: 'inherit' }}>
             <Save size={12} />{saved ? 'Saved!' : 'Save'}
           </button>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', display: 'flex', padding: 4, transition: 'color 0.15s' }}
@@ -1228,7 +1275,7 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
             <div style={{ display: 'flex', gap: 5, height: 36 }}>
               {(['Long', 'Short'] as const).map(side => {
                 const active = trade.side === side
-                const col = side === 'Long' ? '#22d3ee' : '#f87171'
+                const col = side === 'Long' ? '#22d3ee' : '#ef4444'
                 return (
                   <button key={side} onClick={() => set('side', side)} style={{
                     flex: 1, borderRadius: 8, fontSize: 14, fontWeight: 600,
@@ -1311,10 +1358,31 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           </div>
           <div>
             {fieldLabel('Draw on Liquidity')}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-              {DOL_OPTIONS.map(d => (
-                <TagChip key={d} label={d} active={(trade.dol || []).includes(d)} onClick={() => toggleDol(d)} />
-              ))}
+            {customDols.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 7 }}>
+                {customDols.map(d => (
+                  <TagChip key={d} label={d} active={(trade.dol || []).includes(d)} onClick={() => toggleDol(d)} />
+                ))}
+              </div>
+            )}
+            <div style={{ display: 'flex', gap: 5 }}>
+              <input
+                value={newDolInput}
+                onChange={e => setNewDolInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addDolInline(newDolInput) } }}
+                placeholder="Add DOL…"
+                style={{ ...inputBase, fontSize: 14, padding: '7px 10px' }}
+                onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')}
+                onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}
+              />
+              <button onClick={() => addDolInline(newDolInput)} style={{
+                padding: '7px 12px', borderRadius: 8, border: '1px solid var(--border-mid)',
+                background: 'transparent', color: 'var(--text-muted)', fontSize: 16, fontWeight: 600,
+                cursor: 'pointer', flexShrink: 0, fontFamily: 'inherit', transition: 'all 0.15s',
+              }}
+                onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
+              >+</button>
             </div>
           </div>
         </div>
@@ -1346,10 +1414,10 @@ function SummaryRow({ trade, date, expanded, onToggle, COL }: {
   COL: string
 }) {
   const pnl = parseFloat(trade.pnl) || 0
-  const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : 'var(--text-muted)'
+  const pnlColor = pnl > 0 ? '#22c55e' : pnl < 0 ? '#ef4444' : 'var(--text-muted)'
   const rrVal = calcRR(trade.takeProfit, trade.stopLoss)
   const rrNum = rrVal ? parseFloat(rrVal) : null
-  const rrColor = rrNum === null ? 'var(--text-dim)' : rrNum >= 1 ? '#4ade80' : '#f87171'
+  const rrColor = rrNum === null ? 'var(--text-dim)' : rrNum >= 1 ? '#22c55e' : '#ef4444'
   const rc = RESULT_COLORS[trade.result] || 'var(--text-sub)'
   const gc = trade.grade ? (GRADE_COLORS[trade.grade] || 'var(--text-sub)') : null
   const dateLabel = `${date.slice(5).replace('-', '/')}${trade.time ? ' · ' + trade.time : ''}`
@@ -1374,9 +1442,9 @@ function SummaryRow({ trade, date, expanded, onToggle, COL }: {
       <span style={{
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
         padding: '3px 10px', borderRadius: 999, fontSize: 13, fontWeight: 700, width: 'fit-content',
-        background: trade.side === 'Long' ? 'rgba(34,211,238,0.12)' : 'rgba(248,113,113,0.1)',
-        border: `1px solid ${trade.side === 'Long' ? 'rgba(34,211,238,0.25)' : 'rgba(248,113,113,0.2)'}`,
-        color: trade.side === 'Long' ? '#22d3ee' : '#f87171',
+        background: trade.side === 'Long' ? 'rgba(34,211,238,0.12)' : 'rgba(239,68,68,0.1)',
+        border: `1px solid ${trade.side === 'Long' ? 'rgba(34,211,238,0.25)' : 'rgba(239,68,68,0.2)'}`,
+        color: trade.side === 'Long' ? '#22d3ee' : '#ef4444',
       }}>{trade.side}</span>
       <span style={{ fontSize: 15, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 10 }}>{setupLabel}</span>
       <span style={{ fontSize: 14, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sessionLabel}</span>

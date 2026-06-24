@@ -9,29 +9,29 @@
 /* ── Dark theme (default) ── */
 :root, [data-theme="dark"] {
   --bg: #0e0e0e;
-  --bg-panel: #080808;
-  --bg-card: #141414;
-  --bg-surface: #111111;
-  --bg-hover: #1a1a1a;
-  --bg-active: #1f1f1f;
-  --bg-input: #0e0e0e;
-  --border: #1a1a1a;
-  --border-mid: #222222;
-  --border-strong: #333333;
-  --text: #f0f0f0;
-  --text-sub: #888888;
-  --text-muted: #555555;
-  --text-dim: #333333;
-  --text-label: #d0d0d0;
+  --bg-panel: #141414;
+  --bg-card: #1c1c1c;
+  --bg-surface: #181818;
+  --bg-hover: #222222;
+  --bg-active: #2c2c2c;
+  --bg-input: #121212;
+  --border: #222222;
+  --border-mid: #2e2e2e;
+  --border-strong: #484848;
+  --text: #f2f2f2;
+  --text-sub: #aaaaaa;
+  --text-muted: #727272;
+  --text-dim: #4a4a4a;
+  --text-label: #e0e0e0;
   --btn-bg: #f0f0f0;
   --btn-text: #111111;
   --btn-hover: #ffffff;
   /* legacy aliases */
   --bg-app: #0e0e0e;
-  --bg-sidebar: #090909;
-  --text-primary: #f0f0f0;
-  --text-secondary: #999;
-  --border-base: #1a1a1a;
+  --bg-sidebar: #0a0a0a;
+  --text-primary: #f2f2f2;
+  --text-secondary: #aaaaaa;
+  --border-base: #222222;
 }
 
 /* ── Light theme ── */
@@ -118,6 +118,6 @@ h1, h2, h3, h4 {
 
 /* ── Selection ── */
 ::selection {
-  background: rgba(74, 222, 128, 0.2);
-  color: #f0f0f0;
+  background: rgba(34, 197, 94, 0.25);
+  color: #f2f2f2;
 }

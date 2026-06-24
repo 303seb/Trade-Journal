@@ -100,7 +100,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
             <span style={{ fontSize: 14, color: 'var(--text-dim)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Monthly Profit</span>
             <span style={{
               fontSize: 18, fontWeight: 700,
-              color: monthTradeCount === 0 ? '#333' : monthPnl >= 0 ? '#4ade80' : '#f87171',
+              color: monthTradeCount === 0 ? '#333' : monthPnl >= 0 ? '#22c55e' : '#ef4444',
             }}>
               {monthTradeCount === 0 ? '—' : (monthPnl >= 0 ? '+' : '') + formatCurrency(monthPnl)}
             </span>
@@ -143,12 +143,12 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
           const weekBEs = weekLogs.filter(t => t.result === 'BE').length
           const weekR = weekLogs.length > 0 ? calcDayR(weekLogs) : null
           const weekWLBE = [weekWins > 0 ? `${weekWins}W` : null, weekLosses > 0 ? `${weekLosses}L` : null, weekBEs > 0 ? `${weekBEs}BE` : null].filter(Boolean)
-          const weekPnlColor = weekHasData ? (weekPnl > 0 ? '#4ade80' : weekPnl < 0 ? '#f87171' : '#888') : '#444'
+          const weekPnlColor = weekHasData ? (weekPnl > 0 ? '#22c55e' : weekPnl < 0 ? '#ef4444' : '#888') : '#444'
           const weekBg = weekHasData
-            ? weekPnl > 0 ? 'rgba(52,211,153,0.05)' : weekPnl < 0 ? 'rgba(248,113,113,0.05)' : 'rgba(255,255,255,0.02)'
+            ? weekPnl > 0 ? 'rgba(52,211,153,0.05)' : weekPnl < 0 ? 'rgba(239,68,68,0.05)' : 'rgba(255,255,255,0.02)'
             : 'transparent'
           const weekBorder = weekHasData
-            ? weekPnl > 0 ? 'rgba(52,211,153,0.15)' : weekPnl < 0 ? 'rgba(248,113,113,0.15)' : 'var(--border-mid)'
+            ? weekPnl > 0 ? 'rgba(52,211,153,0.15)' : weekPnl < 0 ? 'rgba(239,68,68,0.15)' : 'var(--border-mid)'
             : 'var(--border)'
 
           return (
@@ -184,7 +184,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                 let dayNumColor = 'var(--text-dim)'
 
                 if (hasData && isPositive)  { cellBg = 'rgba(52,211,153,0.08)';  cellBorder = 'rgba(52,211,153,0.2)';  dayNumColor = '#cccccc' }
-                if (hasData && isNegative)  { cellBg = 'rgba(248,113,113,0.08)'; cellBorder = 'rgba(248,113,113,0.2)'; dayNumColor = '#cccccc' }
+                if (hasData && isNegative)  { cellBg = 'rgba(239,68,68,0.08)'; cellBorder = 'rgba(239,68,68,0.2)'; dayNumColor = '#cccccc' }
                 if (hasData && !isPositive && !isNegative) { cellBg = 'var(--bg-hover)'; cellBorder = 'var(--border-mid)'; dayNumColor = 'var(--text-sub)' }
 
                 return (
@@ -223,11 +223,11 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                     </div>
                     {hasData && (
                       <>
-                        <span style={{ fontSize: 15, fontWeight: 800, color: isPositive ? '#4ade80' : isNegative ? '#f87171' : '#888', lineHeight: 1, marginTop: 2 }}>
+                        <span style={{ fontSize: 15, fontWeight: 800, color: isPositive ? '#22c55e' : isNegative ? '#ef4444' : '#888', lineHeight: 1, marginTop: 2 }}>
                           {pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}
                         </span>
                         {dayR !== null && (
-                          <span style={{ fontSize: 14, fontWeight: 700, color: dayR > 0 ? '#4ade80' : dayR < 0 ? '#f87171' : '#888', lineHeight: 1 }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: dayR > 0 ? '#22c55e' : dayR < 0 ? '#ef4444' : '#888', lineHeight: 1 }}>
                             {dayR >= 0 ? '+' : ''}{dayR.toFixed(1)}R
                           </span>
                         )}
@@ -252,7 +252,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                 justifyContent: 'flex-start', gap: 3,
                 background: weekBg,
                 border: `1px solid ${weekBorder}`,
-                borderLeft: `2px solid ${weekHasData ? (weekPnl > 0 ? 'rgba(52,211,153,0.4)' : weekPnl < 0 ? 'rgba(248,113,113,0.4)' : '#2a2a2a') : '#1a1a1a'}`,
+                borderLeft: `2px solid ${weekHasData ? (weekPnl > 0 ? 'rgba(52,211,153,0.4)' : weekPnl < 0 ? 'rgba(239,68,68,0.4)' : '#2a2a2a') : '#1a1a1a'}`,
               }}>
                 <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: 1 }}>
                   WK {wi + 1}
@@ -263,7 +263,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                       {weekPnl >= 0 ? '+' : ''}{formatCurrency(weekPnl)}
                     </span>
                     {weekR !== null && (
-                      <span style={{ fontSize: 14, fontWeight: 700, color: weekR > 0 ? '#4ade80' : weekR < 0 ? '#f87171' : '#888', lineHeight: 1 }}>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: weekR > 0 ? '#22c55e' : weekR < 0 ? '#ef4444' : '#888', lineHeight: 1 }}>
                         {weekR >= 0 ? '+' : ''}{weekR.toFixed(1)}R
                       </span>
                     )}
@@ -289,7 +289,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 22, marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
         {[
           { bg: 'rgba(52,211,153,0.2)', border: 'rgba(52,211,153,0.3)', label: 'Win' },
-          { bg: 'rgba(248,113,113,0.2)', border: 'rgba(248,113,113,0.3)', label: 'Loss' },
+          { bg: 'rgba(239,68,68,0.2)', border: 'rgba(239,68,68,0.3)', label: 'Loss' },
           { bg: 'var(--bg-hover)', border: 'var(--border-mid)', label: 'Breakeven' },
         ].map(({ bg, border, label }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

@@ -45,7 +45,7 @@ const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'
 function StatCard({ label, value, sub, positive, icon }: {
   label: string; value: string; sub?: string; positive?: boolean | null; icon?: React.ReactNode
 }) {
-  const valueColor = positive === null || positive === undefined ? 'var(--text)' : positive ? '#4ade80' : '#f87171'
+  const valueColor = positive === null || positive === undefined ? 'var(--text)' : positive ? '#22c55e' : '#ef4444'
   return (
     <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '16px 18px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
@@ -162,7 +162,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
       return { label: t.date.slice(5), value: parseFloat(cum.toFixed(2)), idx: i + 1 }
     }),
   ]
-  const equityColor = equityData[equityData.length - 1]?.value >= 0 ? '#4ade80' : '#f87171'
+  const equityColor = equityData[equityData.length - 1]?.value >= 0 ? '#22c55e' : '#ef4444'
 
   // ── Monthly P&L (for year view or all time) ──
   const monthlyMap = new Map<string, number>()
@@ -257,7 +257,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
     rrCount++
     rrData.push({ label: String(rrCount), value: parseFloat(cumR.toFixed(2)) })
   })
-  const rrColor = rrData[rrData.length - 1]?.value >= 0 ? '#4ade80' : '#f87171'
+  const rrColor = rrData[rrData.length - 1]?.value >= 0 ? '#22c55e' : '#ef4444'
 
   // ── Per-account stats ──
   const accountStats = tradingAccounts.map(acc => {
@@ -329,7 +329,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
               {accountNames.map(name => {
                 const active = effectiveSelected.includes(name)
                 const acc = tradingAccounts.find(a => a.name === name)
-                const typeColor = acc?.type === 'Live' ? '#4ade80' : acc?.type === 'Eval' ? '#fbbf24' : '#60a5fa'
+                const typeColor = acc?.type === 'Live' ? '#22c55e' : acc?.type === 'Eval' ? '#fbbf24' : '#60a5fa'
                 return (
                   <button
                     key={name}
@@ -443,7 +443,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                   <ReferenceLine y={0} stroke="var(--border-strong)" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
                   <Bar dataKey="value" radius={[3, 3, 0, 0]}>
-                    {monthlyData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                    {monthlyData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#22c55e' : '#ef4444'} fillOpacity={0.75} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -460,7 +460,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                   <ReferenceLine y={0} stroke="var(--border-strong)" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
                   <Bar dataKey="value" radius={[3, 3, 0, 0]}>
-                    {dailyData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                    {dailyData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#22c55e' : '#ef4444'} fillOpacity={0.75} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -480,7 +480,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                   <ReferenceLine y={0} stroke="var(--border-strong)" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
                   <Bar dataKey="value" radius={[3, 3, 0, 0]}>
-                    {symbolData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                    {symbolData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#22c55e' : '#ef4444'} fillOpacity={0.75} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -497,7 +497,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                   <ReferenceLine y={0} stroke="var(--border-strong)" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
                   <Bar dataKey="value" radius={[3, 3, 0, 0]}>
-                    {sessionData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                    {sessionData.map((d, i) => <Cell key={i} fill={d.value >= 0 ? '#22c55e' : '#ef4444'} fillOpacity={0.75} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -517,7 +517,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                   <ReferenceLine y={50} stroke="#333" strokeDasharray="3 3" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [`${Number(v)}%`, 'Win Rate']} />
                   <Bar dataKey="value" radius={[3, 3, 0, 0]}>
-                    {symWinData.map((d, i) => <Cell key={i} fill={d.value >= 50 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                    {symWinData.map((d, i) => <Cell key={i} fill={d.value >= 50 ? '#22c55e' : '#ef4444'} fillOpacity={0.75} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -534,7 +534,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                   <ReferenceLine y={0} stroke="var(--border-strong)" />
                   <Tooltip {...TOOLTIP_STYLE} formatter={(v: unknown) => [formatCurrency(Number(v)), 'P&L']} />
                   <Bar dataKey="pnl" name="pnl" radius={[3, 3, 0, 0]}>
-                    {dowData.map((d, i) => <Cell key={i} fill={d.pnl >= 0 ? '#4ade80' : '#f87171'} fillOpacity={0.75} />)}
+                    {dowData.map((d, i) => <Cell key={i} fill={d.pnl >= 0 ? '#22c55e' : '#ef4444'} fillOpacity={0.75} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -563,7 +563,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
             {resultData.length === 0 ? EMPTY_CHART : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingTop: 8 }}>
                 {[
-                  { key: 'Win', color: '#4ade80' }, { key: 'Loss', color: '#f87171' },
+                  { key: 'Win', color: '#22c55e' }, { key: 'Loss', color: '#ef4444' },
                   { key: 'BE', color: '#888' }, { key: "Didn't take", color: '#fb923c' },
                 ].map(({ key, color }) => {
                   const count = resultMap.get(key) ?? 0
@@ -592,8 +592,8 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
             <p style={CHART_TITLE}>Account Performance</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
               {accountStats.map(({ acc, pnl, trades, winRate: wr }) => {
-                const pnlColor = pnl > 0 ? '#4ade80' : pnl < 0 ? '#f87171' : '#777'
-                const typeColors: Record<string, string> = { Live: '#4ade80', Eval: '#fbbf24', Funded: '#60a5fa' }
+                const pnlColor = pnl > 0 ? '#22c55e' : pnl < 0 ? '#ef4444' : '#777'
+                const typeColors: Record<string, string> = { Live: '#22c55e', Eval: '#fbbf24', Funded: '#60a5fa' }
                 const tc = typeColors[acc.type] || 'var(--text-sub)'
                 return (
                   <div key={acc.id} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px' }}>
@@ -619,14 +619,14 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
                       </div>
                       <div>
                         <div style={{ fontSize: 13, color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Win %</div>
-                        <div style={{ fontSize: 17, fontWeight: 700, color: wr >= 50 ? '#4ade80' : '#f87171' }}>{trades > 0 ? formatPct(wr) : '—'}</div>
+                        <div style={{ fontSize: 17, fontWeight: 700, color: wr >= 50 ? '#22c55e' : '#ef4444' }}>{trades > 0 ? formatPct(wr) : '—'}</div>
                       </div>
                     </div>
                     {acc.type === 'Eval' && acc.profitTarget > 0 && (
                       <div style={{ marginTop: 10 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                           <span style={{ fontSize: 13, color: 'var(--text-dim)' }}>Target progress</span>
-                          <span style={{ fontSize: 13, color: pnl >= 0 ? '#4ade80' : '#f87171', fontWeight: 600 }}>{Math.round((pnl / acc.profitTarget) * 100)}%</span>
+                          <span style={{ fontSize: 13, color: pnl >= 0 ? '#22c55e' : '#ef4444', fontWeight: 600 }}>{Math.round((pnl / acc.profitTarget) * 100)}%</span>
                         </div>
                         <div style={{ height: 4, background: 'var(--border)', borderRadius: 999, overflow: 'hidden' }}>
                           <div style={{ width: `${Math.max(0, Math.min(100, (pnl / acc.profitTarget) * 100))}%`, height: '100%', background: '#fbbf24', borderRadius: 999 }} />
