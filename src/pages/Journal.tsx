@@ -183,6 +183,16 @@ const inputBase: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box', transition: 'border-color 0.15s',
   fontFamily: 'inherit', minHeight: '46px',
 }
+const selectBase: React.CSSProperties = {
+  ...inputBase,
+  cursor: 'pointer',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23888888' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E\")",
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'right 13px center',
+  paddingRight: '36px',
+}
 const fieldLabel = (text: string) => (
   <div style={{ fontSize: 15, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 7 }}>{text}</div>
 )
@@ -652,7 +662,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
               <div>
                 {fieldLabel('Symbol')}
                 <select value={trade.symbol} onChange={e => set('symbol', e.target.value)}
-                  style={{ ...inputBase, cursor: 'pointer' }}
+                  style={selectBase}
                   onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
                   <option value="">—</option>
                   {SYMBOLS.map(s => <option key={s} value={s}>{s}</option>)}
@@ -663,7 +673,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                 <select
                   value={(trade.accounts || [])[0] || ''}
                   onChange={e => set('accounts', e.target.value ? [e.target.value] : [])}
-                  style={{ ...inputBase, cursor: 'pointer' }}
+                  style={selectBase}
                   onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
                   <option value="">—</option>
                   {(tradingAccounts.length > 0 ? tradingAccounts.map(a => a.name) : ['Live', 'Funded', 'Eval']).map(a => (
@@ -682,7 +692,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
               <div>
                 {fieldLabel('Copy Traded')}
                 <select value={trade.copyTraded || ''} onChange={e => set('copyTraded', e.target.value)}
-                  style={{ ...inputBase, cursor: 'pointer' }}
+                  style={selectBase}
                   onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
                   <option value="">—</option>
                   <option value="Yes">Yes</option>
@@ -694,7 +704,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                 <select
                   value={(trade.sessions || [])[0] || ''}
                   onChange={e => set('sessions', e.target.value ? [e.target.value] : [])}
-                  style={{ ...inputBase, cursor: 'pointer' }}
+                  style={selectBase}
                   onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
                   <option value="">—</option>
                   {SESSION_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
@@ -703,7 +713,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
               <div>
                 {fieldLabel('Direction')}
                 <select value={trade.side} onChange={e => set('side', e.target.value as 'Long' | 'Short')}
-                  style={{ ...inputBase, cursor: 'pointer', color: trade.side === 'Long' ? '#22d3ee' : 'var(--color-loss)' }}
+                  style={{ ...selectBase, color: trade.side === 'Long' ? '#22d3ee' : 'var(--color-loss)' }}
                   onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
                   <option value="Long">Long</option>
                   <option value="Short">Short</option>
@@ -750,7 +760,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
               <div>
                 {fieldLabel('Result')}
                 <select value={trade.result} onChange={e => set('result', e.target.value as TradeResult)}
-                  style={{ ...inputBase, cursor: 'pointer', color: RESULT_COLORS[trade.result] || 'var(--text)', fontWeight: 600 }}
+                  style={{ ...selectBase, color: RESULT_COLORS[trade.result] || 'var(--text)', fontWeight: 600 }}
                   onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
                   {RESULTS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
                 </select>
@@ -806,7 +816,7 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
                 <select
                   value={trade.grade || ''}
                   onChange={e => set('grade', e.target.value)}
-                  style={{ ...inputBase, cursor: 'pointer', color: trade.grade ? (GRADE_COLORS[trade.grade] || 'var(--text)') : 'var(--text-muted)', fontWeight: 700 }}
+                  style={{ ...selectBase, color: trade.grade ? (GRADE_COLORS[trade.grade] || 'var(--text)') : 'var(--text-muted)', fontWeight: 700 }}
                   onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
                   <option value="">{autoGradeResult ? `Auto · ${autoGradeResult.grade}` : 'Auto'}</option>
                   {GRADES.map(g => <option key={g} value={g}>{g}</option>)}
@@ -1346,7 +1356,7 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
           <div>
             {fieldLabel('Symbol')}
             <select value={trade.symbol} onChange={e => set('symbol', e.target.value)}
-              style={{ ...inputBase, cursor: 'pointer' }} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+              style={selectBase} onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
               <option value="">—</option>
               {SYMBOLS.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
