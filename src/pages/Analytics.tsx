@@ -242,6 +242,7 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
     .sort((a, b) => b.total - a.total)
 
   // ── R Multiple Distribution ──
+  const PVMAP: Record<string, number> = { NQ: 20, MNQ: 2, ES: 50, MES: 5, GC: 100, MGC: 10 }
   const RR_BUCKETS = ['<0R', '0–1R', '1–2R', '2–3R', '3R+']
   const rrBucketMap = new Map<string, { trades: number; wins: number; totalR: number }>(
     RR_BUCKETS.map(b => [b, { trades: 0, wins: 0, totalR: 0 }])
@@ -293,7 +294,6 @@ export function Analytics({ journalEntries, tradingAccounts }: AnalyticsProps) {
   const resultData = Array.from(resultMap.entries()).map(([label, value]) => ({ label, value }))
 
   // ── R:R running average ──
-  const PVMAP: Record<string, number> = { NQ: 20, MNQ: 2, ES: 50, MES: 5, GC: 100, MGC: 10 }
   let cumR = 0, rrCount = 0
   const rrData: { label: string; value: number }[] = [{ label: '0', value: 0 }]
   sorted.forEach(t => {

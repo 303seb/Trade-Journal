@@ -18,19 +18,19 @@
   --border: #222222;
   --border-mid: #2e2e2e;
   --border-strong: #484848;
-  --text: #f2f2f2;
-  --text-sub: #aaaaaa;
-  --text-muted: #727272;
-  --text-dim: #4a4a4a;
-  --text-label: #e0e0e0;
+  --text: #ffffff;
+  --text-sub: #e8e8e8;
+  --text-muted: #b0b0b0;
+  --text-dim: #707070;
+  --text-label: #ffffff;
   --btn-bg: #f0f0f0;
   --btn-text: #111111;
   --btn-hover: #ffffff;
   /* legacy aliases */
   --bg-app: #0e0e0e;
   --bg-sidebar: #0a0a0a;
-  --text-primary: #f2f2f2;
-  --text-secondary: #aaaaaa;
+  --text-primary: #ffffff;
+  --text-secondary: #e8e8e8;
   --border-base: #222222;
   /* win / loss colors */
   --color-win: #22c55e;
