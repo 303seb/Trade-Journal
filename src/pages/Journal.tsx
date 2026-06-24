@@ -1004,21 +1004,6 @@ function InlineTradeForm({ trade, date, saved, onUpdate, onDateChange, onSave, o
 
         {/* ── Top controls row ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', gap: 5, flex: '0 0 auto' }}>
-            {RESULTS.map(r => (
-              <PillBtn key={r.value} label={r.label} active={trade.result === r.value}
-                onClick={() => set('result', r.value)} activeColor={r.color} activeBg={r.bg} />
-            ))}
-          </div>
-          <div style={{ display: 'flex', gap: 5, flex: '0 0 auto' }}>
-            {GRADES.map(g => {
-              const col = GRADE_COLORS[g]
-              return (
-                <PillBtn key={g} label={g} active={trade.grade === g}
-                  onClick={() => set('grade', trade.grade === g ? '' : g)} activeColor={col} activeBg={`${col}18`} />
-              )
-            })}
-          </div>
           <div style={{ flex: 1 }} />
           <button
             onClick={() => { if (confirmDelete) onDelete(); else setConfirmDelete(true) }}
@@ -1661,7 +1646,7 @@ export function Journal({ entries, onSave, onDelete, initialDate, tradingAccount
   }
 
   const filtersActive = search || filterResult !== 'All' || filterSession !== 'All' || filterPnl !== 'All'
-  const COL = '150px 70px 84px 1fr 130px 110px 70px 76px 56px 24px'
+  const COL = 'repeat(9, 1fr) 28px'
 
   const hStyle: React.CSSProperties = {
     fontSize: 13, fontWeight: 700, color: 'var(--text-muted)',
