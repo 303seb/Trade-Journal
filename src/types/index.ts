@@ -96,6 +96,7 @@ export interface TradeLog {
   otePresent?: string[]             // e.g. ["OTE (1hr)"]
   propFirm?: string
   copyTraded?: string               // 'Yes' | 'No' | ''
+  playbookUsed?: string
   aplusSetup?: string               // 'Yes' | 'No' | ''
   targetLogic?: string
   paybackUsed?: string              // 'Yes' | 'No' | ''

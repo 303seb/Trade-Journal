@@ -59,6 +59,7 @@ function emptyTrade(): TradeLog {
     otePresent: [],
     propFirm: '',
     copyTraded: '',
+    playbookUsed: '',
     aplusSetup: '',
     targetLogic: '',
     paybackUsed: '',
@@ -521,11 +522,6 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
     })
   }
 
-  const toggleArr = (k: keyof TradeLog, val: string) => {
-    const arr = (trade[k] as string[]) || []
-    set(k, (arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val]) as TradeLog[typeof k])
-  }
-
   const addDol = (raw: string) => {
     const val = raw.trim()
     if (!val) return
@@ -829,313 +825,274 @@ function NewTradeModal({ initialDate, onSave, onClose, tradingAccounts }: {
 
           {/* ── TAB 1: ICT / TRADE CONTEXT ── */}
           {activeTab === 1 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 14, alignItems: 'start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 14 }}>
 
-              {/* Row 1: HTF Bias | SMT Present | Rejection Block | Market Condition | News Present */}
-              <div>
-                {fieldLabel('HTF Bias')}
-                <div style={{ display: 'flex', gap: 4 }}>
-                  {(['Long', 'Short'] as const).map(side => {
-                    const active = trade.htfBias === side
-                    const col = side === 'Long' ? '#22d3ee' : '#ef4444'
-                    return (
-                      <button key={side} onClick={() => set('htfBias', active ? '' : side)} style={{
-                        flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
-                        border: `1px solid ${active ? col + '44' : 'var(--border)'}`,
-                        background: active ? `${col}14` : 'transparent',
-                        color: active ? col : 'var(--text-dim)',
-                        cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-                      }}
-                        onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
-                        onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
-                      >{side}</button>
-                    )
-                  })}
+                {/* Row 1: HTF Bias | Draw on Liquidity | Internal Range Liq | External Range Liq | Liquidity Swept */}
+                <div>
+                  {fieldLabel('HTF Bias')}
+                  <select value={trade.htfBias || ''} onChange={e => set('htfBias', e.target.value)}
+                    style={{ ...selectBase, color: trade.htfBias === 'Long' ? '#22d3ee' : trade.htfBias === 'Short' ? 'var(--color-loss)' : 'var(--text)' }}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    <option value="Long">Long</option>
+                    <option value="Short">Short</option>
+                  </select>
                 </div>
-              </div>
-              <div>
-                {fieldLabel('SMT Present')}
-                <TFTagPicker bases={['SMT']} selected={trade.smtPresent || []} onChange={v => set('smtPresent', v)} />
-              </div>
-              <div>
-                {fieldLabel('Rejection Block')}
-                <TFTagPicker bases={['RB']} selected={trade.rejectionBlock || []} onChange={v => set('rejectionBlock', v)} />
-              </div>
-              <div>
-                {fieldLabel('Market Condition')}
-                <div style={{ display: 'flex', gap: 4 }}>
-                  {(['Consolidation', 'Distribution'] as const).map(mc => {
-                    const short = mc === 'Consolidation' ? 'Consol.' : 'Distrib.'
-                    const active = trade.marketCondition === mc
-                    return (
-                      <button key={mc} onClick={() => set('marketCondition', active ? '' : mc)} style={{
-                        flex: 1, padding: '8px 2px', borderRadius: 7, fontSize: 12, fontWeight: 600,
-                        border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
-                        background: active ? 'var(--bg-active)' : 'transparent',
-                        color: active ? 'var(--text)' : 'var(--text-dim)',
-                        cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-                      }}
-                        onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
-                        onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
-                      >{short}</button>
-                    )
-                  })}
+                <div>
+                  {fieldLabel('Draw on Liquidity')}
+                  <select value={(trade.dol || [])[0] || ''} onChange={e => set('dol', e.target.value ? [e.target.value] : [])}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {customDols.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
                 </div>
-              </div>
-              <div>
-                {fieldLabel('News Present')}
-                <div style={{ display: 'flex', gap: 4 }}>
-                  {(['Yes', 'No'] as const).map(opt => {
-                    const active = trade.newsPresent === opt
-                    return (
-                      <button key={opt} onClick={() => set('newsPresent', active ? '' : opt)} style={{
-                        flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
-                        border: `1px solid ${active ? (opt === 'Yes' ? '#fbbf2444' : 'var(--border-strong)') : 'var(--border)'}`,
-                        background: active ? (opt === 'Yes' ? '#fbbf2414' : 'var(--bg-active)') : 'transparent',
-                        color: active ? (opt === 'Yes' ? '#fbbf24' : 'var(--text)') : 'var(--text-dim)',
-                        cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-                      }}
-                        onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
-                        onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
-                      >{opt}</button>
-                    )
-                  })}
+                <div>
+                  {fieldLabel('Internal Range Liq')}
+                  <select value={(trade.internalRangeLiquidity || [])[0] || ''} onChange={e => set('internalRangeLiquidity', e.target.value ? [e.target.value] : [])}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {TIMEFRAMES.map(tf => <option key={tf} value={`FVG (${tf})`}>{`FVG (${tf})`}</option>)}
+                  </select>
                 </div>
-              </div>
+                <div>
+                  {fieldLabel('External Range Liq')}
+                  <select value={(trade.externalRangeLiquidity || [])[0] || ''} onChange={e => set('externalRangeLiquidity', e.target.value ? [e.target.value] : [])}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {(['Swing High', 'Swing Low'] as const).flatMap(b => TIMEFRAMES.map(tf => (
+                      <option key={`${b}-${tf}`} value={`${b} (${tf})`}>{`${b} (${tf})`}</option>
+                    )))}
+                  </select>
+                </div>
+                <div>
+                  {fieldLabel('Liquidity Swept')}
+                  <select value={(trade.liquiditySwept || [])[0] || ''} onChange={e => set('liquiditySwept', e.target.value ? [e.target.value] : [])}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {(['Swing High', 'Swing Low'] as const).flatMap(b => TIMEFRAMES.map(tf => (
+                      <option key={`${b}-${tf}`} value={`${b} (${tf})`}>{`${b} (${tf})`}</option>
+                    )))}
+                  </select>
+                </div>
 
-              {/* Row 2: Draw on Liquidity | OB Present | Entry Model | Exit Reason | A+ Setup */}
-              <div>
-                {fieldLabel('Draw on Liquidity')}
-                {(customDols.length > 0 || (trade.dol || []).some(d => !customDols.includes(d))) && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 7 }}>
-                    {customDols.map(d => {
-                      const active = (trade.dol || []).includes(d)
-                      return (
-                        <div key={d} style={{ display: 'inline-flex', alignItems: 'center', borderRadius: 999, overflow: 'hidden', border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border-mid)'}`, background: active ? 'var(--bg-active)' : 'transparent' }}>
-                          <button onClick={() => toggleArr('dol', d)} style={{ padding: '5px 8px 5px 12px', fontSize: 14, fontWeight: 500, background: 'none', border: 'none', color: active ? 'var(--text)' : 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
-                            onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-sub)' }}
-                            onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
-                          >{d}</button>
-                          <button onClick={() => removeDolFromLibrary(d)} title="Remove from library" style={{ padding: '5px 7px 5px 2px', background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'color 0.15s' }}
-                            onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-                            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-dim)')}
-                          ><X size={9} /></button>
-                        </div>
-                      )
-                    })}
-                    {(trade.dol || []).filter(d => !customDols.includes(d)).map(d => (
-                      <TagChip key={d} label={d} active={true} onClick={() => toggleArr('dol', d)} />
-                    ))}
+                {/* Row 2: SMT Present | CISD Present | Displacement | FVG Present | iFVG Present */}
+                <div>
+                  {fieldLabel('SMT Present')}
+                  <select value={(trade.smtPresent || [])[0] || ''} onChange={e => set('smtPresent', e.target.value ? [e.target.value] : [])}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {TIMEFRAMES.map(tf => <option key={tf} value={`SMT (${tf})`}>{`SMT (${tf})`}</option>)}
+                  </select>
+                </div>
+                <div>
+                  {fieldLabel('CISD Present')}
+                  <select value={(trade.cisdPresent || [])[0] || ''} onChange={e => set('cisdPresent', e.target.value ? [e.target.value] : [])}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {TIMEFRAMES.map(tf => <option key={tf} value={`CISD (${tf})`}>{`CISD (${tf})`}</option>)}
+                  </select>
+                </div>
+                <div>
+                  {fieldLabel('Displacement')}
+                  <select value={trade.displacement || ''} onChange={e => set('displacement', e.target.value)}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+                <div>
+                  {fieldLabel('FVG Present')}
+                  <select value={(trade.fvgPresent || [])[0] || ''} onChange={e => set('fvgPresent', e.target.value ? [e.target.value] : [])}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {TIMEFRAMES.map(tf => <option key={tf} value={`FVG (${tf})`}>{`FVG (${tf})`}</option>)}
+                  </select>
+                </div>
+                <div>
+                  {fieldLabel('iFVG Present')}
+                  <select value={(trade.ifvgPresent || [])[0] || ''} onChange={e => set('ifvgPresent', e.target.value ? [e.target.value] : [])}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {TIMEFRAMES.map(tf => <option key={tf} value={`iFVG (${tf})`}>{`iFVG (${tf})`}</option>)}
+                  </select>
+                </div>
+
+                {/* Row 3: Rejection Block | Entry Model | Setup Type | Playbook Used | Timeframe Used */}
+                <div>
+                  {fieldLabel('Rejection Block')}
+                  <select value={(trade.rejectionBlock || [])[0] || ''} onChange={e => set('rejectionBlock', e.target.value ? [e.target.value] : [])}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {TIMEFRAMES.map(tf => <option key={tf} value={`RB (${tf})`}>{`RB (${tf})`}</option>)}
+                  </select>
+                </div>
+                <div>
+                  {fieldLabel('Entry Model')}
+                  <input value={trade.entryModel || ''} onChange={e => set('entryModel', e.target.value)}
+                    placeholder="e.g. Silver Bullet" style={inputBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+                </div>
+                <div>
+                  {fieldLabel('Setup Type')}
+                  <input value={trade.setupType || ''} onChange={e => set('setupType', e.target.value)}
+                    placeholder="e.g. Reversal" style={inputBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+                </div>
+                <div>
+                  {fieldLabel('Playbook Used')}
+                  <input value={trade.playbookUsed || ''} onChange={e => set('playbookUsed', e.target.value)}
+                    placeholder="e.g. AM Kill Zone" style={inputBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+                </div>
+                <div>
+                  {fieldLabel('Timeframe Used')}
+                  <select value={trade.timeframeExecuted || ''} onChange={e => set('timeframeExecuted', e.target.value)}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {TIMEFRAMES.map(tf => <option key={tf} value={tf}>{tf}</option>)}
+                  </select>
+                </div>
+
+                {/* Row 4: Market Condition | Exit Reason | Target Logic | Stop Placement Logic | News Present */}
+                <div>
+                  {fieldLabel('Market Condition')}
+                  <select value={trade.marketCondition || ''} onChange={e => set('marketCondition', e.target.value)}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    <option value="Consolidation">Consolidation</option>
+                    <option value="Distribution">Distribution</option>
+                  </select>
+                </div>
+                <div>
+                  {fieldLabel('Exit Reason')}
+                  <select value={(trade.exitReason || [])[0] || ''} onChange={e => set('exitReason', e.target.value ? [e.target.value] : [])}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    {customExitReasons.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                </div>
+                <div>
+                  {fieldLabel('Target Logic')}
+                  <input value={trade.targetLogic || ''} onChange={e => set('targetLogic', e.target.value)}
+                    placeholder="e.g. Previous HOD" style={inputBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+                </div>
+                <div>
+                  {fieldLabel('Stop Placement Logic')}
+                  <input value={trade.riskPlacementLogic || ''} onChange={e => set('riskPlacementLogic', e.target.value)}
+                    placeholder="e.g. Below OB low" style={inputBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+                </div>
+                <div>
+                  {fieldLabel('News Present')}
+                  <select value={trade.newsPresent || ''} onChange={e => set('newsPresent', e.target.value)}
+                    style={{ ...selectBase, color: trade.newsPresent === 'Yes' ? '#fbbf24' : 'var(--text)' }}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+
+                {/* Row 5: News Impact | Auto Grade | [3 empty] */}
+                <div>
+                  {fieldLabel('News Impact')}
+                  <select value={trade.newsImpact || ''} onChange={e => set('newsImpact', e.target.value)}
+                    style={selectBase}
+                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}>
+                    <option value="">—</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                  </select>
+                </div>
+                <div>
+                  {fieldLabel('Auto Grade')}
+                  <div style={{ ...inputBase, display: 'flex', alignItems: 'center', fontWeight: 800, fontSize: 18,
+                    color: autoGradeResult ? (GRADE_COLORS[autoGradeResult.grade] || 'var(--text)') : 'var(--text-dim)',
+                    background: 'var(--bg)',
+                    border: `1px solid ${autoGradeResult ? (GRADE_COLORS[autoGradeResult.grade] || 'var(--border)') + '44' : 'var(--border)'}`,
+                    letterSpacing: '-0.02em',
+                  }}>
+                    {autoGradeResult ? `${autoGradeResult.grade} · ${autoGradeResult.score}pts` : '—'}
                   </div>
-                )}
-                <div style={{ display: 'flex', gap: 5 }}>
-                  <input
-                    value={newDolInput}
-                    onChange={e => setNewDolInput(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addDol(newDolInput) } }}
-                    placeholder="Add DOL…"
-                    style={{ ...inputBase, fontSize: 14, padding: '7px 10px' }}
-                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')}
-                    onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}
-                  />
-                  <button onClick={() => addDol(newDolInput)} style={{
-                    padding: '7px 12px', borderRadius: 8, border: '1px solid var(--border-mid)',
-                    background: 'transparent', color: 'var(--text-muted)', fontSize: 16, fontWeight: 600,
-                    cursor: 'pointer', flexShrink: 0, fontFamily: 'inherit', transition: 'all 0.15s',
-                  }}
-                    onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
-                    onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
-                  >+</button>
                 </div>
+                <div /><div /><div />
+
               </div>
-              <div>
-                {fieldLabel('OB Present')}
-                <TFTagPicker bases={['OB']} selected={trade.orderBlock || []} onChange={v => set('orderBlock', v)} />
-              </div>
-              <div>
-                {fieldLabel('Entry Model')}
-                <input value={trade.entryModel || ''} onChange={e => set('entryModel', e.target.value)}
-                  placeholder="Model name..." style={inputBase}
-                  onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
-              </div>
-              <div>
-                {fieldLabel('Exit Reason')}
-                {(customExitReasons.length > 0 || (trade.exitReason || []).some(r => !customExitReasons.includes(r))) && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 7 }}>
-                    {customExitReasons.map(r => {
-                      const active = (trade.exitReason || []).includes(r)
-                      return (
-                        <div key={r} style={{ display: 'inline-flex', alignItems: 'center', borderRadius: 999, overflow: 'hidden', border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border-mid)'}`, background: active ? 'var(--bg-active)' : 'transparent' }}>
-                          <button onClick={() => toggleArr('exitReason', r)} style={{ padding: '5px 8px 5px 12px', fontSize: 13, fontWeight: 500, background: 'none', border: 'none', color: active ? 'var(--text)' : 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.15s' }}
-                            onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-sub)' }}
-                            onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
-                          >{r}</button>
-                          <button onClick={() => removeExitReasonFromLibrary(r)} title="Remove from library" style={{ padding: '5px 7px 5px 2px', background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'color 0.15s' }}
-                            onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-                            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-dim)')}
-                          ><X size={9} /></button>
-                        </div>
-                      )
-                    })}
-                    {(trade.exitReason || []).filter(r => !customExitReasons.includes(r)).map(r => (
-                      <TagChip key={r} label={r} active={true} onClick={() => toggleArr('exitReason', r)} />
-                    ))}
+
+              {/* ── Library Management ── */}
+              <div style={{ paddingTop: 14, borderTop: '1px solid var(--border)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+                <div>
+                  {fieldLabel('DOL Library')}
+                  <div style={{ display: 'flex', gap: 5 }}>
+                    <input value={newDolInput} onChange={e => setNewDolInput(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addDol(newDolInput) } }}
+                      placeholder="Add DOL to library…"
+                      style={{ ...inputBase, fontSize: 14, padding: '7px 10px' }}
+                      onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')}
+                      onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+                    <button onClick={() => addDol(newDolInput)} style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', fontSize: 16, fontWeight: 600, cursor: 'pointer', flexShrink: 0, fontFamily: 'inherit', transition: 'all 0.15s' }}
+                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}>+</button>
                   </div>
-                )}
-                <div style={{ display: 'flex', gap: 5 }}>
-                  <input
-                    value={newExitReasonInput}
-                    onChange={e => setNewExitReasonInput(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addExitReason(newExitReasonInput) } }}
-                    placeholder="Add exit reason…"
-                    style={{ ...inputBase, fontSize: 13, padding: '7px 10px' }}
-                    onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')}
-                    onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')}
-                  />
-                  <button onClick={() => addExitReason(newExitReasonInput)} style={{
-                    padding: '7px 12px', borderRadius: 8, border: '1px solid var(--border-mid)',
-                    background: 'transparent', color: 'var(--text-muted)', fontSize: 16, fontWeight: 600,
-                    cursor: 'pointer', flexShrink: 0, fontFamily: 'inherit', transition: 'all 0.15s',
-                  }}
-                    onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
-                    onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}
-                  >+</button>
+                  {customDols.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 8 }}>
+                      {customDols.map(d => (
+                        <span key={d} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 7px 3px 10px', borderRadius: 999, fontSize: 13, background: 'var(--bg-active)', border: '1px solid var(--border-mid)', color: 'var(--text)' }}>
+                          {d}
+                          <button onClick={() => removeDolFromLibrary(d)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
+                            onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-loss)')}
+                            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                          ><X size={9} /></button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  {fieldLabel('Exit Reason Library')}
+                  <div style={{ display: 'flex', gap: 5 }}>
+                    <input value={newExitReasonInput} onChange={e => setNewExitReasonInput(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addExitReason(newExitReasonInput) } }}
+                      placeholder="Add exit reason to library…"
+                      style={{ ...inputBase, fontSize: 14, padding: '7px 10px' }}
+                      onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')}
+                      onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
+                    <button onClick={() => addExitReason(newExitReasonInput)} style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid var(--border-mid)', background: 'transparent', color: 'var(--text-muted)', fontSize: 16, fontWeight: 600, cursor: 'pointer', flexShrink: 0, fontFamily: 'inherit', transition: 'all 0.15s' }}
+                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-mid)' }}>+</button>
+                  </div>
+                  {customExitReasons.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 8 }}>
+                      {customExitReasons.map(r => (
+                        <span key={r} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 7px 3px 10px', borderRadius: 999, fontSize: 13, background: 'var(--bg-active)', border: '1px solid var(--border-mid)', color: 'var(--text)' }}>
+                          {r}
+                          <button onClick={() => removeExitReasonFromLibrary(r)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', lineHeight: 1, transition: 'color 0.15s' }}
+                            onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-loss)')}
+                            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                          ><X size={9} /></button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
-              <div>
-                {fieldLabel('A+ Setup')}
-                <div style={{ display: 'flex', gap: 4 }}>
-                  {(['Yes', 'No'] as const).map(opt => {
-                    const active = trade.aplusSetup === opt
-                    return (
-                      <button key={opt} onClick={() => set('aplusSetup', active ? '' : opt)} style={{
-                        flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
-                        border: `1px solid ${active ? (opt === 'Yes' ? 'rgba(34,197,94,0.4)' : 'var(--border-strong)') : 'var(--border)'}`,
-                        background: active ? (opt === 'Yes' ? 'rgba(34,197,94,0.1)' : 'var(--bg-active)') : 'transparent',
-                        color: active ? (opt === 'Yes' ? '#22c55e' : 'var(--text)') : 'var(--text-dim)',
-                        cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-                      }}
-                        onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
-                        onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
-                      >{opt}</button>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* Row 3: Internal Range Liq | FVG Present | Displacement | Setup Type | Target Logic */}
-              <div>
-                {fieldLabel('Internal Range Liq')}
-                <TFTagPicker bases={['FVG']} selected={trade.internalRangeLiquidity || []} onChange={v => set('internalRangeLiquidity', v)} />
-              </div>
-              <div>
-                {fieldLabel('FVG Present')}
-                <TFTagPicker bases={['FVG']} selected={trade.fvgPresent || []} onChange={v => set('fvgPresent', v)} />
-              </div>
-              <div>
-                {fieldLabel('Displacement')}
-                <div style={{ display: 'flex', gap: 4 }}>
-                  {(['Yes', 'No'] as const).map(opt => {
-                    const active = trade.displacement === opt
-                    return (
-                      <button key={opt} onClick={() => set('displacement', active ? '' : opt)} style={{
-                        flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
-                        border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
-                        background: active ? 'var(--bg-active)' : 'transparent',
-                        color: active ? 'var(--text)' : 'var(--text-dim)',
-                        cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-                      }}
-                        onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
-                        onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
-                      >{opt}</button>
-                    )
-                  })}
-                </div>
-              </div>
-              <div>
-                {fieldLabel('Setup Type')}
-                <input value={trade.setupType || ''} onChange={e => set('setupType', e.target.value)}
-                  placeholder="Type..." style={inputBase}
-                  onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
-              </div>
-              <div>
-                {fieldLabel('Target Logic')}
-                <input value={trade.targetLogic || ''} onChange={e => set('targetLogic', e.target.value)}
-                  placeholder="Logic..." style={inputBase}
-                  onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
-              </div>
-
-              {/* Row 4: External Range Liq | iFVG Present | Payback Used | Risk Placement Logic | (empty) */}
-              <div>
-                {fieldLabel('External Range Liq')}
-                <TFTagPicker bases={['Swing High', 'Swing Low']} selected={trade.externalRangeLiquidity || []} onChange={v => set('externalRangeLiquidity', v)} />
-              </div>
-              <div>
-                {fieldLabel('iFVG Present')}
-                <TFTagPicker bases={['iFVG']} selected={trade.ifvgPresent || []} onChange={v => set('ifvgPresent', v)} />
-              </div>
-              <div>
-                {fieldLabel('Payback Used')}
-                <div style={{ display: 'flex', gap: 4 }}>
-                  {(['Yes', 'No'] as const).map(opt => {
-                    const active = trade.paybackUsed === opt
-                    return (
-                      <button key={opt} onClick={() => set('paybackUsed', active ? '' : opt)} style={{
-                        flex: 1, padding: '8px 4px', borderRadius: 7, fontSize: 13, fontWeight: 600,
-                        border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border)'}`,
-                        background: active ? 'var(--bg-active)' : 'transparent',
-                        color: active ? 'var(--text)' : 'var(--text-dim)',
-                        cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-                      }}
-                        onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-muted)' }}
-                        onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-dim)' }}
-                      >{opt}</button>
-                    )
-                  })}
-                </div>
-              </div>
-              <div>
-                {fieldLabel('Risk Placement Logic')}
-                <input value={trade.riskPlacementLogic || ''} onChange={e => set('riskPlacementLogic', e.target.value)}
-                  placeholder="Logic..." style={inputBase}
-                  onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
-              </div>
-              <div />
-
-              {/* Row 5: Liquidity Swept | Timeframe Used | News Impact | (empty) | (empty) */}
-              <div>
-                {fieldLabel('Liquidity Swept')}
-                <TFTagPicker bases={['Swing High', 'Swing Low']} selected={trade.liquiditySwept || []} onChange={v => set('liquiditySwept', v)} />
-              </div>
-              <div>
-                {fieldLabel('Timeframe Used')}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                  {TIMEFRAMES.map(tf => {
-                    const active = trade.timeframeExecuted === tf
-                    return (
-                      <button key={tf} onClick={() => set('timeframeExecuted', active ? '' : tf)} style={{
-                        padding: '4px 8px', borderRadius: 999, fontSize: 13, fontWeight: 500,
-                        border: `1px solid ${active ? 'rgba(34,197,94,0.4)' : 'var(--border)'}`,
-                        background: active ? 'rgba(34,197,94,0.1)' : 'transparent',
-                        color: active ? '#22c55e' : 'var(--text-muted)',
-                        cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-                      }}
-                        onMouseEnter={e => { if (!active) { e.currentTarget.style.color = 'var(--text-sub)'; e.currentTarget.style.borderColor = 'var(--border-mid)' } }}
-                        onMouseLeave={e => { if (!active) { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' } }}
-                      >{tf}</button>
-                    )
-                  })}
-                </div>
-              </div>
-              <div>
-                {fieldLabel('News Impact')}
-                <input value={trade.newsImpact || ''} onChange={e => set('newsImpact', e.target.value)}
-                  placeholder="Low / Med / High..." style={inputBase}
-                  onFocus={e => (e.target.style.borderColor = 'var(--border-strong)')} onBlur={e => (e.target.style.borderColor = 'var(--border-mid)')} />
-              </div>
-              <div />
-              <div />
-
             </div>
           )}
 
