@@ -11,11 +11,12 @@ import {
   calcNetPnl,
   calcWinRate,
   calcProfitFactor,
-  calcAvgRR,
   getDayPnl,
   formatCurrency,
   formatPct,
 } from '../utils/stats'
+
+const PVMAP: Record<string, number> = { NQ: 20, MNQ: 2, ES: 50, MES: 5, GC: 100, MGC: 10 }
 import type { JournalEntry, TradingRule, TradeLog } from '../types'
 
 const QUOTES = [
@@ -86,8 +87,23 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
   const todayPnl = getDayPnl(allTrades, todayStr)
   const winRate = calcWinRate(monthTrades)
   const profitFactor = calcProfitFactor(monthTrades)
-  const avgRR = calcAvgRR(monthTrades)
   const goalAmount = monthlyGoals.find(g => g.month === monthStr)?.amount ?? 0
+
+  const monthCumR = (() => {
+    let cumR = 0
+    for (const entry of journalEntries) {
+      const d = new Date(entry.date + 'T12:00:00')
+      if (d.getFullYear() !== year || d.getMonth() !== month) continue
+      for (const t of entry.trades) {
+        const risk = parseFloat(t.stopLoss) * (PVMAP[t.symbol] || 1) * parseFloat(t.contracts)
+        if (risk > 0) {
+          const net = (parseFloat(t.pnl) || 0) - (parseFloat(t.fees || '0') || 0)
+          cumR += net / risk
+        }
+      }
+    }
+    return cumR
+  })()
 
   const prevMonth = () => {
     if (month === 0) { setMonth(11); setYear(y => y - 1) }
@@ -166,10 +182,10 @@ export function Dashboard({ journalEntries, monthlyGoals, tradingRules, onSetGoa
           icon={<BarChart2 size={15} />}
         />
         <StatCard
-          label="Avg RR"
-          value={avgRR > 0 ? `${avgRR.toFixed(2)}R` : '—'}
-          sub="reward / risk"
-          positive={avgRR === 0 ? null : avgRR >= 1}
+          label="Cumulative R"
+          value={monthTrades.length === 0 ? '—' : `${monthCumR >= 0 ? '+' : ''}${monthCumR.toFixed(2)}R`}
+          sub="this month"
+          positive={monthTrades.length === 0 ? null : monthCumR >= 0}
           icon={<Activity size={15} />}
         />
       </div>
