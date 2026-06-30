@@ -66,7 +66,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
     alignItems: 'center', transition: 'all 0.15s',
   }
 
-  const colTemplate = isMobile ? 'repeat(7, 1fr)' : 'repeat(8, 1fr)'
+  const colTemplate = 'repeat(8, 1fr)'
 
   return (
     <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: isMobile ? '12px 10px 10px' : '20px 20px 18px' }}>
@@ -159,11 +159,9 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
             {d}
           </div>
         ))}
-        {!isMobile && (
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-dim)', padding: '4px 0', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            Week
-          </div>
-        )}
+        <div style={{ fontSize: isMobile ? 8 : 14, fontWeight: 700, color: 'var(--text-dim)', padding: isMobile ? '2px 0' : '4px 0', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          {isMobile ? 'Wk' : 'Week'}
+        </div>
       </div>
 
       {/* Calendar rows */}
@@ -249,7 +247,7 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                     onMouseLeave={e => { e.currentTarget.style.borderColor = isToday ? 'var(--border-strong)' : cellBorder; e.currentTarget.style.background = cellBg }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                      <span style={{ fontSize: isMobile ? 10 : 16, fontWeight: 700, color: dayNumColor, lineHeight: 1 }}>
+                      <span style={{ fontSize: isMobile ? 9 : 16, fontWeight: 700, color: dayNumColor, lineHeight: 1 }}>
                         {day}
                       </span>
                       {!isMobile && hasDiary && (
@@ -264,19 +262,19 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                     </div>
                     {hasData && (
                       <>
-                        <span style={{ fontSize: isMobile ? 7.5 : 15, fontWeight: 800, color: isPositive ? '#22c55e' : isNegative ? '#ef4444' : '#888', lineHeight: 1, marginTop: 1 }}>
+                        <span style={{ fontSize: isMobile ? 6.5 : 15, fontWeight: 800, color: isPositive ? '#22c55e' : isNegative ? '#ef4444' : '#888', lineHeight: 1, marginTop: 1 }}>
                           {(pnl >= 0 ? '+' : '') + formatCurrency(pnl)}
                         </span>
                         {dayR !== null && (
-                          <span style={{ fontSize: isMobile ? 8 : 14, fontWeight: 700, color: dayR > 0 ? '#22c55e' : dayR < 0 ? '#ef4444' : '#888', lineHeight: 1 }}>
+                          <span style={{ fontSize: isMobile ? 7 : 14, fontWeight: 700, color: dayR > 0 ? '#22c55e' : dayR < 0 ? '#ef4444' : '#888', lineHeight: 1 }}>
                             {dayR >= 0 ? '+' : ''}{dayR.toFixed(1)}R
                           </span>
                         )}
-                        <span style={{ fontSize: isMobile ? 8 : 14, color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1 }}>
+                        <span style={{ fontSize: isMobile ? 7 : 14, color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1 }}>
                           {count} trade{count !== 1 ? 's' : ''}
                         </span>
                         {wlbeParts.length > 0 && (
-                          <span style={{ fontSize: isMobile ? 8 : 13, color: 'var(--text-muted)', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
+                          <span style={{ fontSize: isMobile ? 7 : 13, color: 'var(--text-muted)', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
                             {wlbeParts.join(' - ')}
                           </span>
                         )}
@@ -286,43 +284,41 @@ export function MonthCalendar({ year, month, trades, journalEntries, diaryDates,
                 )
               })}
 
-              {/* Weekly stats cell — desktop only */}
-              {!isMobile && (
-                <div style={{
-                  borderRadius: 10, padding: '8px 10px', minHeight: 100,
-                  display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                  justifyContent: 'flex-start', gap: 3,
-                  background: weekBg,
-                  border: `1px solid ${weekBorder}`,
-                  borderLeft: `2px solid ${weekHasData ? (weekPnl > 0 ? 'rgba(52,211,153,0.4)' : weekPnl < 0 ? 'rgba(239,68,68,0.4)' : '#2a2a2a') : '#1a1a1a'}`,
-                }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: 1 }}>
-                    WK {wi + 1}
-                  </span>
-                  {weekHasData ? (
-                    <>
-                      <span style={{ fontSize: 15, fontWeight: 800, color: weekPnlColor, lineHeight: 1, marginTop: 2 }}>
-                        {weekPnl >= 0 ? '+' : ''}{formatCurrency(weekPnl)}
+              {/* Weekly stats cell */}
+              <div style={{
+                borderRadius: isMobile ? 5 : 10, padding: isMobile ? '4px 3px' : '8px 10px', minHeight: isMobile ? 62 : 100,
+                display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+                justifyContent: 'flex-start', gap: isMobile ? 1 : 3,
+                background: weekBg,
+                border: `1px solid ${weekBorder}`,
+                borderLeft: `2px solid ${weekHasData ? (weekPnl > 0 ? 'rgba(52,211,153,0.4)' : weekPnl < 0 ? 'rgba(239,68,68,0.4)' : '#2a2a2a') : '#1a1a1a'}`,
+              }}>
+                <span style={{ fontSize: isMobile ? 7 : 13, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: 1 }}>
+                  {isMobile ? `W${wi + 1}` : `WK ${wi + 1}`}
+                </span>
+                {weekHasData ? (
+                  <>
+                    <span style={{ fontSize: isMobile ? 6.5 : 15, fontWeight: 800, color: weekPnlColor, lineHeight: 1, marginTop: isMobile ? 1 : 2 }}>
+                      {weekPnl >= 0 ? '+' : ''}{formatCurrency(weekPnl)}
+                    </span>
+                    {weekR !== null && (
+                      <span style={{ fontSize: isMobile ? 7 : 14, fontWeight: 700, color: weekR > 0 ? '#22c55e' : weekR < 0 ? '#ef4444' : '#888', lineHeight: 1 }}>
+                        {weekR >= 0 ? '+' : ''}{weekR.toFixed(1)}R
                       </span>
-                      {weekR !== null && (
-                        <span style={{ fontSize: 14, fontWeight: 700, color: weekR > 0 ? '#22c55e' : weekR < 0 ? '#ef4444' : '#888', lineHeight: 1 }}>
-                          {weekR >= 0 ? '+' : ''}{weekR.toFixed(1)}R
-                        </span>
-                      )}
-                      <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1 }}>
-                        {weekCount} trade{weekCount !== 1 ? 's' : ''}
+                    )}
+                    <span style={{ fontSize: isMobile ? 7 : 13, color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1 }}>
+                      {weekCount} trade{weekCount !== 1 ? 's' : ''}
+                    </span>
+                    {weekWLBE.length > 0 && (
+                      <span style={{ fontSize: isMobile ? 7 : 13, color: 'var(--text-muted)', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
+                        {weekWLBE.join(' - ')}
                       </span>
-                      {weekWLBE.length > 0 && (
-                        <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 700, lineHeight: 1, marginTop: 1 }}>
-                          {weekWLBE.join(' - ')}
-                        </span>
-                      )}
-                    </>
-                  ) : (
-                    <span style={{ fontSize: 14, color: 'var(--border-mid)', marginTop: 4 }}>—</span>
-                  )}
-                </div>
-              )}
+                    )}
+                  </>
+                ) : (
+                  <span style={{ fontSize: isMobile ? 7 : 14, color: 'var(--border-mid)', marginTop: isMobile ? 2 : 4 }}>—</span>
+                )}
+              </div>
             </div>
           )
         })}
